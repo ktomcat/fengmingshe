@@ -3,7 +3,7 @@
   <!-- 固定导航栏 -->
   <view class="fixed-navbar">
     <navigation-bar 
-      title="凤鸣社" 
+      title="蜂鸣社" 
       background="#ffffff" 
       color="#f44343" 
       back="{{false}}"
@@ -30,19 +30,19 @@
   </view>
 
   <!-- 特色话题卡片 -->
-  <view class="featured-card">
+  <view class="featured-card" wx:if="{{featuredTopic}}">
     <view class="card-image">
-      <image class="bg-image" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDCWL4UpjkmsPMEjaKOGzBTjcnTSBV_Jc85YiFoIZqRmbt_I6OHA-FNQpeKRhQ1droyQhdPZYLcD_11ZbRyyAz9Mmf3ocgwlcyvCvHR-LAqclloNUWw-kexn71wSP3m9ojED0I4T9vTzLSSafFYOVXt7VVlTRXgD_kW34HxboInbaWDHbOAyXjI1x6sR-Oc4RHFf1UX_gvNAlioEP_Oo85bAkrJe4JQVnCtGYOaTRAYn-2wVoaDGuFa1fbY1IMw2H6ZZUmMG-yiYh0" mode="aspectFill" />
+      <image class="bg-image" src="{{featuredTopic.images && featuredTopic.images[0] ? featuredTopic.images[0] : 'https://example.com/default.jpg'}}" mode="aspectFill" />
       <view class="image-overlay"></view>
     </view>
     <view class="card-content">
       <view class="topic-tag">
         <text class="tag-text">今日话题</text>
-        <text class="participants">1.2k 人正在参与</text>
+        <text class="participants">{{featuredTopic.likeCount}} 人点赞</text>
       </view>
-      <text class="topic-title">AI对创意产业的影响</text>
+      <text class="topic-title">{{featuredTopic.title}}</text>
       <view class="topic-actions">
-        <text class="topic-desc">探讨人工智能如何重塑艺术与设计领域的未来。</text>
+        <text class="topic-desc">{{featuredTopic.content}}</text>
         <button class="join-btn" bindtap="goToTopic">加入讨论</button>
       </view>
     </view>
@@ -54,80 +54,47 @@
       <text class="section-title">热门讨论</text>
     </view>
 
-    <!-- 讨论帖子1 -->
-    <view class="discussion-post">
+    <!-- 动态生成讨论帖子 -->
+    <view class="discussion-post" wx:for="{{discussions}}" wx:key="id" bindtap="goToTopicDetail" data-topic-id="{{item.id}}">
       <view class="post-header">
         <view class="user-info">
-          <image class="avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAfxoZyTJqi1ZELi-oyGDMWP7pWC1gWNJodagnANYSAuMeH8cr8znke1V_AbFz0if-o8vhHUR1clIc_dC_K-ucb9W4sUedapSLtjVBXNq8W0JM8HY7WGzuxaFh1PD6qcyUuetALQSJmd016ySlhYWFz5zVmNXfZMANTKWuIo5PDvm2UcSK7oZ4CluYXx5zdxTnR1-vi7dWBd2DZfF1SoE8LfxQqg98jbWXB8A79Nilw8RAnsLHwl6fYoO0FcUSpJCdN1bTHp9fqhp0" />
+          <image class="avatar" src="{{item.author.avatar}}" />
           <view class="user-details">
-            <text class="username">设计顽童阿强</text>
-            <text class="post-info">2小时前 · 科技圈</text>
+            <text class="username">{{item.author.nickname}}</text>
+            <text class="post-info">{{item.createTime}} · {{item.tags && item.tags[0] ? item.tags[0] : '生活'}}</text>
           </view>
         </view>
-        <view class="more-btn" bindtap="showBottomSheet">
+        <view class="more-btn" bindtap="showBottomSheet" data-topic="{{item}}">
           <text class="icon">⋯</text>
         </view>
       </view>
       
-      <text class="post-title">Midjourney V6 真的要把插画师卷死吗？</text>
-      <text class="post-content">最近深度体验了下V6版本，光影处理和纹理细节已经到了惊人的地步。现在的争议点在于，这种纯计算出来的美感是否真的有灵魂...</text>
+      <text class="post-title">{{item.title}}</text>
+      <text class="post-content">{{item.content}}</text>
+      
+      <!-- 图片展示 -->
+      <view class="post-images" wx:if="{{item.images && item.images.length > 0}}">
+        <image class="post-image" wx:for="{{item.images}}" wx:key="*this" src="{{item}}" mode="aspectFill" />
+      </view>
+      
+      <!-- 标签展示 -->
+      <view class="post-tags" wx:if="{{item.tags && item.tags.length > 0}}">
+        <text class="tag" wx:for="{{item.tags}}" wx:key="*this">#{{item}}</text>
+      </view>
       
       <view class="post-actions">
         <view class="action-buttons">
           <view class="action-btn style-unactive">
             <text class="icon">❤️</text>
-            <text class="action-count">432</text>
+            <text class="action-count">{{item.likeCount}}</text>
           </view>
           <view class="action-btn">
             <text class="icon">💬</text>
-            <text class="action-count">89</text>
+            <text class="action-count">{{item.commentCount}}</text>
           </view>
           <view class="action-btn">
             <text class="icon">↗️</text>
-            <text class="action-count">12</text>
-          </view>
-        </view>
-        <view class="comment-avatars">
-          <image class="comment-avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD3Arb1iVKfhcE0n6v081DAvK1rnuhyEs4wX4dTTM77RN7iyJu9991HqWJqm0aNx_Iet5VfWLd5aJkYbp7UIDsN2jHokwV3oEL9IMwsZxAC0ZVBiqeCTc4u_ZPTvcQY-bYkuSPlYPijCffTSvzwjaPbb0tF0iI7XP4jm0zgV8JLuRYzzKkLU9VndF_puFBUnO0iIg3fwCfoXZs8Khx09yVMRi1Kxfj8H27vu964AwriUurpwor7yz0gU68PLXU3fCyzPk1Be_Fc8F0" />
-          <image class="comment-avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCwk73Q6yJPx6RIvijmdgF9_8Ko-GA4v8OBKxB09rd5YG-NqGpjX81YH6QQZk-JkrhW80jPZTqcVp1-BjiwcQHECNRq__xz4YWdzvXTO6SDSX6mfn8EjSZKwZU1Y2ZFTIOrq2PpmiXVEtv9Rg9LraDqtnuplbyfXufGbb9eSaqUO4um7aZg4v-__iZZjDAFCFoVd0mMsj-Jbiqt8f4F_LTuXxs1Qvw0gSi7VTQhxuvqSnefsClQ7LJGxVum_jZuUzjT4RruvRBpikA" />
-          <view class="more-comments">
-            <text class="more-text">+5</text>
-          </view>
-        </view>
-      </view>
-    </view>
-
-    <!-- 讨论帖子2 -->
-    <view class="discussion-post">
-      <view class="post-header">
-        <view class="user-info">
-          <image class="avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCZv2ZyJ_Rl0XfGyhrFQuLD5poWFVVfgA7D4Ur3yUi-BUZs1r0m__PxuONgy3NyEGQiFYiU3D0-sGR6K9PxMRZs8hMfB9SebXMr5peD3j_Y5g6eYJEn1IWSlKVGeVf8Pmmi218Oxy0tGcxxKEPU3snEhkav5aZ616_31yLQTgEVH_qfCnFOthjP7rFa-G2EhZ_WyMbHgx7I6diP1hhU8iNjorz-rtAFuxXNQUFCWzv78eEpxjiABi2sER-o2ABDocmi2vg5N5f5wnQ" />
-          <view class="user-details">
-            <text class="username">元宇宙漫游者</text>
-            <text class="post-info">5小时前 · 艺术探讨</text>
-          </view>
-        </view>
-        <view class="more-btn" bindtap="showBottomSheet">
-          <text class="icon">⋯</text>
-        </view>
-      </view>
-      
-      <text class="post-title">当AI开始理解"意境"，我们该如何定义艺术？</text>
-      <text class="post-content">传统艺术强调"笔随心动"，而Prompt Engineering则是"言出法随"。这两种创作逻辑的碰撞非常有趣...</text>
-      
-      <view class="post-actions">
-        <view class="action-buttons ">
-          <view class="action-btn  style-active">
-            <text class="icon">❤️</text>
-            <text class="action-count">1.1k</text>
-          </view>
-          <view class="action-btn  style-active">
-            <text class="icon ">💬</text>
-            <text class="action-count">245</text>
-          </view>
-          <view class="action-btn  style-active">
-            <text class="icon">↗️</text>
-            <text class="action-count">56</text>
+            <text class="action-count">分享</text>
           </view>
         </view>
       </view>

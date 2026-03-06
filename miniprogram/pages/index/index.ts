@@ -4,6 +4,19 @@ const app = getApp<IAppOption>()
 const defaultAvatarUrl = 'https://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRna42FI242Lcia07jQodd2FJGIYQfG0LAJGFxM4FbnQP6yfMxBgJ0F3YRqJCJ1aPAK2dQagdusBZg/0'
 
 Component({
+  lifetimes: {
+    attached() {
+      // 组件挂载时加载测试数据
+      const globalData = app.globalData
+      this.setData({
+        featuredTopic: globalData.topics[0],
+        discussions: globalData.topics,
+        userInfo: globalData.userInfo,
+        categories: globalData.categories,
+        hotTags: globalData.hotTags
+      })
+    }
+  },
   data: {
     motto: 'Hello World',
     userInfo: {
@@ -16,6 +29,10 @@ Component({
     currentTab: 0, // 当前选中的导航项索引
     showBottomSheet: false, // 控制底部菜单栏显示
     searchText: '', // 搜索框内容
+    featuredTopic: null, // 特色话题
+    discussions: [], // 讨论列表
+    categories: [], // 分类列表
+    hotTags: [], // 热门标签
   },
   methods: {
     // 事件处理函数
@@ -170,6 +187,17 @@ Component({
     goToTopic() {
       wx.navigateTo({
         url: '/pages/topic/topic'
+      })
+    },
+
+    // 跳转到话题详情页
+    goToTopicDetail(e: any) {
+      const topicId = e.currentTarget.dataset.topicId
+      console.log('跳转到话题详情页，话题ID:', topicId)
+      
+      // 传递话题ID到详情页
+      wx.navigateTo({
+        url: `/pages/topic/topic?topicId=${topicId}`
       })
     },
   },

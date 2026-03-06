@@ -2,7 +2,21 @@
 
 interface IAppOption {
   globalData: {
-    userInfo?: WechatMiniprogram.UserInfo,
+    userInfo?: {
+      id: string;
+      nickname: string;
+      avatar: string;
+      level: number;
+      points: number;
+      followCount: number;
+      fansCount: number;
+      signature: string;
+    };
+    topics?: any[];
+    categories?: any[];
+    hotTags?: any[];
+    config?: any;
+    notifications?: any[];
   }
   userInfoReadyCallback?: WechatMiniprogram.GetUserInfoSuccessCallback,
 }
