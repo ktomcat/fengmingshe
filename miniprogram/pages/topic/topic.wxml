@@ -1,0 +1,241 @@
+<!-- 话题详情页面 -->
+<view class="page-container">
+  <!-- 固定导航栏 -->
+  <view class="fixed-navbar">
+    <navigation-bar 
+      title="话题详情" 
+      background="#ffffff" 
+      color="#000000" 
+      back="{{true}}"
+      home-button="{{false}}"
+      left-logo="{{false}}"
+      show-title="{{true}}"
+    ></navigation-bar>
+  </view>
+
+  <!-- 页面内容区域 -->
+  <view class="page-content">
+    <!-- 话题头部信息 -->
+    <view class="topic-header">
+      <text class="topic-title">AI对创意产业的影响</text>
+      <view class="topic-meta">
+        <text class="participants">1.2k 人参与讨论</text>
+        <text class="topic-tag">火热讨论中</text>
+      </view>
+      <text class="topic-desc">
+        AI技术的飞速发展正以前所未有的速度重塑创意产业。从辅助绘画到自动生成文本，它究竟是创作者的得力助手，还是潜在的职业威胁？让我们一起探讨。
+      </text>
+    </view>
+
+    <!-- 投票统计 -->
+    <view class="vote-section">
+      <view class="vote-card">
+        <view class="vote-header">
+          <view class="vote-option">
+            <text class="option-label">支持 (正方)</text>
+            <text class="option-percent">65%</text>
+          </view>
+          <view class="vote-option">
+            <text class="option-label">反对 (反方)</text>
+            <text class="option-percent">35%</text>
+          </view>
+        </view>
+        <view class="vote-bar">
+          <view class="vote-progress support" style="width: 65%;"></view>
+          <view class="vote-progress oppose" style="width: 35%;"></view>
+          <view class="vote-divider"></view>
+        </view>
+        <view class="vote-buttons">
+          <button class="vote-btn support-btn">
+            <text class="vote-icon">👍</text>
+            <text class="vote-text">支持观点</text>
+          </button>
+          <button class="vote-btn oppose-btn">
+            <text class="vote-icon">👎</text>
+            <text class="vote-text">反对观点</text>
+          </button>
+        </view>
+      </view>
+    </view>
+
+    <!-- 评论导航 -->
+    <view class="comment-nav">
+      <view class="nav-item active">
+        <text class="nav-text">精选评论</text>
+      </view>
+      <view class="nav-item">
+        <text class="nav-text">全部评论</text>
+      </view>
+    </view>
+
+    <!-- 评论列表 -->
+    <view class="comment-section">
+      <!-- 评论1 -->
+      <view class="comment-card">
+        <view class="comment-header">
+          <view class="user-info">
+            <image class="avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDdSFSAb_2Nom-QtDHpM1MlMajXDmF7_faxE1KVJfwlx_1pmAIzhku44oyZC7_hNAMmbkfrX32VXuEs-72mjr0fhpp-keD1L8moqnSmWjuXfpzGKN_Amak3930YmusJkljjqi_GpY5StSdbuOkBOuSi1svp-pclUvoYsAHBsVnGldcVXHlQjrMzAjp_v9S1g3fNqA10nIho-7Eg677DldCG5JnfKjlDKUJV52WVnPqrRF_W9wsPJWleahqJVTB8rocdzSTQYBA-Nfs" />
+            <view class="user-details">
+              <view class="username-row">
+                <text class="username">陈林</text>
+                <text class="user-badge">Top Contributor</text>
+              </view>
+              <text class="comment-info">2小时前 · 广东</text>
+            </view>
+          </view>
+          <view class="more-btn" bindtap="showBottomSheet">
+            <text class="more-icon">⋯</text>
+          </view>
+        </view>
+        <text class="comment-content">
+          AI作为一种工具确实能极大提高初稿的产出效率，但真正的创意核心在于人类的情感共鸣。它能取代重复性劳动，却无法取代艺术家的灵魂。
+        </text>
+        <view class="comment-actions">
+          <view class="action-btn">
+            <text class="action-icon">👍</text>
+            <text class="action-count">428</text>
+          </view>
+          <view class="action-btn">
+            <text class="action-icon">💬</text>
+            <text class="action-count">12</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 评论2 -->
+      <view class="comment-card">
+        <view class="comment-header">
+          <view class="user-info">
+            <image class="avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDT5nK_pDK-_tGtL0_qIoav5pe-NnBkke6kdG4TOFKreiRXsE8Ur9A8ayhNNZekorzO7ErPBwoczaUj2RBa2CTEmJ5zN3Q9T0TgBV7H_DYmK446ljF1xZ0rbCfKz1VoI-j6MR-jLjXWWsSedlDWDjRe1RqFmlnenjJSaLVC088Z1XYjoHMARqhwP24SUw9YiWhGA5jfH6TvnpyBSyD32_Kva2RUQonIcAJwnoSGSeTD5lGCfpXCj2Lp9oGJ9ZmzILwJmmi7XNDiq0k" />
+            <view class="user-details">
+              <view class="username-row">
+                <text class="username">林晓萌</text>
+                <text class="user-badge">资深插画师</text>
+              </view>
+              <text class="comment-info">5小时前 · 上海</text>
+            </view>
+          </view>
+          <view class="more-btn" bindtap="showBottomSheet">
+            <text class="more-icon">⋯</text>
+          </view>
+        </view>
+        <text class="comment-content">
+          版权问题依然是最大的门槛。在没有完善的法律规范前，AI的快速普及对原创作者来说可能是一种巨大的不公平。
+        </text>
+        <view class="comment-actions">
+          <view class="action-btn">
+            <text class="action-icon">👍</text>
+            <text class="action-count">156</text>
+          </view>
+          <view class="action-btn active">
+            <text class="action-icon">💬</text>
+            <text class="action-count">5</text>
+          </view>
+        </view>
+        
+        <!-- 子评论 -->
+        <view class="sub-comments">
+          <view class="sub-comment">
+            <view class="sub-user-info">
+              <text class="sub-username">张大伟</text>
+              <text class="sub-time">3小时前</text>
+            </view>
+            <text class="sub-content">
+              确实，现在的训练集很多都是未经授权抓取的，这确实是个法律灰色地带。
+            </text>
+          </view>
+          <view class="sub-comment">
+            <view class="sub-user-info">
+              <text class="sub-username">创意先锋</text>
+              <text class="sub-time">2小时前</text>
+            </view>
+            <text class="sub-content">
+              不仅仅是版权，创作的溢价感也在消失。
+            </text>
+          </view>
+          <view class="show-more">
+            <text class="more-text">展开剩余 3 条回复</text>
+            <text class="more-icon">↓</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 评论3 -->
+      <view class="comment-card">
+        <view class="comment-header">
+          <view class="user-info">
+            <image class="avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAHENWKG0vTQjfv-wTrUbUZj9FuBh5u46QDA65Z3JkTIj5gxWj9rQoeUcAwI0db5IfHi74sTp--sEtEOLgaiISrsW6fdk1bfdv8swm6xQpvB2CqiNoo8Vd_0npQucW-XdtG5o31Fhcb_bVZCREE85gK7CBHcRulALvl6sh4wXIDMaMhjuH6Wil7bQ5X2tc5nlCPZ52IdZbTsGjFod0PoYl5CfPwTXrcB8W3KG3q_MiYLskjbDKo_w6RfWqxjbWzjTbHe9ebv2KE82Y" />
+            <view class="user-details">
+              <view class="username-row">
+                <text class="username">TechDaily</text>
+              </view>
+              <text class="comment-info">1天前 · 北京</text>
+            </view>
+          </view>
+          <view class="more-btn" bindtap="showBottomSheet">
+            <text class="more-icon">⋯</text>
+          </view>
+        </view>
+        <text class="comment-content">
+          我们应该关注的是如何让AI与人协作。未来可能不再是画师与画师的竞争，而是掌握了AI工具的人与未掌握AI工具的人之间的竞争。
+        </text>
+        <view class="comment-actions">
+          <view class="action-btn">
+            <text class="action-icon">👍</text>
+            <text class="action-count">89</text>
+          </view>
+          <view class="action-btn">
+            <text class="action-icon">💬</text>
+            <text class="action-count">3</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 底部输入框 -->
+    <view class="input-section">
+      <view class="input-container">
+        <input class="comment-input" placeholder="写下你的看法..." />
+        <view class="input-actions">
+          <text class="input-icon">🖼️</text>
+          <text class="input-icon">@</text>
+        </view>
+        <button class="send-btn">
+          <text class="send-icon">➤</text>
+        </button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部导航栏 -->
+  <bottom-nav 
+    wx:if="{{true}}"
+    current="{{currentTab}}" 
+    bind:change="onTabChange"
+  />
+
+  <!-- 底部菜单栏遮罩 -->
+  <view class="bottom-sheet-overlay {{showBottomSheet ? 'active' : ''}}" bindtap="closeBottomSheet">
+    <view class="bottom-sheet {{showBottomSheet ? 'active' : ''}}" catchtap="">
+      <view class="sheet-item" bindtap="onReportContent">
+        <text class="sheet-icon">🚩</text>
+        <text class="sheet-text">举报内容</text>
+      </view>
+      <view class="sheet-item" bindtap="onBlockUser">
+        <text class="sheet-icon">🚫</text>
+        <text class="sheet-text">拉黑用户</text>
+      </view>
+      <view class="sheet-item" bindtap="onSharePost">
+        <text class="sheet-icon">📤</text>
+        <text class="sheet-text">分享帖子</text>
+      </view>
+      <view class="sheet-item" bindtap="onCopyLink">
+        <text class="sheet-icon">🔗</text>
+        <text class="sheet-text">复制链接</text>
+      </view>
+      <view class="sheet-cancel" bindtap="closeBottomSheet">
+        <text class="cancel-text">取消</text>
+      </view>
+    </view>
+  </view>
+</view>
