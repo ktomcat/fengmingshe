@@ -3,7 +3,7 @@
   <!-- 固定导航栏 -->
   <view class="fixed-navbar">
     <navigation-bar 
-      title="蜂鸣社" 
+      title="精选" 
       background="#ffffff" 
       color="#f44343" 
       back="{{false}}"
@@ -16,44 +16,11 @@
 
   <!-- 页面内容区域 -->
   <view class="page-content">
-    <!-- 头部搜索栏 -->
-    <view class="header">
-    <view class="search-container">
-      <view class="search-input-wrapper">
-        <text class="search-icon">🔍</text>
-        <input class="search-input" placeholder="搜索话题、精选或用户" bindinput="onSearchInput" value="{{searchText}}" />
-        <view class="search-btn {{searchText ? 'show' : ''}}" bindtap="onSearch">
-          <text class="search-btn-text">搜索</text>
-        </view>
-      </view>
-    </view>
-  </view>
-
   <!-- 特色话题卡片 -->
-  <view class="featured-card" wx:if="{{featuredTopic}}">
-    <view class="card-image">
-      <image class="bg-image" src="{{featuredTopic.images && featuredTopic.images[0] ? featuredTopic.images[0] : 'https://example.com/default.jpg'}}" mode="aspectFill" />
-      <view class="image-overlay"></view>
-    </view>
-    <view class="card-content">
-      <view class="topic-tag">
-        <text class="tag-text">今日话题</text>
-        <text class="participants">{{featuredTopic.likeCount}} 人点赞</text>
-      </view>
-      <text class="topic-title">{{featuredTopic.title}}</text>
-      <view class="topic-actions">
-        <text class="topic-desc">{{featuredTopic.displayContent}}</text>
-        <button class="join-btn" bindtap="goToTopic">加入讨论</button>
-      </view>
-    </view>
-  </view>
+  
 
   <!-- 热门讨论列表 -->
   <view class="discussions-section">
-    <view class="section-header">
-      <text class="section-title">热门讨论</text>
-    </view>
-
     <!-- 动态生成讨论帖子 -->
     <view class="discussion-post" wx:for="{{discussions}}" wx:key="id">
       <view class="post-content-area" bindtap="goToTopicDetail" data-topic-id="{{item.id}}">
@@ -62,7 +29,7 @@
             <image class="avatar" src="{{item.author.avatar}}" />
             <view class="user-details">
               <text class="username">{{item.author.nickname}}</text>
-              <text class="post-info">{{item.createTime}}</text>
+              <text class="post-info">{{item.createTime}} </text>
             </view>
           </view>
           <view class="more-btn" catchtap="showBottomSheet" data-topic="{{item}}">
@@ -103,7 +70,7 @@
           </view>
           <view class="action-btn" bindtap="onSharePostInList" data-topic="{{item}}">
             <text class="icon">↗️</text>
-            <text class="action-count">分享</text>
+            <text class="action-count">{{item.share}}分享</text>
           </view>
         </view>
       </view>

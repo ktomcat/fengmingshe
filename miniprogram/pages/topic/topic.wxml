@@ -31,16 +31,66 @@
       
       <!-- 话题内容 -->
       <text class="topic-title">{{topic.title}}</text>
-      <text class="topic-content">{{topic.content}}</text>
       
-      <!-- 图片展示 -->
-      <view class="topic-images" wx:if="{{topic.images && topic.images.length > 0}}">
-        <image class="topic-image" wx:for="{{topic.images}}" wx:key="*this" src="{{item}}" mode="aspectFill" />
-      </view>
-      
-      <!-- 标签展示 -->
-      <view class="topic-tags" wx:if="{{topic.tags && topic.tags.length > 0}}">
-        <text class="tag" wx:for="{{topic.tags}}" wx:key="*this">#{{item}}</text>
+      <!-- 图文混排内容展示 -->
+      <view class="mixed-content" wx:if="{{topic.content && topic.content.length > 0}}">
+        <view class="content-item" wx:for="{{topic.content}}" wx:for-item="contentItem" wx:key="index">
+          <!-- 文本内容 -->
+          <text class="content-text" wx:if="{{contentItem.type === 'text'}}">{{contentItem.content}}</text>
+          
+          <!-- 图片内容 -->
+          <view class="content-image-wrapper" wx:if="{{contentItem.type === 'image'}}">
+            <image class="content-image" src="{{contentItem.content}}" mode="aspectFill" />
+          </view>
+          
+          <!-- 投票内容 -->
+          <view class="vote-section" wx:if="{{contentItem.type === 'vote'}}">
+            <view class="vote-container">
+              <view class="vote-header">
+                <text class="vote-title">{{contentItem.content.title}}</text>
+                <text class="vote-count">{{contentItem.content.totalVotes}} 人参与</text>
+              </view>
+              
+              <view class="vote-content">
+                <view class="vote-stats">
+                  <view class="stats-left">
+                    <text class="stats-label">支持 (正方)</text>
+                    <text class="stats-value">{{contentItem.content.positive.count}}票</text>
+                  </view>
+                  <view class="stats-right">
+                    <text class="stats-label">反对 (反方)</text>
+                    <text class="stats-value">{{contentItem.content.negative.count}}票</text>
+                  </view>
+                </view>
+                
+                <view class="vote-progress-bar">
+                  <view class="progress-track">
+                    <view class="progress-fill positive" style="width: {{contentItem.content.totalVotes > 0 ? (contentItem.content.positive.count / contentItem.content.totalVotes) * 100 : 0}}%;"></view>
+                    <view class="progress-fill negative" style="width: {{contentItem.content.totalVotes > 0 ? (contentItem.content.negative.count / contentItem.content.totalVotes) * 100 : 0}}%;"></view>
+                    <view class="progress-divider" style="left: {{contentItem.content.totalVotes > 0 ? (contentItem.content.positive.count / contentItem.content.totalVotes) * 100 : 0}}%;"></view>
+                  </view>
+                </view>
+                
+                <view class="vote-actions" wx:if="{{!contentItem.content.userVoted}}">
+                  <button class="vote-btn positive" bindtap="onVotePositive" data-content-index="{{index}}">
+                    <text class="btn-icon">👍</text>
+                    <text class="btn-text">支持观点</text>
+                  </button>
+                  <button class="vote-btn negative" bindtap="onVoteNegative" data-content-index="{{index}}">
+                    <text class="btn-icon">👎</text>
+                    <text class="btn-text">反对观点</text>
+                  </button>
+                </view>
+                
+                <view class="vote-result" wx:if="{{contentItem.content.userVoted}}">
+                  <text class="result-text">
+                    你选择了 {{contentItem.content.userChoice === 'positive' ? '正方' : '反方'}}
+                  </text>
+                </view>
+              </view>
+            </view>
+          </view>
+        </view>
       </view>
       
       <!-- 统计信息 -->
@@ -59,6 +109,8 @@
         </view>
       </view>
     </view>
+
+
 
     <!-- 评论导航 -->
     <view class="comment-nav">
@@ -83,7 +135,6 @@
             <view class="user-details">
               <view class="username-row">
                 <text class="username">{{item.author.nickname}}</text>
-                <text class="featured-badge" wx:if="{{item.isFeatured}}">精选</text>
               </view>
               <text class="comment-info">{{item.createTime}}</text>
             </view>

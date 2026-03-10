@@ -12,9 +12,8 @@ interface IAppOption {
       fansCount: number;
       signature: string;
     };
+    featuredTopic?: any;
     topics?: any[];
-    categories?: any[];
-    hotTags?: any[];
     config?: any;
     notifications?: any[];
   }

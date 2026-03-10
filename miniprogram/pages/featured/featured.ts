@@ -6,16 +6,9 @@ const defaultAvatarUrl = 'https://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRna42FI242Lcia0
 Component({
   lifetimes: {
     attached() {
-      // 组件挂载时加载测试数据
+      // 组件挂载时加载测试数据并设置当前选中状态
       const globalData = app.globalData
-      
-      // 处理特色话题，提取第一个文本内容
-      const featuredTopic = globalData.featuredTopic
-      if (featuredTopic && featuredTopic.content) {
-        const firstTextContent = this.getFirstTextContent(featuredTopic.content)
-        featuredTopic.displayContent = firstTextContent
-      }
-      
+
       // 处理讨论列表，为每个话题提取第一个文本内容
       const discussions = globalData.topics?globalData.topics.map(topic => {
         if (topic && topic.content) {
@@ -28,10 +21,11 @@ Component({
         return topic
       }):[]
       
+      // 设置当前选中的导航项索引（精选页面对应索引1）
       this.setData({
-        featuredTopic: featuredTopic,
         discussions: discussions,
-        userInfo: globalData.userInfo
+        userInfo: globalData.userInfo,
+        currentTab: 1 // 精选页面对应底部导航栏的第二个标签（索引1）
       })
     }
   },
@@ -46,53 +40,14 @@ Component({
     canIUseNicknameComp: wx.canIUse('input.type.nickname'),
     currentTab: 0, // 当前选中的导航项索引
     showBottomSheet: false, // 控制底部菜单栏显示
-    searchText: '', // 搜索框内容
-    featuredTopic: null as any, // 特色话题
     discussions: [] as any[], // 讨论列表
   },
   methods: {
-
-    onChooseAvatar(e: any) {
-      console.log('【首页】选择头像，事件详情:', e.detail)
-      const { avatarUrl } = e.detail
-      const { nickName } = this.data.userInfo
-      this.setData({
-        "userInfo.avatarUrl": avatarUrl,
-        hasUserInfo: nickName && avatarUrl && avatarUrl !== defaultAvatarUrl,
-      })
-    },
-    onInputChange(e: any) {
-      console.log('【首页】输入框内容变化，新昵称:', e.detail.value)
-      const nickName = e.detail.value
-      const { avatarUrl } = this.data.userInfo
-      this.setData({
-        "userInfo.nickName": nickName,
-        hasUserInfo: nickName && avatarUrl && avatarUrl !== defaultAvatarUrl,
-      })
-    },
-    getUserProfile() {
-      console.log('【首页】点击获取用户信息按钮')
-      // 推荐使用wx.getUserProfile获取用户信息，开发者每次通过该接口获取用户个人信息均需用户确认，开发者妥善保管用户快速填写的头像昵称，避免重复弹窗
-      wx.getUserProfile({
-        desc: '展示用户信息', // 声明获取用户个人信息后的用途，后续会展示在弹窗中，请谨慎填写
-        success: (res) => {
-          console.log('【首页】获取用户信息成功:', res.userInfo)
-          this.setData({
-            userInfo: res.userInfo,
-            hasUserInfo: true
-          })
-        },
-        fail: (err) => {
-          console.error('【首页】获取用户信息失败:', err)
-        }
-      })
-    },
-
     // 底部导航栏切换 - 现在由组件统一处理
     onTabChange(e: any) {
       // 保留事件监听，但页面跳转逻辑已移至组件内部
       const index = e.detail.index
-      console.log('【首页】底部导航栏切换，选中索引:', index)
+      console.log('【精选页】底部导航栏切换，选中索引:', index)
       this.setData({
         currentTab: index
       })

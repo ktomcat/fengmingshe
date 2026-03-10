@@ -14,7 +14,7 @@
     data-index="1"
   >
     <text wx:if="{{false}}" class="nav-icon">🔍</text>
-    <text class="nav-text">圈子</text>
+    <text class="nav-text">精选</text>
   </view>
   <view 
     class="nav-item {{current === 2 ? 'active' : ''}}"
@@ -22,12 +22,20 @@
     data-index="2"
   >
     <text wx:if="{{false}}"  class="nav-icon">💬</text>
-    <text class="nav-text">消息</text>
+    <text class="nav-text-2">➕</text>
   </view>
   <view 
     class="nav-item {{current === 3 ? 'active' : ''}}"
     bindtap="onTabChange"
     data-index="3"
+  >
+    <text wx:if="{{false}}"  class="nav-icon">💬</text>
+    <text class="nav-text">消息</text>
+  </view>
+  <view 
+    class="nav-item {{current === 4 ? 'active' : ''}}"
+    bindtap="onTabChange"
+    data-index="4"
   >
     <text wx:if="{{false}}" class="nav-icon">👤</text>
     <text class="nav-text">我的</text>

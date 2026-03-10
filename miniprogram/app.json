@@ -2,7 +2,9 @@
   "pages": [
     "pages/index/index",
     "pages/logs/logs",
-    "pages/topic/topic"
+    "pages/topic/topic",
+    "pages/featured/featured",
+    "pages/publish/publish"
   ],
   "window": {
     "navigationBarTextStyle": "black",
