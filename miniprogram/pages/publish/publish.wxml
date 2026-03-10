@@ -1,4 +1,4 @@
-<!-- 发布页面 -->
+<!-- 发布页面 - 全新的HTML结构 -->
 <view class="page-container">
   <!-- 固定导航栏 -->
   <view class="fixed-navbar">
@@ -15,52 +15,38 @@
 
   <!-- 页面内容区域 -->
   <view class="page-content">
-    <!-- 标题输入区 -->
-    <view class="input-section">
-      <input 
-        class="title-input" 
-        placeholder="请输入话题标题" 
-        maxlength="50"
-        value="{{title}}"
-        bindinput="onTitleInput"
-      />
-      <text class="title-count">{{title.length}}/50</text>
-    </view>
-
+    
     <!-- 内容编辑区 -->
     <view class="content-section">
-      <view class="content-toolbar">
-        <view class="tool-btn {{activeTool === 'text' ? 'active' : ''}}" bindtap="switchToText">
-          <text class="tool-icon">📝</text>
-          <text class="tool-text">文本</text>
-        </view>
-        <view class="tool-btn {{activeTool === 'image' ? 'active' : ''}}" bindtap="switchToImage">
-          <text class="tool-icon">🖼️</text>
-          <text class="tool-text">图片</text>
-        </view>
-        <view class="tool-btn {{activeTool === 'vote' ? 'active' : ''}}" bindtap="switchToVote">
-          <text class="tool-icon">📊</text>
-          <text class="tool-text">投票</text>
-        </view>
-      </view>
-
       <!-- 内容编辑区域 -->
       <scroll-view class="content-editor" scroll-y="true">
+        <!-- 标题输入区 -->
+        <view class="input-section">
+          <input 
+            class="title-input" 
+            placeholder="请输入话题标题" 
+            maxlength="50"
+            value="{{title}}"
+            bindinput="onTitleInput"
+          />
+          <text class="title-count">{{title.length}}/50</text>
+        </view>
+        
         <!-- 动态生成的内容块 -->
         <view class="content-block" wx:for="{{contentBlocks}}" wx:key="index">
-          
           <!-- 文本块 -->
           <view class="text-block" wx:if="{{item.type === 'text'}}">
             <textarea 
               class="text-input" 
-              placeholder="请输入文本内容" 
+              placeholder="请输入文本内容..." 
               value="{{item.content}}"
               bindinput="onTextInput"
               data-index="{{index}}"
               maxlength="500"
             />
-            <text class="text-count">{{item.content.length}}/500</text>
+            
             <view class="block-actions">
+              <text class="text-count">{{item.content.length}}/500</text>
               <text class="action-btn" bindtap="moveBlockUp" data-index="{{index}}">⬆️</text>
               <text class="action-btn" bindtap="moveBlockDown" data-index="{{index}}">⬇️</text>
               <text class="action-btn delete" bindtap="deleteBlock" data-index="{{index}}">🗑️</text>
@@ -76,7 +62,7 @@
               </view>
               <view class="upload-btn" wx:if="{{!item.content}}" bindtap="chooseImage" data-index="{{index}}">
                 <text class="upload-icon">+</text>
-                <text class="upload-text">添加图片</text>
+                <text class="upload-text">点击上传图片</text>
               </view>
             </view>
             <view class="block-actions">
@@ -88,28 +74,56 @@
 
           <!-- 投票块 -->
           <view class="vote-block" wx:if="{{item.type === 'vote'}}">
-            <text class="vote-title">投票选项</text>
-            <view class="vote-options">
-              <view class="vote-option" wx:for="{{item.options}}" wx:key="index" wx:for-item="option">
+            <view class="vote-container">
+              <view class="vote-header">
                 <input 
-                  class="option-input" 
-                  placeholder="请输入选项内容" 
-                  value="{{option.text}}"
-                  bindinput="onOptionInput"
-                  data-block-index="{{index}}"
-                  data-option-index="{{optionIndex}}"
+                  class="vote-title-input" 
+                  placeholder="请输入辩题  (例:AI会取代人类工作吗?)" 
+                  value="{{item.title}}"
+                  bindinput="onVoteTitleInput"
+                  data-index="{{index}}"
+                  maxlength="100"
                 />
-                <text class="remove-option" bindtap="removeOption" data-block-index="{{index}}" data-option-index="{{optionIndex}}">✕</text>
+                <text class="vote-count">{{item.totalVotes || 0}} 人参与</text>
+              </view>
+              
+              <view class="vote-content">
+                <view class="vote-stats">
+                  <view class="stats-left">
+                    <text class="stats-label">支持 (正方)</text>
+                    <text class="stats-value">{{item.positive && item.positive.count ? item.positive.count : 0}}票</text>
+                  </view>
+                  <view class="stats-right">
+                    <text class="stats-label">反对 (反方)</text>
+                    <text class="stats-value">{{item.negative && item.negative.count ? item.negative.count : 0}}票</text>
+                  </view>
+                </view>
+                
+                <view class="vote-progress-bar">
+                  <view class="progress-track">
+                    <view class="progress-fill positive" style="width: {{item.positivePercent || 0}}%;"></view>
+                    <view class="progress-fill negative" style="width: {{item.negativePercent || 0}}%;"></view>
+                    <view class="progress-divider" style="left: {{item.positivePercent || 0}}%;"></view>
+                  </view>
+                </view>
+                
+                <view class="vote-actions">
+                  <button class="vote-btn positive" bindtap="onVotePositive" data-index="{{index}}">
+                    <text class="btn-icon">👍</text>
+                    <text class="btn-text">支持观点</text>
+                  </button>
+                  <button class="vote-btn negative" bindtap="onVoteNegative" data-index="{{index}}">
+                    <text class="btn-icon">👎</text>
+                    <text class="btn-text">反对观点</text>
+                  </button>
+                </view>
+                
+                <view class="vote-result">
+                  <text class="result-text">读者将在这里选择支持正方或反方</text>
+                </view>
               </view>
             </view>
-            <view class="vote-actions">
-              <text class="add-option" bindtap="addOption" data-index="{{index}}">+ 添加选项</text>
-              <text class="vote-setting">
-                <text class="setting-text">单选</text>
-                <switch checked="{{item.isSingleChoice}}" bindchange="toggleVoteType" data-index="{{index}}" />
-                <text class="setting-text">多选</text>
-              </text>
-            </view>
+            
             <view class="block-actions">
               <text class="action-btn" bindtap="moveBlockUp" data-index="{{index}}">⬆️</text>
               <text class="action-btn" bindtap="moveBlockDown" data-index="{{index}}">⬇️</text>
@@ -117,21 +131,31 @@
             </view>
           </view>
         </view>
-
-        <!-- 添加新内容块的按钮 -->
-        <view class="add-block-section">
-          <text class="add-block-hint">点击下方按钮添加内容</text>
-          <view class="add-block-buttons">
-            <text class="add-block-btn" bindtap="addTextBlock">📝 添加文本</text>
-            <text class="add-block-btn" bindtap="addImageBlock">🖼️ 添加图片</text>
-            <text class="add-block-btn" bindtap="addVoteBlock">📊 添加投票</text>
-          </view>
-        </view>
       </scroll-view>
     </view>
 
-    <!-- 底部操作栏 -->
+    <!-- 全新的底部操作栏 -->
     <view class="bottom-actions">
+      <!-- 添加内容区域 -->
+      <view class="add-block-section">
+        <text class="add-block-hint">添加内容板块</text>
+        <view class="add-block-buttons">
+          <text class="add-block-btn" bindtap="addTextBlock">
+            <text class="btn-emoji">📝</text>
+            <text>文本</text>
+          </text>
+          <text class="add-block-btn" bindtap="addImageBlock">
+            <text class="btn-emoji">🖼️</text>
+            <text>图片</text>
+          </text>
+          <text class="add-block-btn" bindtap="addVoteBlock">
+            <text class="btn-emoji">📊</text>
+            <text>辩题</text>
+          </text>
+        </view>
+      </view>
+      
+      <!-- 操作按钮区域 -->
       <view class="action-buttons">
         <button class="cancel-btn" bindtap="onCancel">取消</button>
         <button class="publish-btn {{canPublish ? 'active' : ''}}" bindtap="onPublish" disabled="{{!canPublish}}">

@@ -13,7 +13,7 @@ Component({
         id: Date.now()
       }
     ] as any[],
-    canPublish: false // 是否可以发布
+    canPublish: true // 发布按钮常亮
   },
 
   methods: {
@@ -71,11 +71,14 @@ Component({
     addVoteBlock() {
       const newBlock = {
         type: 'vote',
-        options: [
-          { text: '', id: Date.now() + 1 },
-          { text: '', id: Date.now() + 2 }
-        ],
-        isSingleChoice: true, // 默认单选
+        title: '', // 辩论问题
+        positive: { count: 0 }, // 正方票数
+        negative: { count: 0 }, // 反方票数
+        totalVotes: 0, // 总票数
+        positivePercent: 0, // 正方百分比
+        negativePercent: 0, // 反方百分比
+        userVoted: false, // 用户是否已投票
+        userChoice: '', // 用户选择
         id: Date.now()
       }
       this.setData({
@@ -138,21 +141,14 @@ Component({
       this.checkPublishStatus()
     },
 
-    // 投票选项输入处理
-    onOptionInput(e: any) {
-      const blockIndex = e.currentTarget.dataset.blockIndex
-      const optionIndex = e.currentTarget.dataset.optionIndex
-      const text = e.detail.value
+    // 投票标题输入处理
+    onVoteTitleInput(e: any) {
+      const index = e.currentTarget.dataset.index
+      const title = e.detail.value
       
       const contentBlocks = this.data.contentBlocks.map((block, i) => {
-        if (i === blockIndex && block.type === 'vote') {
-          const options = block.options.map((option: any, j: number) => {
-            if (j === optionIndex) {
-              return { ...option, text: text }
-            }
-            return option
-          })
-          return { ...block, options }
+        if (i === index && block.type === 'vote') {
+          return { ...block, title: title }
         }
         return block
       })
@@ -266,31 +262,45 @@ Component({
       })
     },
 
-    // 检查是否可以发布
-    checkPublishStatus() {
+    // 验证发布内容是否完整
+    validatePublishContent() {
       const { title, contentBlocks } = this.data
       
       // 标题不能为空
       if (!title.trim()) {
-        this.setData({ canPublish: false })
-        return
+        wx.showToast({
+          title: '请输入话题标题',
+          icon: 'none'
+        })
+        return false
       }
       
-      // 至少有一个有效的内容块
-      const hasValidContent = contentBlocks.some(block => {
+      // 所有内容模块都不能为空
+      const allBlocksValid = contentBlocks.every(block => {
         if (block.type === 'text') {
           return block.content.trim() !== ''
         } else if (block.type === 'image') {
           return block.content !== ''
         } else if (block.type === 'vote') {
-          // 投票块至少有两个有效选项
+          // 投票块需要标题和至少两个有效选项
+          if (!block.title.trim()) {
+            return false
+          }
           const validOptions = block.options.filter((option: any) => option.text.trim() !== '')
           return validOptions.length >= 2
         }
         return false
       })
       
-      this.setData({ canPublish: hasValidContent })
+      if (!allBlocksValid) {
+        wx.showToast({
+          title: '请填写完整所有内容模块',
+          icon: 'none'
+        })
+        return false
+      }
+      
+      return true
     },
 
     // 取消发布
@@ -308,7 +318,8 @@ Component({
 
     // 发布话题
     onPublish() {
-      if (!this.data.canPublish) return
+      // 点击时验证内容是否完整
+      if (!this.validatePublishContent()) return
       
       const { title, contentBlocks } = this.data
       
