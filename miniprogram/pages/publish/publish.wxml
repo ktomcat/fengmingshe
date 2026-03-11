@@ -158,7 +158,7 @@
       <!-- 操作按钮区域 -->
       <view class="action-buttons">
         <button class="cancel-btn" bindtap="onCancel">取消</button>
-        <button class="publish-btn {{canPublish ? 'active' : ''}}" bindtap="onPublish" disabled="{{!canPublish}}">
+        <button class="publish-btn active" bindtap="onPublish">
           发布
         </button>
       </view>

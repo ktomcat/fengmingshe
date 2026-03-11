@@ -23,7 +23,7 @@ Component({
       this.setData({
         title: title
       })
-      this.checkPublishStatus()
+      // 实时验证已移除，发布时统一验证
     },
 
     // 切换工具类型
@@ -72,13 +72,17 @@ Component({
       const newBlock = {
         type: 'vote',
         title: '', // 辩论问题
-        positive: { count: 0 }, // 正方票数
-        negative: { count: 0 }, // 反方票数
+        positive: { 
+          text: '正方：支持观点',
+          count: 0 
+        }, // 正方票数
+        negative: { 
+          text: '反方：反对观点', 
+          count: 0 
+        }, // 反方票数
         totalVotes: 0, // 总票数
-        positivePercent: 0, // 正方百分比
-        negativePercent: 0, // 反方百分比
         userVoted: false, // 用户是否已投票
-        userChoice: '', // 用户选择
+        userChoice: null, // 用户选择
         id: Date.now()
       }
       this.setData({
@@ -97,7 +101,7 @@ Component({
         return block
       })
       this.setData({ contentBlocks })
-      this.checkPublishStatus()
+      // 实时验证已移除，发布时统一验证
     },
 
     // 选择图片
@@ -116,7 +120,7 @@ Component({
             return block
           })
           this.setData({ contentBlocks })
-          this.checkPublishStatus()
+          // 实时验证已移除，发布时统一验证
         },
         fail: (err) => {
           console.error('选择图片失败:', err)
@@ -138,7 +142,7 @@ Component({
         return block
       })
       this.setData({ contentBlocks })
-      this.checkPublishStatus()
+      // 实时验证已移除，发布时统一验证
     },
 
     // 投票标题输入处理
@@ -154,7 +158,7 @@ Component({
       })
       
       this.setData({ contentBlocks })
-      this.checkPublishStatus()
+      // 实时验证已移除，发布时统一验证
     },
 
     // 添加投票选项
@@ -195,7 +199,7 @@ Component({
       })
       
       this.setData({ contentBlocks })
-      this.checkPublishStatus()
+      // 实时验证已移除，发布时统一验证
     },
 
     // 切换投票类型
@@ -256,7 +260,7 @@ Component({
               })
             }
             this.setData({ contentBlocks })
-            this.checkPublishStatus()
+            // 实时验证已移除，发布时统一验证
           }
         }
       })
@@ -282,12 +286,8 @@ Component({
         } else if (block.type === 'image') {
           return block.content !== ''
         } else if (block.type === 'vote') {
-          // 投票块需要标题和至少两个有效选项
-          if (!block.title.trim()) {
-            return false
-          }
-          const validOptions = block.options.filter((option: any) => option.text.trim() !== '')
-          return validOptions.length >= 2
+          // 辩论投票块只需要标题不为空即可
+          return block.title.trim() !== ''
         }
         return false
       })
@@ -341,9 +341,20 @@ Component({
           } else if (block.type === 'vote') {
             return {
               type: 'vote',
-              options: block.options.filter((option: any) => option.text.trim() !== ''),
-              isSingleChoice: block.isSingleChoice,
-              totalVotes: 0
+              content: {
+                title: block.title.trim(),
+                positive: {
+                  text: block.positive.text || '正方：支持观点',
+                  count: block.positive.count || 0
+                },
+                negative: {
+                  text: block.negative.text || '反方：反对观点',
+                  count: block.negative.count || 0
+                },
+                totalVotes: block.totalVotes || 0,
+                userVoted: false,
+                userChoice: null
+              }
             }
           }
           return null

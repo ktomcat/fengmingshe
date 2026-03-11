@@ -75,10 +75,10 @@ Component({
         return
       }
       
-      // 更新当前选中状态
-      this.setData({
-        current: index
-      })
+      // // 更新当前选中状态
+      // this.setData({
+      //   current: index
+      // })
       
       // 根据页面类型进行跳转
       switch(navItem.page) {
