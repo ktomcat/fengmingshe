@@ -65,9 +65,9 @@
                 
                 <view class="vote-progress-bar">
                   <view class="progress-track">
-                    <view class="progress-fill positive" style="width: {{contentItem.content.totalVotes > 0 ? (contentItem.content.positive.count / contentItem.content.totalVotes) * 100 : 0}}%;"></view>
-                    <view class="progress-fill negative" style="width: {{contentItem.content.totalVotes > 0 ? (contentItem.content.negative.count / contentItem.content.totalVotes) * 100 : 0}}%;"></view>
-                    <view class="progress-divider" style="left: {{contentItem.content.totalVotes > 0 ? (contentItem.content.positive.count / contentItem.content.totalVotes) * 100 : 0}}%;"></view>
+                    <view class="progress-fill positive" style="width: {{contentItem.content.positivePercent || 0}}%"></view>
+                    <view class="progress-fill negative" style="width: {{contentItem.content.negativePercent || 0}}%"></view>
+                    <view class="progress-divider" style="left: {{contentItem.content.positivePercent || 0}}%"></view>
                   </view>
                 </view>
                 
@@ -95,15 +95,11 @@
       
       <!-- 统计信息 -->
       <view class="topic-stats">
-        <view class="stat-item">
+        <view class="stat-item" bindtap="onLikeTopic">
           <text class="stat-icon">❤️</text>
           <text class="stat-count">{{topic.likeCount}}</text>
         </view>
-        <view class="stat-item">
-          <text class="stat-icon">💬</text>
-          <text class="stat-count">{{topic.commentCount}}</text>
-        </view>
-        <view class="stat-item">
+        <view class="stat-item" bindtap="onShareTopic">
           <text class="stat-icon">↗️</text>
           <text class="stat-count">分享</text>
         </view>

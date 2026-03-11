@@ -136,31 +136,37 @@ page {
 .image-block {
   background: #f0f9ff;
   border-color: #bae6fd;
+  padding: 0; /* 移除内边距，让图片铺满 */
 }
 
 .image-uploader {
   text-align: center;
+  position: relative;
 }
 
 .image-preview {
   position: relative;
-  display: inline-block;
+  width: 100%;
+  min-height: 400rpx;
+  background-color: #f3f4f6;
+  border-radius: 16rpx 16rpx 0 0;
+  overflow: hidden;
 }
 
 .preview-image {
-  width: 240rpx;
-  height: 240rpx;
-  border-radius: 16rpx;
+  width: 100%;
+  height: 400rpx;
   object-fit: cover;
+  border-radius: 0;
 }
 
 .remove-image {
   position: absolute;
-  top: -12rpx;
-  right: -12rpx;
+  top: 16rpx;
+  right: 16rpx;
   width: 48rpx;
   height: 48rpx;
-  background: #ef4444;
+  background: rgba(239, 68, 68, 0.9);
   color: white;
   border-radius: 50%;
   display: flex;
@@ -169,7 +175,8 @@ page {
   font-size: 24rpx;
   font-weight: bold;
   cursor: pointer;
-  box-shadow: 0 4rpx 8rpx rgba(239, 68, 68, 0.3);
+  box-shadow: 0 4rpx 8rpx rgba(0, 0, 0, 0.3);
+  z-index: 10;
 }
 
 .upload-btn {

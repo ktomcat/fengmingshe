@@ -151,6 +151,35 @@ Component({
       })
     },
 
+    // 话题内容操作相关方法
+    onLikeTopic() {
+      console.log('【话题页】点击点赞话题按钮')
+      const { topic } = this.data
+      if (!topic) return
+      
+      // 更新点赞状态
+      const updatedTopic = { ...topic }
+      updatedTopic.likeCount = updatedTopic.likeCount + 1
+      
+      this.setData({
+        topic: updatedTopic
+      })
+      
+      wx.showToast({
+        title: '点赞成功',
+        icon: 'success'
+      })
+    },
+
+
+    onShareTopic() {
+      console.log('【话题页】点击分享话题按钮')
+      wx.showToast({
+        title: '分享成功',
+        icon: 'success'
+      })
+    },
+
     // 投票相关方法
     onVotePositive(e: any) {
       console.log('【话题页】点击正方投票按钮', e)
