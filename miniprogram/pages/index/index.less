@@ -466,6 +466,82 @@ page {
   background-color: #f3f4f6;
 }
 
+/* 辩题标注样式 */
+.vote-badge {
+  margin-bottom: 16rpx;
+}
+
+.vote-badge-content {
+  display: flex;
+  align-items: center;
+  color: white;
+  padding: 12rpx 24rpx;
+  border-radius: 20rpx;
+  font-size: 24rpx;
+  font-weight: bold;
+  box-shadow: 0 4rpx 12rpx rgba(255, 107, 107, 0.3);
+  animation: pulse 2s infinite;
+}
+
+/* 根据参与人数设置不同颜色 - 红色系列 */
+.vote-badge-content.low-participation {
+  background: linear-gradient(135deg, #f44343, #ef4444);
+  box-shadow: 0 4rpx 12rpx rgba(244, 67, 67, 0.3);
+}
+
+.vote-badge-content.medium-participation {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  box-shadow: 0 4rpx 12rpx rgba(239, 68, 68, 0.3);
+}
+
+.vote-badge-content.high-participation {
+  background: linear-gradient(135deg, #dc2626, #b91c1c);
+  box-shadow: 0 4rpx 12rpx rgba(220, 38, 38, 0.3);
+}
+
+.vote-badge-content.very-high-participation {
+  background: linear-gradient(135deg, #b91c1c, #991b1b);
+  box-shadow: 0 4rpx 12rpx rgba(185, 28, 28, 0.5);
+}
+
+.vote-icon {
+  margin-right: 8rpx;
+  font-size: 28rpx;
+  flex-shrink: 0;
+}
+
+.vote-text {
+  margin-right: 12rpx;
+  font-weight: 600;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 400rpx;
+}
+
+.vote-count {
+  font-size: 22rpx;
+  opacity: 0.9;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 4rpx 12rpx rgba(255, 107, 107, 0.3);
+  }
+  50% {
+    transform: scale(1.02);
+    box-shadow: 0 6rpx 16rpx rgba(255, 107, 107, 0.5);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 4rpx 12rpx rgba(255, 107, 107, 0.3);
+  }
+}
+
 /* 图片展示样式 - 横向滚动布局 */
 .post-images-container {
   margin-bottom: 24rpx;

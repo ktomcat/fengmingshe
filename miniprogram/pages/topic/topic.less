@@ -253,20 +253,25 @@ page {
   background-color: #f3f4f6;
   border-radius: 8rpx;
   overflow: hidden;
-  display: flex;
 }
 
 .progress-fill {
+  position: absolute;
+  top: 0;
   height: 100%;
   transition: all 0.5s ease;
 }
 
 .progress-fill.positive {
+  left: 0;
   background-color: #f44343;
+  z-index: 1;
 }
 
 .progress-fill.negative {
+  right: 0;
   background-color: #374151;
+  z-index: 1;
 }
 
 .progress-divider {
@@ -275,7 +280,7 @@ page {
   width: 2rpx;
   height: 100%;
   background-color: #ffffff;
-  z-index: 10;
+  z-index: 2;
 }
 
 .vote-actions {

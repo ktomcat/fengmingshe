@@ -7,7 +7,12 @@ Component({
       // 组件挂载时先加载默认数据，ready中会根据参数更新
       const app = getApp<IAppOption>()
       const globalData = app.globalData
-      const targetTopic = globalData.featuredTopic || globalData.topics?.[0] || null
+      let targetTopic = globalData.featuredTopic || globalData.topics?.[0] || null
+      
+      // 计算投票百分比
+      if (targetTopic && targetTopic.content) {
+        targetTopic = this.calculateVotePercentages(targetTopic)
+      }
       
       this.setData({
         topic: targetTopic,
@@ -29,28 +34,33 @@ Component({
       
       console.log('【话题页】解析后的参数:', { topicId, focusInput, scrollToComments })
       
-      // 根据topicId加载对应的话题数据
-      const app = getApp<IAppOption>()
-      const globalData = app.globalData
-      let targetTopic = null
-      
-      if (topicId) {
-        // 根据topicId查找对应的话题，优先查找featuredTopic，然后是topics
-        targetTopic = globalData.featuredTopic?.id === topicId ? globalData.featuredTopic : 
-                     globalData.topics?.find(topic => topic.id === topicId) || 
-                     globalData.topics?.[0]
-      } else {
-        // 如果没有topicId参数，优先使用featuredTopic，然后使用第一个话题
-        targetTopic = globalData.featuredTopic || globalData.topics?.[0] || null
-      }
-      
-      // 更新数据
-      this.setData({
-        topic: targetTopic,
-        comments: this.sortComments(this.getCommentsForTopic(targetTopic)),
-        shouldFocusInput: focusInput,
-        scrollToComments: scrollToComments
-      })
+    // 根据topicId加载对应的话题数据
+    const app = getApp<IAppOption>()
+    const globalData = app.globalData
+    let targetTopic = null
+    
+    if (topicId) {
+      // 根据topicId查找对应的话题，优先查找featuredTopic，然后是topics
+      targetTopic = globalData.featuredTopic?.id === topicId ? globalData.featuredTopic : 
+                   globalData.topics?.find(topic => topic.id === topicId) || 
+                   globalData.topics?.[0]
+    } else {
+      // 如果没有topicId参数，优先使用featuredTopic，然后使用第一个话题
+      targetTopic = globalData.featuredTopic || globalData.topics?.[0] || null
+    }
+    
+    // 计算投票百分比
+    if (targetTopic && targetTopic.content) {
+      targetTopic = this.calculateVotePercentages(targetTopic)
+    }
+    
+    // 更新数据
+    this.setData({
+      topic: targetTopic,
+      comments: this.sortComments(this.getCommentsForTopic(targetTopic)),
+      shouldFocusInput: focusInput,
+      scrollToComments: scrollToComments
+    })
       
       console.log('【话题页】页面ready，检查是否需要滚动到评论列表:', this.data.scrollToComments)
       
@@ -206,7 +216,7 @@ Component({
 
       // 更新投票数据
       const updatedTopic = { ...topic }
-      const vote = updatedTopic.content[contentIndex].content
+      const vote = { ...updatedTopic.content[contentIndex].content }
       
       // 增加对应选项的票数
       vote[choice].count += 1
@@ -215,6 +225,12 @@ Component({
       // 标记用户已投票
       vote.userVoted = true
       vote.userChoice = choice
+      
+      // 重新计算百分比
+      const updatedVote = this.calculateVotePercentagesForItem(vote)
+      
+      // 更新数据
+      updatedTopic.content[contentIndex].content = updatedVote
 
       this.setData({
         topic: updatedTopic
@@ -374,6 +390,43 @@ Component({
           }, 400)
         }
       })
+    },
+
+    // 计算投票百分比
+    calculateVotePercentages(topic: any) {
+      if (!topic || !topic.content) return topic
+      
+      const updatedTopic = { ...topic }
+      updatedTopic.content = updatedTopic.content.map((item: any) => {
+        if (item.type === 'vote' && item.content) {
+          return {
+            ...item,
+            content: this.calculateVotePercentagesForItem(item.content)
+          }
+        }
+        return item
+      })
+      
+      return updatedTopic
+    },
+    
+    // 计算单个投票项的百分比
+    calculateVotePercentagesForItem(vote: any) {
+      if (!vote) return vote
+      
+      const updatedVote = { ...vote }
+      const totalVotes = updatedVote.totalVotes || 0
+      
+      if (totalVotes > 0) {
+        updatedVote.positivePercent = Math.round((updatedVote.positive.count / totalVotes) * 100)
+        updatedVote.negativePercent = Math.round((updatedVote.negative.count / totalVotes) * 100)
+      } else {
+        // 当票数为0时，显示为50%对50%的平局状态
+        updatedVote.positivePercent = 50
+        updatedVote.negativePercent = 50
+      }
+      
+      return updatedVote
     },
 
     // 滚动到评论列表

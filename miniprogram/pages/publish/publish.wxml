@@ -148,7 +148,7 @@
             <text>图片</text>
           </text>
           <text class="add-block-btn" bindtap="addVoteBlock">
-            <text class="btn-emoji">📊</text>
+            <text class="btn-emoji">⚖️</text>
             <text>辩题</text>
           </text>
         </view>

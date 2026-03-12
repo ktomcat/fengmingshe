@@ -16,15 +16,19 @@ Component({
         featuredTopic.displayContent = firstTextContent
       }
       
-      // 处理讨论列表，为每个话题提取第一个文本内容和图片数量
+      // 处理讨论列表，为每个话题提取第一个文本内容、图片数量和辩题信息
       const discussions = globalData.topics?globalData.topics.map(topic => {
         if (topic && topic.content) {
           const firstTextContent = this.getFirstTextContent(topic.content)
           const imageCount = this.getImageCount(topic.content)
+          const hasVote = this.hasVoteContent(topic.content)
+          const voteInfo = hasVote ? this.getVoteInfo(topic.content) : null
           return {
             ...topic,
             displayContent: firstTextContent,
-            imageCount: imageCount
+            imageCount: imageCount,
+            hasVote: hasVote,
+            voteInfo: voteInfo
           }
         }
         return topic
@@ -273,6 +277,46 @@ Component({
       // 统计type为'image'的内容数量
       const imageItems = contentArray.filter(item => item.type === 'image')
       return imageItems.length
+    },
+
+    // 判断是否包含辩题内容
+    hasVoteContent(contentArray: any[]): boolean {
+      if (!contentArray || !Array.isArray(contentArray)) {
+        return false
+      }
+      
+      // 检查是否存在type为'vote'的内容
+      return contentArray.some(item => item.type === 'vote')
+    },
+
+    // 获取辩题信息
+    getVoteInfo(contentArray: any[]): any {
+      if (!contentArray || !Array.isArray(contentArray)) {
+        return null
+      }
+      
+      // 找到第一个type为'vote'的内容
+      const voteItem = contentArray.find(item => item.type === 'vote')
+      if (!voteItem || !voteItem.content) {
+        return null
+      }
+      
+      // 根据参与人数计算参与度等级
+      const totalVotes = voteItem.content.totalVotes || 0
+      let participationLevel = 'low-participation'
+      
+      if (totalVotes >= 1000) {
+        participationLevel = 'very-high-participation'
+      } else if (totalVotes >= 500) {
+        participationLevel = 'high-participation'
+      } else if (totalVotes >= 100) {
+        participationLevel = 'medium-participation'
+      }
+      
+      return {
+        ...voteItem.content,
+        participationLevel: participationLevel
+      }
     },
 
     // 分享帖子（帖子列表中的分享按钮）

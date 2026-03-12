@@ -88,6 +88,15 @@
         </view>
       </view>
       
+      <!-- 辩题特别标注 -->
+      <view class="vote-badge" wx:if="{{item.hasVote}}">
+        <view class="vote-badge-content {{item.voteInfo.participationLevel}}">
+          <text class="vote-icon">⚖️</text>
+          <text class="vote-text">{{item.voteInfo.title}}</text>
+          <text class="vote-count">{{item.voteInfo.totalVotes}}人参与</text>
+        </view>
+      </view>
+
       <!-- 操作按钮区域（独立事件处理，阻止冒泡） -->
       <view class="post-actions">
         <view class="action-buttons">
