@@ -16,13 +16,15 @@ Component({
         featuredTopic.displayContent = firstTextContent
       }
       
-      // 处理讨论列表，为每个话题提取第一个文本内容
+      // 处理讨论列表，为每个话题提取第一个文本内容和图片数量
       const discussions = globalData.topics?globalData.topics.map(topic => {
         if (topic && topic.content) {
           const firstTextContent = this.getFirstTextContent(topic.content)
+          const imageCount = this.getImageCount(topic.content)
           return {
             ...topic,
-            displayContent: firstTextContent
+            displayContent: firstTextContent,
+            imageCount: imageCount
           }
         }
         return topic
@@ -260,6 +262,17 @@ Component({
       // 找到第一个type为'text'的内容
       const textItem = contentArray.find(item => item.type === 'text')
       return textItem ? textItem.content : ''
+    },
+
+    // 获取图片数量
+    getImageCount(contentArray: any[]): number {
+      if (!contentArray || !Array.isArray(contentArray)) {
+        return 0
+      }
+      
+      // 统计type为'image'的内容数量
+      const imageItems = contentArray.filter(item => item.type === 'image')
+      return imageItems.length
     },
 
     // 分享帖子（帖子列表中的分享按钮）

@@ -42,11 +42,10 @@
               value="{{item.content}}"
               bindinput="onTextInput"
               data-index="{{index}}"
-              maxlength="500"
+              maxlength="-1"
             />
             
             <view class="block-actions">
-              <text class="text-count">{{item.content.length}}/500</text>
               <text class="action-btn" bindtap="moveBlockUp" data-index="{{index}}">⬆️</text>
               <text class="action-btn" bindtap="moveBlockDown" data-index="{{index}}">⬇️</text>
               <text class="action-btn delete" bindtap="deleteBlock" data-index="{{index}}">🗑️</text>

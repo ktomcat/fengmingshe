@@ -73,18 +73,16 @@
         <text class="post-title">{{item.title}}</text>
         
         <!-- 显示第一个文本内容 -->
-        <text class="post-content" wx:if="{{item.displayContent}}">
-          {{item.displayContent}}
-        </text>
+        <text class="post-content" wx:if="{{item.displayContent}}">{{item.displayContent}}</text>
         
         <!-- 图片展示 - 横向滚动布局 -->
-        <view class="post-images-container" wx:if="{{item.content && item.content.length > 0}}">
+        <view class="post-images-container" wx:if="{{item.imageCount > 0}}">
           <scroll-view class="post-images-scroll" scroll-x="true" enhanced="true" show-scrollbar="false">
             <view class="post-images-list">
               <image class="post-image" wx:for="{{item.content}}" wx:for-item="contentItem" wx:key="index" wx:if="{{contentItem.type === 'image'}}" src="{{contentItem.content}}" mode="aspectFill" />
             </view>
           </scroll-view>
-          <view class="scroll-indicator" wx:if="{{getImageCount(item.content) > 3}}">
+          <view class="scroll-indicator" wx:if="{{item.imageCount > 3}}">
             <text class="indicator-text">滑动查看更多</text>
           </view>
         </view>

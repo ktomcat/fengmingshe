@@ -40,9 +40,7 @@
         <text class="post-title">{{item.title}}</text>
         
         <!-- 显示第一个文本内容 -->
-        <text class="post-content" wx:if="{{item.displayContent}}">
-          {{item.displayContent}}
-        </text>
+        <text class="post-content" wx:if="{{item.displayContent}}">{{item.displayContent}}</text>
         
         <!-- 图片展示 - 横向滚动布局 -->
         <view class="post-images-container" wx:if="{{item.content && item.content.length > 0}}">
