@@ -55,11 +55,11 @@
                 <view class="vote-stats">
                   <view class="stats-left">
                     <text class="stats-label">支持 (正方)</text>
-                    <text class="stats-value">{{contentItem.content.positive.count}}票</text>
+                    <text class="stats-value">{{contentItem.content.positive.count}}</text>
                   </view>
                   <view class="stats-right">
                     <text class="stats-label">反对 (反方)</text>
-                    <text class="stats-value">{{contentItem.content.negative.count}}票</text>
+                    <text class="stats-value">{{contentItem.content.negative.count}}</text>
                   </view>
                 </view>
                 

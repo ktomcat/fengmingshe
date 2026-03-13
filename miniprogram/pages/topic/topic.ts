@@ -318,49 +318,23 @@ Component({
 
     // 生成评论数据
     getCommentsForTopic(topic: any) {
-      if (!topic) return []
+      if (!topic || !topic.comments) return []
       
-      return [
-        {
-          id: 'comment_001',
-          content: '这个话题很有意思，我也经常关注天气变化！',
-          author: {
-            id: 'user_005',
-            nickname: '旅行达人',
-            avatar: 'https://thirdwx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTJyVv5qYJw4KqgK0H5UcX9T6P7R8S9T0V1W2X3Y4Z5A6B7C8D9E0F.png'
-          },
-          createTime: '2025-03-06 10:30:00',
-          likeCount: 8,
-          replyCount: 2,
-          isFeatured: true
+      // 转换评论数据格式，适配前端显示
+      return topic.comments.map((comment: any) => ({
+        id: comment.id,
+        content: comment.content,
+        author: {
+          id: comment.user.id,
+          nickname: comment.user.nickname,
+          avatar: comment.user.avatar
         },
-        {
-          id: 'comment_002',
-          content: '今天确实很适合出去走走，推荐去公园散步！',
-          author: {
-            id: 'user_006',
-            nickname: '户外爱好者',
-            avatar: 'https://thirdwx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTJyVv5qYJw4KqgK0H5UcX9T6P7R8S9T0V1W2X3Y4Z5A6B7C8D9E0F.png'
-          },
-          createTime: '2025-03-06 11:15:00',
-          likeCount: 5,
-          replyCount: 1,
-          isFeatured: false
-        },
-        {
-          id: 'comment_003',
-          content: '三体确实是一部很棒的科幻小说，推荐大家看看！',
-          author: {
-            id: 'user_007',
-            nickname: '科幻迷',
-            avatar: 'https://thirdwx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTJyVv5qYJw4KqgK0H5UcX9T6P7R8S9T0V1W2X3Y4Z5A6B7C8D9E0F.png'
-          },
-          createTime: '2025-03-05 16:45:00',
-          likeCount: 12,
-          replyCount: 3,
-          isFeatured: true
-        }
-      ]
+        createTime: comment.time,
+        likeCount: comment.likeCount,
+        replyCount: comment.replies ? comment.replies.length : 0,
+        replies: comment.replies || [],
+        isFeatured: comment.likeCount > 10 // 点赞数超过10的设为精选评论
+      }))
     },
 
     // 聚焦评论输入框
