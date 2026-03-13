@@ -9,6 +9,11 @@ Component({
       const globalData = app.globalData
       let targetTopic = globalData.featuredTopic || globalData.topics?.[0] || null
       
+      // 确保userLiked字段正确初始化
+      if (targetTopic && targetTopic.userLiked === undefined) {
+        targetTopic.userLiked = false
+      }
+      
       // 计算投票百分比
       if (targetTopic && targetTopic.content) {
         targetTopic = this.calculateVotePercentages(targetTopic)
@@ -47,6 +52,11 @@ Component({
     } else {
       // 如果没有topicId参数，优先使用featuredTopic，然后使用第一个话题
       targetTopic = globalData.featuredTopic || globalData.topics?.[0] || null
+    }
+    
+    // 确保userLiked字段正确初始化
+    if (targetTopic && targetTopic.userLiked === undefined) {
+      targetTopic.userLiked = false
     }
     
     // 计算投票百分比
@@ -161,26 +171,33 @@ Component({
       })
     },
 
-    // 话题内容操作相关方法
-    onLikeTopic() {
-      console.log('【话题页】点击点赞话题按钮')
+    // 点赞话题
+    onLikeTopic(e: any) {
+      console.log('【话题页】点击点赞话题')
+      
+      // 更新话题点赞状态
       const { topic } = this.data
-      if (!topic) return
-      
-      // 更新点赞状态
-      const updatedTopic = { ...topic }
-      updatedTopic.likeCount = updatedTopic.likeCount + 1
-      
-      this.setData({
-        topic: updatedTopic
-      })
-      
-      wx.showToast({
-        title: '点赞成功',
-        icon: 'success'
-      })
+      if (topic) {
+        const isLiked = !topic.userLiked
+        const likeCountChange = isLiked ? 1 : -1
+        
+        // 更新数据
+        this.setData({
+          topic: {
+            ...topic,
+            userLiked: isLiked,
+            likeCount: Math.max(0, (topic.likeCount || 0) + likeCountChange)
+          }
+        })
+        
+        // 显示反馈
+        wx.showToast({
+          title: isLiked ? '点赞成功' : '取消点赞',
+          icon: 'success',
+          duration: 1000
+        })
+      }
     },
-
 
     onShareTopic() {
       console.log('【话题页】点击分享话题按钮')
@@ -242,19 +259,52 @@ Component({
       })
     },
 
-    // 评论相关方法
+    // 点赞评论
     onLikeComment(e: any) {
-      console.log('【话题页】点击点赞评论，事件详情:', e)
+      const comment = e.currentTarget.dataset.comment
+      const index = e.currentTarget.dataset.index
+      console.log('【话题页】点击点赞评论，评论ID:', comment?.id, '索引:', index)
+      
+      // 更新点赞状态
+      const { comments } = this.data
+      if (comments && comments[index]) {
+        const currentComment = comments[index]
+        const isLiked = !currentComment.userLiked
+        const likeCountChange = isLiked ? 1 : -1
+        
+        // 更新数据
+        comments[index] = {
+          ...currentComment,
+          userLiked: isLiked,
+          likeCount: Math.max(0, (currentComment.likeCount || 0) + likeCountChange)
+        }
+        
+        this.setData({
+          comments: comments
+        })
+        
+        // 显示反馈
+        wx.showToast({
+          title: isLiked ? '点赞成功' : '取消点赞',
+          icon: 'success',
+          duration: 1000
+        })
+      }
+    },
+
+    onCommentTopic() {
+      console.log('【话题页】点击评论话题按钮')
       wx.showToast({
-        title: '点赞成功',
+        title: '评论成功',
         icon: 'success'
       })
     },
 
-    onComment(e: any) {
-      console.log('【话题页】点击评论按钮，事件详情:', e)
+    onReplyComment(e: any) {
+      const comment = e.currentTarget.dataset.comment
+      console.log('【话题页】点击回复评论按钮，评论ID:', comment?.id)
       wx.showToast({
-        title: '评论成功',
+        title: '回复评论',
         icon: 'success'
       })
     },

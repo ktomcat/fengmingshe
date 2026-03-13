@@ -20,7 +20,7 @@ Component({
     // 自定义颜色
     color: {
       type: String,
-      value: '#f44343'
+      value: '#D7423D'
     }
   },
 

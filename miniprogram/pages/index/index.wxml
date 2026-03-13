@@ -5,7 +5,7 @@
     <navigation-bar 
       title="蜂鸣社" 
       background="#ffffff" 
-      color="#f44343" 
+      color="#D7423D" 
       back="{{false}}"
       home-button="{{false}}"
       left-logo="{{true}}"
@@ -100,16 +100,16 @@
       <!-- 操作按钮区域（独立事件处理，阻止冒泡） -->
       <view class="post-actions">
         <view class="action-buttons">
-          <view class="action-btn style-unactive" bindtap="onLikePost" data-topic-id="{{item.id}}">
-            <text class="icon">❤️</text>
+          <view class="action-btn {{item.userLiked ? 'style-active' : 'style-unactive'}}" bindtap="onLikePost" data-topic-id="{{item.id}}" data-index="{{index}}">
+            <image class="icon" src="/static/icons/heart.png" />
             <text class="action-count">{{item.likeCount}}</text>
           </view>
-          <view class="action-btn" bindtap="onCommentPost" data-topic-id="{{item.id}}">
-            <text class="icon">💬</text>
+          <view class="action-btn style-unactive" bindtap="onCommentPost" data-topic-id="{{item.id}}">
+            <image class="icon" src="/static/icons/msg.png" />
             <text class="action-count">{{item.commentCount}}</text>
           </view>
-          <view class="action-btn" bindtap="onSharePostInList" data-topic="{{item}}">
-            <text class="icon">↗️</text>
+          <view class="action-btn style-unactive" bindtap="onSharePostInList" data-topic="{{item}}">
+            <image class="icon" src="/static/icons/share.png" />
             <text class="action-count">分享</text>
           </view>
         </view>

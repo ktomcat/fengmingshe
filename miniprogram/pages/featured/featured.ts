@@ -181,14 +181,34 @@ Component({
         e.stopPropagation()
       }
       const topicId = e.currentTarget.dataset.topicId
-      console.log('【首页】点击点赞帖子，话题ID:', topicId)
+      const index = e.currentTarget.dataset.index
+      console.log('【首页】点击点赞帖子，话题ID:', topicId, '索引:', index)
       
-      // 模拟点赞操作
-      wx.showToast({
-        title: '点赞成功',
-        icon: 'success',
-        duration: 1000
-      })
+      // 更新点赞状态
+      const { discussions } = this.data
+      if (discussions && discussions[index]) {
+        const currentItem = discussions[index]
+        const isLiked = !currentItem.userLiked
+        const likeCountChange = isLiked ? 1 : -1
+        
+        // 更新数据
+        discussions[index] = {
+          ...currentItem,
+          userLiked: isLiked,
+          likeCount: Math.max(0, (currentItem.likeCount || 0) + likeCountChange)
+        }
+        
+        this.setData({
+          discussions: discussions
+        })
+        
+        // 显示反馈
+        wx.showToast({
+          title: isLiked ? '点赞成功' : '取消点赞',
+          icon: 'success',
+          duration: 1000
+        })
+      }
     },
 
     // 评论帖子 - 跳转到话题详情页并滚动到评论列表
