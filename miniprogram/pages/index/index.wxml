@@ -91,7 +91,7 @@
       <!-- 辩题特别标注 -->
       <view class="vote-badge" wx:if="{{item.hasVote}}">
         <view class="vote-badge-content {{item.voteInfo.participationLevel}}">
-          <text class="vote-icon">⚖️</text>
+          <text class="vote-icon">VS:</text>
           <text class="vote-text">{{item.voteInfo.title}}</text>
           <text class="vote-count">{{item.voteInfo.totalVotes}}人参与</text>
         </view>

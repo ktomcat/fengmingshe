@@ -3,7 +3,7 @@
   <!-- 固定导航栏 -->
   <view class="fixed-navbar">
     <navigation-bar 
-      title="精选" 
+      title="蜂鸣社" 
       background="#ffffff" 
       color="#D7423D" 
       back="{{false}}"
@@ -49,9 +49,18 @@
               <image class="post-image" wx:for="{{item.content}}" wx:for-item="contentItem" wx:key="index" wx:if="{{contentItem.type === 'image'}}" src="{{contentItem.content}}" mode="aspectFill" />
             </view>
           </scroll-view>
-          <view class="scroll-indicator" wx:if="{{getImageCount(item.content) > 3}}">
+          <view class="scroll-indicator" wx:if="{{item.imageCount > 3}}">
             <text class="indicator-text">滑动查看更多</text>
           </view>
+        </view>
+      </view>
+      
+      <!-- 辩题特别标注 -->
+      <view class="vote-badge" wx:if="{{item.hasVote}}">
+        <view class="vote-badge-content {{item.voteInfo.participationLevel}}">
+          <text class="vote-icon">VS:</text>
+          <text class="vote-text">{{item.voteInfo.title}}</text>
+          <text class="vote-count">{{item.voteInfo.totalVotes}}人参与</text>
         </view>
       </view>
       
