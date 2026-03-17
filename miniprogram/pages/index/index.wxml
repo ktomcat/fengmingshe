@@ -32,7 +32,7 @@
   <!-- 特色话题卡片 -->
   <view class="featured-card" wx:if="{{featuredTopic}}">
     <view class="card-image">
-      <image class="bg-image" src="{{featuredTopic.images && featuredTopic.images[0] ? featuredTopic.images[0] : 'https://example.com/default.jpg'}}" mode="aspectFill" />
+      <image class="bg-image" src="{{featuredTopic.image ? featuredTopic.image : 'https://example.com/default.jpg'}}" mode="aspectFill" />
       <view class="image-overlay"></view>
     </view>
     <view class="card-content">

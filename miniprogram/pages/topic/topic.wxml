@@ -140,25 +140,110 @@
           </view>
         </view>
         
-        <text class="comment-content">{{item.content}}</text>
+        <!-- 评论内容 - 点击可回复 -->
+        <text class="comment-content" bindtap="showReplyInput" data-comment="{{item}}" data-index="{{index}}">{{item.content}}</text>
         
         <view class="comment-actions">
           <view class="action-btn {{item.userLiked ? 'style-active' : 'style-unactive'}}" bindtap="onLikeComment" data-comment="{{item}}" data-index="{{index}}">
             <image class="icon" src="/static/icons/heart.png" />
             <text class="action-count">{{item.likeCount}}</text>
           </view>
-          <view class="action-btn style-unactive" bindtap="onReplyComment" data-comment="{{item}}">
+          <view class="action-btn style-unactive" bindtap="showReplyInput" data-comment="{{item}}" data-index="{{index}}">
             <image class="icon" src="/static/icons/msg.png" />
             <text class="action-count">{{item.replyCount}}</text>
           </view>
+          <view class="action-btn style-unactive" bindtap="showReplyInput" data-comment="{{item}}" data-index="{{index}}">
+            <text class="action-text">回复</text>
+          </view>
         </view>
+        
+        <!-- 回复列表 -->
+        <view class="replies-section" wx:if="{{item.replies && item.replies.length > 0}}">
+          <!-- 按钮1：展开X条评论 ↓ (在子评论列表上方，折叠时显示，展开时消失) -->
+          <view class="replies-toggle-top" wx:if="{{!expandedMap[item.id]}}" bindtap="toggleReplies" data-comment-id="{{item.id}}">
+            <text class="toggle-text">展开{{item.replyCount}}条评论 ↓</text>
+          </view>
+          
+          <!-- 子评论列表 (展开时显示) -->
+          <view class="replies-list" wx:if="{{expandedMap[item.id]}}">
+            <view class="reply-item" wx:for="{{item.replies}}" wx:for-item="replyItem" wx:for-index="replyIndex" wx:key="id" wx:if="{{replyItem.isNew || replyIndex < (repliesPagination[item.id] ? repliesPagination[item.id].currentPage * 6 : 6)}}">
+              <view class="reply-header">
+                <image class="reply-avatar" src="{{replyItem.author.avatar}}" />
+                <view class="reply-user-info">
+                  <text class="reply-username">{{replyItem.author.nickname}}</text>
+                  <text class="reply-arrow">→</text>
+                  <text class="reply-reply-to">{{replyItem.replyTo ? replyItem.replyTo.nickname : '用户'}}</text>
+                </view>
+              </view>
+              <text class="reply-content" bindtap="showReplyInput" data-comment="{{item}}" data-index="{{index}}" data-reply="{{replyItem}}">{{replyItem.content}}</text>
+              <view class="reply-footer">
+                <text class="reply-time">{{replyItem.createTime}}</text>
+                <view class="reply-actions">
+                  <view class="reply-action-btn {{replyItem.userLiked ? 'style-active' : 'style-unactive'}}" bindtap="onLikeReply" data-comment="{{item}}" data-index="{{index}}" data-reply="{{replyItem}}">
+                    <image class="reply-icon" src="/static/icons/heart.png" />
+                    <text class="reply-action-count">{{replyItem.likeCount}}</text>
+                  </view>
+                  <view class="reply-action-btn" bindtap="showReplyInput" data-comment="{{item}}" data-index="{{index}}" data-reply="{{replyItem}}">
+                    <text class="reply-action-text">回复</text>
+                  </view>
+                </view>
+              </view>
+            </view>
+            
+            <!-- 按钮2和3：在子评论列表下方，展开时显示 -->
+            <view class="replies-toggle-bottom" wx:if="{{expandedMap[item.id]}}">
+              <!-- 按钮2：展开更多 ↓ (当还有更多子评论时显示) -->
+              <view class="toggle-btn" wx:if="{{(repliesPagination[item.id] ? (repliesPagination[item.id].currentPage * 6) < item.replies.length : 6 < item.replies.length)}}" bindtap="loadMoreReplies" data-comment-id="{{item.id}}">
+                <text class="toggle-text">展开更多 ↓</text>
+              </view>
+              
+              <!-- 按钮3：收起 ↑ (始终显示) -->
+              <view class="toggle-btn" bindtap="toggleReplies" data-comment-id="{{item.id}}">
+                <text class="toggle-text">收起 ↑</text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+      
+      <!-- 分页加载更多 -->
+      <view class="load-more-section" wx:if="{{pagination.hasMore}}">
+        <view class="load-more-btn" bindtap="loadMoreComments">
+          <text class="load-more-text">加载更多评论</text>
+        </view>
+      </view>
+      
+      <view class="no-more-section" wx:if="{{!pagination.hasMore && comments.length > 0}}">
+        <text class="no-more-text">没有更多评论了</text>
+      </view>
+    </view>
+
+    <!-- 回复输入框 -->
+    <view class="reply-input-section" wx:if="{{replyInput.visible}}">
+      <view class="reply-input-header">
+        <text class="reply-title">回复</text>
+        <view class="reply-cancel" bindtap="cancelReply">
+          <text class="cancel-text">取消</text>
+        </view>
+      </view>
+      <view class="input-container">
+        <input class="reply-input" 
+               placeholder="{{replyInput.placeholder}}" 
+               bindinput="onCommentInput" 
+               value="{{replyInput.content}}" />
+        <button class="send-btn" bindtap="onSendComment">
+          <text class="send-icon">➤</text>
+        </button>
       </view>
     </view>
 
     <!-- 底部输入框 -->
     <view class="input-section">
       <view class="input-container">
-        <input class="comment-input" placeholder="写下你的看法..." bindinput="onCommentInput" />
+        <input class="comment-input" 
+               placeholder="写下你的看法..." 
+               bindinput="onCommentInput" 
+               value="{{replyInput.visible ? '' : replyInput.content}}" />
         <button class="send-btn" bindtap="onSendComment">
           <text class="send-icon">➤</text>
         </button>

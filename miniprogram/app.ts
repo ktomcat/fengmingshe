@@ -16,7 +16,8 @@ App<IAppOption>({
     // 特色话题 - 专门的数据源
     featuredTopic: {
       id: 'featured_topic_001',
-      title: '热门话题：人工智能时代的机遇与挑战',
+      title: '人工智能时代的机遇与挑战',
+      image:'https://picsum.photos/id/1/800/400',
       content: [
         { type: 'text', content: '随着人工智能技术的飞速发展，我们正处在一个前所未有的变革时代。AI不仅改变了我们的生活方式，也在重新定义工作的本质。' },
         { type: 'image', content: 'https://picsum.photos/id/1/800/400' },
