@@ -1,12 +1,10 @@
 // index.ts
-// 获取应用实例
-const app = getApp<IAppOption>()
-const defaultAvatarUrl = 'https://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRna42FI242Lcia07jQodd2FJGIYQfG0LAJGFxM4FbnQP6yfMxBgJ0F3YRqJCJ1aPAK2dQagdusBZg/0'
 
 Component({
   lifetimes: {
     attached() {
       // 组件挂载时加载测试数据
+      const app = getApp()
       const globalData = app.globalData
       
       // 处理特色话题，提取第一个文本内容
@@ -44,7 +42,7 @@ Component({
   data: {
     motto: 'Hello World',
     userInfo: {
-      avatarUrl: defaultAvatarUrl,
+      avatarUrl: 'https://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRna42FI242Lcia07jQodd2FJGIYQfG0LAJGFxM4FbnQP6yfMxBgJ0F3YRqJCJ1aPAK2dQagdusBZg/0',
       nickName: '',
     },
     hasUserInfo: false,
@@ -64,7 +62,7 @@ Component({
       const { nickName } = this.data.userInfo
       this.setData({
         "userInfo.avatarUrl": avatarUrl,
-        hasUserInfo: nickName && avatarUrl && avatarUrl !== defaultAvatarUrl,
+        hasUserInfo: nickName && avatarUrl && avatarUrl !== 'https://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRna42FI242Lcia07jQodd2FJGIYQfG0LAJGFxM4FbnQP6yfMxBgJ0F3YRqJCJ1aPAK2dQagdusBZg/0',
       })
     },
     onInputChange(e: any) {
@@ -73,7 +71,7 @@ Component({
       const { avatarUrl } = this.data.userInfo
       this.setData({
         "userInfo.nickName": nickName,
-        hasUserInfo: nickName && avatarUrl && avatarUrl !== defaultAvatarUrl,
+        hasUserInfo: nickName && avatarUrl && avatarUrl !== 'https://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRna42FI242Lcia07jQodd2FJGIYQfG0LAJGFxM4FbnQP6yfMxBgJ0F3YRqJCJ1aPAK2dQagdusBZg/0',
       })
     },
     getUserProfile() {
@@ -284,7 +282,7 @@ Component({
       }
       
       // 找到第一个type为'text'的内容
-      const textItem = contentArray.find(item => item.type === 'text')
+      const textItem = (contentArray as any[]).find((item: any) => item.type === 'text')
       return textItem ? textItem.content : ''
     },
 
@@ -295,7 +293,7 @@ Component({
       }
       
       // 统计type为'image'的内容数量
-      const imageItems = contentArray.filter(item => item.type === 'image')
+      const imageItems = (contentArray as any[]).filter((item: any) => item.type === 'image')
       return imageItems.length
     },
 
@@ -306,7 +304,7 @@ Component({
       }
       
       // 检查是否存在type为'vote'的内容
-      return contentArray.some(item => item.type === 'vote')
+      return (contentArray as any[]).some((item: any) => item.type === 'vote')
     },
 
     // 获取辩题信息
@@ -316,7 +314,7 @@ Component({
       }
       
       // 找到第一个type为'vote'的内容
-      const voteItem = contentArray.find(item => item.type === 'vote')
+      const voteItem = (contentArray as any[]).find((item: any) => item.type === 'vote')
       if (!voteItem || !voteItem.content) {
         return null
       }

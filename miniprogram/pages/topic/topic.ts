@@ -1,6 +1,4 @@
 // topic.ts
-// 获取应用实例
-const app = getApp()
 
 Page({
   data: {
@@ -37,6 +35,7 @@ Page({
   onLoad(options: any) {
     console.log('【话题页】页面参数options:', options)
     
+    const app = getApp()
     const topicId = options.topicId
     const focusInput = options.focusInput === 'true'
     const scrollToComments = options.scrollToComments === 'true'
@@ -421,26 +420,26 @@ Page({
       if (replyInput.isReplyToComment) {
         // 回复评论本身 - 插入到最前面
         targetComment.replies = targetComment.replies || []
-        targetComment.replies = [newReply, ...targetComment.replies]
+        targetComment.replies = [newReply, ...(targetComment.replies as any[])]
         targetComment.replyCount = (targetComment.replyCount || 0) + 1
-        console.log('【处理回复】添加到评论回复列表，新回复数量:', targetComment.replies.length)
+        console.log('【处理回复】添加到评论回复列表，新回复数量:', (targetComment.replies as any[]).length)
       } else {
         // 回复评论的评论 - 插入到被回复的子评论下方
         targetComment.replies = targetComment.replies || []
         
         // 找到被回复的子评论的索引
-        const targetReplyIndex = targetComment.replies.findIndex((reply: any) => reply.id === replyInput.targetReplyId)
+        const targetReplyIndex = (targetComment.replies as any[]).findIndex((reply: any) => reply.id === replyInput.targetReplyId)
         
         if (targetReplyIndex >= 0) {
           // 插入到被回复的子评论后面
-          targetComment.replies.splice(targetReplyIndex + 1, 0, newReply)
+          (targetComment.replies as any[]).splice(targetReplyIndex + 1, 0, newReply)
         } else {
           // 如果找不到被回复的子评论，插入到最前面
-          targetComment.replies = [newReply, ...targetComment.replies]
+          targetComment.replies = [newReply, ...(targetComment.replies as any[])]
         }
         
         targetComment.replyCount = (targetComment.replyCount || 0) + 1
-        console.log('【处理回复】添加到子评论回复列表，新回复数量:', targetComment.replies.length)
+        console.log('【处理回复】添加到子评论回复列表，新回复数量:', (targetComment.replies as any[]).length)
       }
       
       // 当添加新的回复时，保持当前的分页状态，但确保新回复可见
@@ -458,6 +457,23 @@ Page({
         pagination.hasMore = pagination.currentPage * pagination.pageSize < targetComment.replies.length
       }
       
+    // 获取当前评论的展开状态
+    const { expandedComments, expandedMap } = this.data
+    const currentExpandedComments = Array.isArray(expandedComments) ? expandedComments : []
+    const newExpandedComments = [...currentExpandedComments]
+    const newExpandedMap = { ...(expandedMap as any) }
+      
+      // 如果目标评论之前没有回复（replyCount为0或1），自动展开
+      const originalReplyCount = targetComment.replyCount - 1 // 减去刚添加的新回复
+      if (originalReplyCount <= 0) {
+        // 如果之前没有回复，自动展开该评论
+        if (!newExpandedComments.includes(targetComment.id)) {
+          newExpandedComments.push(targetComment.id)
+          newExpandedMap[targetComment.id] = true
+          console.log('【处理回复】自动展开评论，因为之前没有回复，评论ID:', targetComment.id)
+        }
+      }
+      
       this.setData({
         comments: updatedComments,
         'replyInput.visible': false,
@@ -466,7 +482,9 @@ Page({
         'replyInput.targetCommentIndex': -1,
         'replyInput.targetReplyId': '',
         'pagination.totalComments': pagination.totalComments + 1,
-        repliesPagination: newRepliesPagination
+        repliesPagination: newRepliesPagination,
+        expandedComments: newExpandedComments,
+        expandedMap: newExpandedMap
       })
       
       wx.showToast({
@@ -693,10 +711,32 @@ Page({
   // 排序类型切换
   switchSortType(e: any) {
     const sortType = e.currentTarget.dataset.type
+    console.log('【话题页】切换排序方式:', sortType)
+    
+    if (this.data.sortType === sortType) {
+      return // 如果已经是当前排序方式，不做任何操作
+    }
+    
     this.setData({
-      sortType: sortType,
-      comments: this.sortComments(this.data.comments)
+      sortType: sortType
     })
+    
+    // 重新排序评论列表
+    this.sortCommentsAndUpdate()
+  },
+
+  // 排序并更新评论列表
+  sortCommentsAndUpdate() {
+    const { comments } = this.data
+    if (!comments || (comments as any[]).length === 0) return
+    
+    const sortedComments = this.sortComments([...(comments as any[])])
+    
+    this.setData({
+      comments: sortedComments
+    })
+    
+    console.log('【话题页】评论排序完成，当前排序方式:', this.data.sortType)
   },
 
   // 评论排序
@@ -849,7 +889,7 @@ Page({
   },
   
   // 格式化时间
-  formatTime(date: Date): string {
+  formatTime(date: any): string {
     const now = new Date()
     const diff = now.getTime() - date.getTime()
     

@@ -1,6 +1,6 @@
 // publish.ts
 // 获取应用实例
-const app = getApp<IAppOption>()
+const app = getApp()
 
 Component({
   data: {
@@ -53,7 +53,7 @@ Component({
         id: Date.now()
       }
       this.setData({
-        contentBlocks: [...this.data.contentBlocks, newBlock]
+        contentBlocks: [...(this.data as any).contentBlocks, newBlock]
       })
     },
 
@@ -64,7 +64,7 @@ Component({
         id: Date.now()
       }
       this.setData({
-        contentBlocks: [...this.data.contentBlocks, newBlock]
+        contentBlocks: [...(this.data as any).contentBlocks, newBlock]
       })
     },
 
@@ -86,7 +86,7 @@ Component({
         id: Date.now()
       }
       this.setData({
-        contentBlocks: [...this.data.contentBlocks, newBlock]
+        contentBlocks: [...(this.data as any).contentBlocks, newBlock]
       })
     },
 
@@ -94,7 +94,7 @@ Component({
     onTextInput(e: any) {
       const index = e.currentTarget.dataset.index
       const content = e.detail.value
-      const contentBlocks = this.data.contentBlocks.map((block, i) => {
+      const contentBlocks = (this.data as any).contentBlocks.map((block: any, i: number) => {
         if (i === index) {
           return { ...block, content: content }
         }
@@ -109,11 +109,11 @@ Component({
       const index = e.currentTarget.dataset.index
       wx.chooseMedia({
         count: 1,
-        mediaType: ['image'],
-        sourceType: ['album', 'camera'],
+        mediaType: ['image'] as ('image' | 'video')[],
+        sourceType: ['album', 'camera'] as ('album' | 'camera')[],
         success: (res) => {
           const tempFilePath = res.tempFiles[0].tempFilePath
-          const contentBlocks = this.data.contentBlocks.map((block, i) => {
+          const contentBlocks = (this.data as any).contentBlocks.map((block: any, i: number) => {
             if (i === index) {
               return { ...block, content: tempFilePath }
             }
@@ -135,7 +135,7 @@ Component({
     // 移除图片
     removeImage(e: any) {
       const index = e.currentTarget.dataset.index
-      const contentBlocks = this.data.contentBlocks.map((block, i) => {
+      const contentBlocks = (this.data as any).contentBlocks.map((block: any, i: number) => {
         if (i === index) {
           return { ...block, content: '' }
         }
@@ -150,7 +150,7 @@ Component({
       const index = e.currentTarget.dataset.index
       const title = e.detail.value
       
-      const contentBlocks = this.data.contentBlocks.map((block, i) => {
+      const contentBlocks = (this.data as any).contentBlocks.map((block: any, i: number) => {
         if (i === index && block.type === 'vote') {
           return { ...block, title: title }
         }
@@ -164,13 +164,13 @@ Component({
     // 添加投票选项
     addOption(e: any) {
       const index = e.currentTarget.dataset.index
-      const contentBlocks = this.data.contentBlocks.map((block, i) => {
+      const contentBlocks = (this.data as any).contentBlocks.map((block: any, i: number) => {
         if (i === index && block.type === 'vote') {
           const newOption = {
             text: '',
             id: Date.now() + i
           }
-          return { ...block, options: [...block.options, newOption] }
+          return { ...block, options: [...(block.options || []), newOption] }
         }
         return block
       })
@@ -268,7 +268,7 @@ Component({
 
     // 验证发布内容是否完整
     validatePublishContent() {
-      const { title, contentBlocks } = this.data
+      const { title, contentBlocks } = (this.data as any)
       
       // 标题不能为空
       if (!title.trim()) {
@@ -280,7 +280,7 @@ Component({
       }
       
       // 所有内容模块都不能为空
-      const allBlocksValid = contentBlocks.every(block => {
+      const allBlocksValid = (contentBlocks as any[]).every((block: any) => {
         if (block.type === 'text') {
           return block.content.trim() !== ''
         } else if (block.type === 'image') {
@@ -321,13 +321,13 @@ Component({
       // 点击时验证内容是否完整
       if (!this.validatePublishContent()) return
       
-      const { title, contentBlocks } = this.data
+      const { title, contentBlocks } = (this.data as any)
       
       // 构建话题数据
       const topicData = {
         id: Date.now().toString(),
         title: title.trim(),
-        content: contentBlocks.map(block => {
+        content: (contentBlocks as any[]).map((block: any) => {
           if (block.type === 'text') {
             return {
               type: 'text',
@@ -360,8 +360,8 @@ Component({
           return null
         }).filter(Boolean),
         author: {
-          nickname: app.globalData.userInfo?.nickName || '匿名用户',
-          avatar: app.globalData.userInfo?.avatarUrl || 'https://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRna42FI242Lcia07jQodd2FJGIYQfG0LAJGFxM4FbnQP6yfMxBgJ0F3YRqJCJ1aPAK2dQagdusBZg/0'
+          nickname: app.globalData.userInfo?.nickname || '匿名用户',
+          avatar: app.globalData.userInfo?.avatar || 'https://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRna42FI242Lcia07jQodd2FJGIYQfG0LAJGFxM4FbnQP6yfMxBgJ0F3YRqJCJ1aPAK2dQagdusBZg/0'
         },
         createTime: new Date().toLocaleString('zh-CN'),
         likeCount: 0,
@@ -379,11 +379,11 @@ Component({
       setTimeout(() => {
         wx.hideLoading()
         
-        // 将新话题添加到全局数据
-        if (!app.globalData.topics) {
-          app.globalData.topics = []
-        }
-        app.globalData.topics.unshift(topicData)
+      // 将新话题添加到全局数据
+      if (!app.globalData.topics) {
+        app.globalData.topics = []
+      }
+      (app.globalData.topics as any[]).unshift(topicData)
         
         wx.showToast({
           title: '发布成功',
