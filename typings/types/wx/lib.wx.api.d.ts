@@ -14270,11 +14270,11 @@ wx.notifyBLECharacteristicValueChange({
         ): void
         /** [wx.offCopyUrl(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/share/wx.offCopyUrl.html)
          *
-         * 取消监听用户点击右上角菜单的「复制链接」按钮时触发的事件
+         * 取消监听用户点击右上角菜单的「收藏话题」按钮时触发的事件
          *
          * 最低基础库： `2.14.3` */
         offCopyUrl(
-            /** 用户点击右上角菜单的「复制链接」按钮时触发的事件的回调函数 */
+            /** 用户点击右上角菜单的「收藏话题」按钮时触发的事件的回调函数 */
             callback?: OffCopyUrlCallback
         ): void
         /** [wx.offDeviceMotionChange(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/device/motion/wx.offDeviceMotionChange.html)
@@ -14744,11 +14744,11 @@ wx.onBluetoothDeviceFound(function(res) {
         ): void
         /** [wx.onCopyUrl(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/share/wx.onCopyUrl.html)
          *
-         * 监听用户点击右上角菜单的「复制链接」按钮时触发的事件。本接口为 Beta 版本，暂只在 Android 平台支持。
+         * 监听用户点击右上角菜单的「收藏话题」按钮时触发的事件。本接口为 Beta 版本，暂只在 Android 平台支持。
          *
          * 最低基础库： `2.14.3` */
         onCopyUrl(
-            /** 用户点击右上角菜单的「复制链接」按钮时触发的事件的回调函数 */
+            /** 用户点击右上角菜单的「收藏话题」按钮时触发的事件的回调函数 */
             callback: OnCopyUrlCallback
         ): void
         /** [wx.onDeviceMotionChange(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/device/motion/wx.onDeviceMotionChange.html)
@@ -18178,7 +18178,7 @@ wx.writeBLECharacteristicValue({
     type OffCharacteristicWriteRequestCallback = (
         result: OnCharacteristicWriteRequestCallbackResult
     ) => void
-    /** 用户点击右上角菜单的「复制链接」按钮时触发的事件的回调函数 */
+    /** 用户点击右上角菜单的「收藏话题」按钮时触发的事件的回调函数 */
     type OffCopyUrlCallback = (result: OnCopyUrlCallbackResult) => void
     /** 的回调函数 */
     type OffDiscoveredCallback = (result: OnDiscoveredCallbackResult) => void
@@ -18325,7 +18325,7 @@ wx.writeBLECharacteristicValue({
     type OnCompassChangeCallback = (
         result: OnCompassChangeCallbackResult
     ) => void
-    /** 用户点击右上角菜单的「复制链接」按钮时触发的事件的回调函数 */
+    /** 用户点击右上角菜单的「收藏话题」按钮时触发的事件的回调函数 */
     type OnCopyUrlCallback = (result: OnCopyUrlCallbackResult) => void
     /** 设备方向变化事件的回调函数 */
     type OnDeviceMotionChangeCallback = (

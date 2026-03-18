@@ -1,7 +1,7 @@
 <!-- 话题详情页面 -->
 <view class="page-container">
   <!-- 固定导航栏 -->
-  <view class="fixed-navbar">
+  <view class="fixed-navbar" id="fixed-navbar">
     <navigation-bar 
       title="话题详情" 
       background="#ffffff" 
@@ -13,10 +13,13 @@
     ></navigation-bar>
   </view>
 
+  <!-- 占位元素，用于获取导航栏高度 -->
+  <view class="navbar-placeholder" hidden="{{true}}"></view>
+
   <!-- 页面内容区域 -->
   <view class="page-content">
     <!-- 话题头部信息 -->
-    <view class="topic-header" wx:if="{{topic}}">
+    <view class="topic-header" wx:if="{{topic}}" id="topic-header">
       <!-- 作者信息 -->
       <view class="author-info">
         <image class="avatar" src="{{topic.author.avatar}}" />
@@ -106,10 +109,11 @@
       </view>
     </view>
 
-
+    <!-- 评论导航占位元素（用于吸顶时占位） -->
+    <view class="comment-nav-placeholder" wx:if="{{isCommentNavSticky}}" style="height: {{commentNavHeight}}px;"></view>
 
     <!-- 评论导航 -->
-    <view class="comment-nav">
+    <view class="comment-nav {{isCommentNavSticky ? 'sticky' : ''}}" id="comment-nav" style="{{isCommentNavSticky ? 'top: ' + navbarHeight + 'px;' : ''}}">
       <view class="nav-text">全部评论</view>
       <view class="sort-options">
         <text class="sort-option {{sortType === 'time' ? 'active' : ''}}" 
@@ -265,9 +269,9 @@
         <text class="sheet-icon">📤</text>
         <text class="sheet-text">分享帖子</text>
       </view>
-      <view class="sheet-item" bindtap="onCopyLink">
-        <text class="sheet-icon">🔗</text>
-        <text class="sheet-text">复制链接</text>
+      <view class="sheet-item" bindtap="onCollection">
+        <text class="sheet-icon">📦</text>
+        <text class="sheet-text">收藏话题</text>
       </view>
       <view class="sheet-item" bindtap="onReportContent">
         <text class="sheet-icon">🚩</text>

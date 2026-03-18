@@ -1,0 +1,171 @@
+<!-- 个人中心页面 -->
+<view class="profile-container">
+  <!-- 顶部导航栏 - 与话题页统一 -->
+  <view class="fixed-navbar" id="fixed-navbar">
+    <navigation-bar 
+      title="蜂鸣社" 
+      background="#ffffff" 
+      color="#D7423D" 
+      back="{{false}}"
+      home-button="{{false}}"
+      left-logo="{{true}}"
+      show-title="{{false}}"
+    ></navigation-bar>
+  </view>
+
+  <!-- 页面内容 -->
+  <view class="page-content">
+    <!-- 用户信息区域 -->
+    <view class="user-section">
+      <view class="user-info">
+        <view class="avatar-container">
+          <image class="user-avatar" src="{{userInfo.avatar}}" mode="aspectFill" />
+        </view>
+        <view class="user-details">
+          <view class="name-edit-container">
+            <text class="user-name">{{userInfo.name}}</text>
+            <view class="edit-icon" bindtap="onEditProfile">
+              <text class="edit-icon-text">✏️</text>
+            </view>
+          </view>
+          <view class="signature-edit-container">
+            <text class="user-signature">{{userInfo.signature}}</text>
+            <view class="edit-icon" bindtap="onEditSignature">
+              <text class="edit-icon-text">✏️</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 数据统计 -->
+    <view class="stats-section">
+      <view class="stats-grid">
+        <view class="stat-item">
+          <text class="stat-value">{{stats.views}}</text>
+          <text class="stat-label">浏览</text>
+        </view>
+        <view class="stat-item">
+          <text class="stat-value">{{stats.likes}}</text>
+          <text class="stat-label">获赞</text>
+        </view>
+        <view class="stat-item">
+          <text class="stat-value">{{stats.followers}}</text>
+          <text class="stat-label">粉丝</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 标签页导航 - 与话题页评论导航风格统一 -->
+    <view class="tab-navigation">
+      <view class="tab-header">
+        <view class="tab-item {{activeTab === 'posts' ? 'active' : ''}}" bindtap="switchTab" data-tab="posts">
+          <text class="tab-text">我的发布</text>
+          <view class="tab-indicator" wx:if="{{activeTab === 'posts'}}"></view>
+        </view>
+        <view class="tab-item {{activeTab === 'favorites' ? 'active' : ''}}" bindtap="switchTab" data-tab="favorites">
+          <text class="tab-text">我的收藏</text>
+          <view class="tab-indicator" wx:if="{{activeTab === 'favorites'}}"></view>
+        </view>
+        <view class="tab-item {{activeTab === 'following' ? 'active' : ''}}" bindtap="switchTab" data-tab="following">
+          <text class="tab-text">我的关注</text>
+          <view class="tab-indicator" wx:if="{{activeTab === 'following'}}"></view>
+        </view>
+      </view>
+
+      <!-- 内容区域 -->
+      <view class="tab-content">
+        <!-- 我的发布 -->
+        <view class="feed-list" wx:if="{{activeTab === 'posts'}}">
+          <view class="feed-card" wx:for="{{posts}}" wx:key="id" wx:for-item="item" bindtap="onPostTap" data-post="{{item}}">
+            <text class="feed-title">{{item.title}}</text>
+            <view class="feed-meta">
+              <text class="feed-date">{{item.date}}</text>
+              <view class="feed-stats">
+                <view class="stat-item">
+                  <text class="stat-count">浏览 {{item.views}}</text>
+                </view>
+                <view class="stat-item">
+                  <text class="stat-count">获赞 {{item.likes}}</text>
+                </view>
+              </view>
+            </view>
+          </view>
+          
+          <!-- 加载更多 -->
+          <view class="load-more" wx:if="{{posts.length > 0}}">
+            <text>没有更多了</text>
+          </view>
+        </view>
+
+        <!-- 我的收藏 -->
+        <view class="feed-list" wx:if="{{activeTab === 'favorites'}}">
+          <view class="feed-card" wx:for="{{favorites}}" wx:key="id" wx:for-item="item" bindtap="onFavoriteTap" data-favorite="{{item}}">
+            <text class="feed-title">{{item.title}}</text>
+            <view class="feed-meta">
+              <text class="feed-date">{{item.date}}</text>
+              <view class="feed-stats">
+                <view class="stat-item">
+                  <text class="stat-count">浏览 {{item.views}}</text>
+                </view>
+                <view class="stat-item">
+                  <text class="stat-count">获赞 {{item.likes}}</text>
+                </view>
+              </view>
+            </view>
+            <view class="author-info" wx:if="{{item.author}}">
+              <image class="author-avatar" src="{{item.author.avatar}}" mode="aspectFill" />
+              <text class="author-name">{{item.author.nickname}}</text>
+            </view>
+          </view>
+          
+          <!-- 加载更多 -->
+          <view class="load-more" wx:if="{{favorites.length > 0}}">
+            <text>没有更多了</text>
+          </view>
+        </view>
+
+        <!-- 我的关注 -->
+        <view class="feed-list" wx:if="{{activeTab === 'following'}}">
+          <view class="following-card" wx:for="{{following}}" wx:key="id" wx:for-item="user" bindtap="onFollowingTap" data-user="{{user}}">
+            <image class="user-avatar" src="{{user.avatar}}" mode="aspectFill" />
+            <view class="user-info">
+              <text class="user-name">{{user.nickname}}</text>
+              <text class="user-signature">{{user.signature}}</text>
+              <view class="user-stats">
+                <text class="stat-item">{{user.followers}} 粉丝</text>
+                <text class="stat-item">{{user.posts}} 帖子</text>
+              </view>
+            </view>
+            <view class="follow-btn" catchtap="onUnfollowTap" data-user="{{user}}" data-index="{{index}}">
+              <text>已关注</text>
+            </view>
+          </view>
+          
+          <!-- 加载更多 -->
+          <view class="load-more" wx:if="{{following.length > 0}}">
+            <text>没有更多了</text>
+          </view>
+        </view>
+        
+        <!-- 空状态 -->
+        <view class="empty-state" wx:if="{{activeTab === 'posts' && posts.length === 0}}">
+          <text>暂无发布内容</text>
+        </view>
+        <view class="empty-state" wx:if="{{activeTab === 'favorites' && favorites.length === 0}}">
+          <text>暂无收藏内容</text>
+        </view>
+        <view class="empty-state" wx:if="{{activeTab === 'following' && following.length === 0}}">
+          <text>暂无关注用户</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部导航栏 -->
+  <bottom-nav 
+    wx:if="{{true}}"
+    current="{{currentTab}}" 
+    bind:change="onTabChange"
+  />
+</view>

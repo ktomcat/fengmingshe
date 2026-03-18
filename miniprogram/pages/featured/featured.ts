@@ -102,21 +102,12 @@ Component({
       })
     },
 
-    onCopyLink() {
-      console.log('【首页】点击复制链接按钮')
+    onCollection() {
+      console.log('【首页】点击收藏话题按钮')
       this.closeBottomSheet()
-      wx.setClipboardData({
-        data: 'https://fengming.example.com/post/123',
-        success: () => {
-          console.log('【首页】复制链接成功')
-          wx.showToast({
-            title: '链接已复制',
-            icon: 'success'
-          })
-        },
-        fail: (err) => {
-          console.error('【首页】复制链接失败:', err)
-        }
+      wx.showToast({
+        title: '收藏成功',
+        icon: 'success'
       })
     },
 
@@ -303,7 +294,7 @@ Component({
       
       // 显示分享弹窗
       wx.showActionSheet({
-        itemList: ['分享给好友', '分享到朋友圈', '复制链接'],
+        itemList: ['分享给好友', '分享到朋友圈', '收藏话题'],
         success: (res) => {
           const tapIndex = res.tapIndex
           console.log('【首页】分享弹窗选择，索引:', tapIndex)
@@ -323,18 +314,18 @@ Component({
               })
               break
             case 2:
-              console.log('【首页】选择复制链接')
+              console.log('【首页】选择收藏话题')
               wx.setClipboardData({
                 data: `https://fengming.example.com/topic/${topic.id}`,
                 success: () => {
-                  console.log('【首页】复制链接成功')
+                  console.log('【首页】收藏话题成功')
                   wx.showToast({
-                    title: '链接已复制',
+                    title: '收藏成功',
                     icon: 'success'
                   })
                 },
                 fail: (err) => {
-                  console.error('【首页】复制链接失败:', err)
+                  console.error('【首页】收藏话题失败:', err)
                 }
               })
               break

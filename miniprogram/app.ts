@@ -123,6 +123,384 @@ App<IAppOption>({
       fansCount: 18,
       signature: '热爱生活，分享美好时光'
     },
+
+    // 当前用户发布的帖子数据
+    currentUserPosts: [
+      {
+        id: 'user_post_001',
+        title: '如何利用现代UI设计提升用户留存率？',
+        content: [
+          { type: 'text', content: '作为一名UI设计师，我经常被问到如何通过设计来提升产品的用户留存率。今天想和大家分享一些实用的经验。' },
+          { type: 'image', content: 'https://picsum.photos/id/100/800/400' },
+          { type: 'text', content: '首先，用户体验的流畅性至关重要。一个设计精美但操作复杂的界面，往往会让用户望而却步。' },
+          { type: 'text', content: '其次，视觉层次感也很重要。通过合理的颜色、字体大小和间距，引导用户的视线流动，让用户能够快速找到他们需要的信息。' },
+          { type: 'image', content: 'https://picsum.photos/id/101/800/400' },
+          { type: 'vote', content: {
+            title: '你觉得UI设计对用户留存率的影响有多大？',
+            positive: {
+              text: '影响很大',
+              count: 156
+            },
+            negative: {
+              text: '影响一般',
+              count: 89
+            },
+            totalVotes: 245,
+            userVoted: true,
+            userChoice: 'positive'
+          }}
+        ],
+        author: {
+          id: 'user_001',
+          nickname: '小明',
+          avatar: getUserAvatar('user_001')
+        },
+        createTime: '2023-10-24 14:30',
+        likeCount: 85,
+        userLiked: true,
+        commentCount: 23,
+        comments: [
+          {
+            id: 'comment_user_001',
+            user: {
+              id: 'user_051',
+              nickname: 'UI设计师小王',
+              avatar: getUserAvatar('user_051')
+            },
+            content: '说得很好！我觉得微交互设计也很重要，能给用户带来惊喜感。',
+            time: '2023-10-24 15:20',
+            likeCount: 12,
+            userLiked: false
+          },
+          {
+            id: 'comment_user_002',
+            user: {
+              id: 'user_052',
+              nickname: '产品经理小李',
+              avatar: getUserAvatar('user_052')
+            },
+            content: '从产品角度来说，UI设计确实直接影响用户的第一印象。',
+            time: '2023-10-24 16:45',
+            likeCount: 8,
+            userLiked: true
+          }
+        ]
+      },
+      {
+        id: 'user_post_002',
+        title: '凤鸣社十周年庆典幕后故事分享',
+        content: [
+          { type: 'text', content: '上周我们凤鸣社迎来了十周年庆典，作为组织者之一，我想和大家分享一些幕后的故事。' },
+          { type: 'image', content: 'https://picsum.photos/id/102/800/400' },
+          { type: 'text', content: '从策划到执行，整个活动历时三个月。最让我感动的是大家的团队协作精神。' },
+          { type: 'text', content: '特别是最后的灯光秀环节，我们反复调试了十几次，就是为了给观众带来最好的视觉体验。' },
+          { type: 'image', content: 'https://picsum.photos/id/103/800/400' }
+        ],
+        author: {
+          id: 'user_001',
+          nickname: '小明',
+          avatar: getUserAvatar('user_001')
+        },
+        createTime: '2023-10-15 10:15',
+        likeCount: 210,
+        userLiked: true,
+        commentCount: 45,
+        comments: [
+          {
+            id: 'comment_user_003',
+            user: {
+              id: 'user_053',
+              nickname: '活动参与者',
+              avatar: getUserAvatar('user_053')
+            },
+            content: '现场效果真的很棒！特别是那个灯光秀，太震撼了！',
+            time: '2023-10-15 11:30',
+            likeCount: 23,
+            userLiked: false
+          }
+        ]
+      },
+      {
+        id: 'user_post_003',
+        title: '设计师如何平衡审美与商业价值',
+        content: [
+          { type: 'text', content: '在设计工作中，我们经常面临一个难题：如何平衡个人审美与商业需求？' },
+          { type: 'image', content: 'https://picsum.photos/id/104/800/400' },
+          { type: 'text', content: '我的经验是，首先要理解商业目标，然后在这个框架内发挥创意。' },
+          { type: 'text', content: '有时候客户的要求可能不符合我们的审美，但只要能达成商业目标，就是好的设计。' },
+          { type: 'image', content: 'https://picsum.photos/id/105/800/400' },
+          { type: 'vote', content: {
+            title: '你觉得设计师应该坚持自己的审美吗？',
+            positive: {
+              text: '应该坚持',
+              count: 78
+            },
+            negative: {
+              text: '应该妥协',
+              count: 65
+            },
+            totalVotes: 143,
+            userVoted: true,
+            userChoice: 'positive'
+          }}
+        ],
+        author: {
+          id: 'user_001',
+          nickname: '小明',
+          avatar: getUserAvatar('user_001')
+        },
+        createTime: '2023-09-28 16:20',
+        likeCount: 42,
+        userLiked: false,
+        commentCount: 18,
+        comments: [
+          {
+            id: 'comment_user_004',
+            user: {
+              id: 'user_054',
+              nickname: '资深设计师',
+              avatar: getUserAvatar('user_054')
+            },
+            content: '这个问题困扰了很多设计师，我觉得关键在于沟通和理解。',
+            time: '2023-09-28 17:15',
+            likeCount: 9,
+            userLiked: true
+          }
+        ]
+      },
+      {
+        id: 'user_post_004',
+        title: '前端性能优化实战经验总结',
+        content: [
+          { type: 'text', content: '最近在项目中做了一些前端性能优化，效果显著，分享一下经验。' },
+          { type: 'image', content: 'https://picsum.photos/id/106/800/400' },
+          { type: 'text', content: '首屏加载时间从3.2秒优化到了1.8秒，主要采用了代码分割和懒加载技术。' },
+          { type: 'text', content: '图片优化也很重要，使用WebP格式和适当的压缩可以大幅减小文件体积。' },
+          { type: 'image', content: 'https://picsum.photos/id/107/800/400' }
+        ],
+        author: {
+          id: 'user_001',
+          nickname: '小明',
+          avatar: getUserAvatar('user_001')
+        },
+        createTime: '2023-09-15 09:45',
+        likeCount: 156,
+        userLiked: true,
+        commentCount: 34,
+        comments: [
+          {
+            id: 'comment_user_005',
+            user: {
+              id: 'user_055',
+              nickname: '前端工程师',
+              avatar: getUserAvatar('user_055')
+            },
+            content: '很实用的经验！我们项目也在做性能优化，可以借鉴一下。',
+            time: '2023-09-15 10:30',
+            likeCount: 15,
+            userLiked: false
+          }
+        ]
+      },
+      {
+        id: 'user_post_005',
+        title: '小程序开发中的常见问题及解决方案',
+        content: [
+          { type: 'text', content: '在小程序开发过程中，经常会遇到一些坑，今天总结一下常见问题。' },
+          { type: 'image', content: 'https://picsum.photos/id/108/800/400' },
+          { type: 'text', content: '比如页面层级过深导致的性能问题，可以通过优化页面结构来解决。' },
+          { type: 'text', content: '还有数据缓存策略，合理使用本地存储可以提升用户体验。' },
+          { type: 'image', content: 'https://picsum.photos/id/109/800/400' }
+        ],
+        author: {
+          id: 'user_001',
+          nickname: '小明',
+          avatar: getUserAvatar('user_001')
+        },
+        createTime: '2023-09-02 14:20',
+        likeCount: 98,
+        userLiked: false,
+        commentCount: 21,
+        comments: [
+          {
+            id: 'comment_user_006',
+            user: {
+              id: 'user_056',
+              nickname: '小程序开发者',
+              avatar: getUserAvatar('user_056')
+            },
+            content: '确实，小程序开发有很多需要注意的地方，感谢分享！',
+            time: '2023-09-02 15:10',
+            likeCount: 7,
+            userLiked: true
+          }
+        ]
+      }
+    ],
+
+    // 当前用户收藏的帖子数据
+    currentUserFavorites: [
+      {
+        id: 'user_fav_001',
+        title: 'React 18新特性深度解析',
+        content: [
+          { type: 'text', content: 'React 18带来了很多令人兴奋的新特性，今天来深度解析一下。' },
+          { type: 'image', content: 'https://picsum.photos/id/110/800/400' },
+          { type: 'text', content: '自动批处理、并发特性、新的Suspense功能，都让开发体验更好了。' }
+        ],
+        author: {
+          id: 'user_057',
+          nickname: 'React专家',
+          avatar: getUserAvatar('user_057')
+        },
+        createTime: '2023-11-05 11:30',
+        likeCount: 156,
+        userLiked: true,
+        commentCount: 45,
+        comments: [
+          {
+            id: 'comment_fav_001',
+            user: {
+              id: 'user_058',
+              nickname: '前端爱好者',
+              avatar: getUserAvatar('user_058')
+            },
+            content: 'React 18的并发渲染确实很强大！',
+            time: '2023-11-05 12:15',
+            likeCount: 23,
+            userLiked: false
+          }
+        ]
+      },
+      {
+        id: 'user_fav_002',
+        title: '微前端架构实践指南',
+        content: [
+          { type: 'text', content: '微前端架构在大型项目中越来越流行，分享一下实践心得。' },
+          { type: 'image', content: 'https://picsum.photos/id/111/800/400' },
+          { type: 'text', content: '主要解决了团队协作和项目维护的难题。' }
+        ],
+        author: {
+          id: 'user_059',
+          nickname: '架构师',
+          avatar: getUserAvatar('user_059')
+        },
+        createTime: '2023-10-30 15:45',
+        likeCount: 98,
+        userLiked: true,
+        commentCount: 32,
+        comments: [
+          {
+            id: 'comment_fav_002',
+            user: {
+              id: 'user_060',
+              nickname: '技术经理',
+              avatar: getUserAvatar('user_060')
+            },
+            content: '我们团队也在考虑微前端，很有参考价值。',
+            time: '2023-10-30 16:30',
+            likeCount: 15,
+            userLiked: false
+          }
+        ]
+      },
+      {
+        id: 'user_fav_003',
+        title: 'TypeScript高级技巧分享',
+        content: [
+          { type: 'text', content: 'TypeScript有很多高级用法，今天分享一些实用技巧。' },
+          { type: 'image', content: 'https://picsum.photos/id/112/800/400' },
+          { type: 'text', content: '泛型、类型守卫、条件类型等，都能提升代码质量。' }
+        ],
+        author: {
+          id: 'user_061',
+          nickname: 'TS爱好者',
+          avatar: getUserAvatar('user_061')
+        },
+        createTime: '2023-10-18 13:20',
+        likeCount: 73,
+        userLiked: false,
+        commentCount: 28,
+        comments: [
+          {
+            id: 'comment_fav_003',
+            user: {
+              id: 'user_062',
+              nickname: '全栈开发者',
+              avatar: getUserAvatar('user_062')
+            },
+            content: 'TypeScript的类型系统确实很强大！',
+            time: '2023-10-18 14:05',
+            likeCount: 12,
+            userLiked: true
+          }
+        ]
+      },
+      {
+        id: 'user_fav_004',
+        title: '人工智能在UI设计中的应用',
+        content: [
+          { type: 'text', content: 'AI技术正在改变UI设计的方式，分享一些应用案例。' },
+          { type: 'image', content: 'https://picsum.photos/id/113/800/400' },
+          { type: 'text', content: '从自动布局到智能配色，AI都能提供很大帮助。' }
+        ],
+        author: {
+          id: 'user_063',
+          nickname: 'AI设计师',
+          avatar: getUserAvatar('user_063')
+        },
+        createTime: '2023-10-05 10:15',
+        likeCount: 234,
+        userLiked: true,
+        commentCount: 67,
+        comments: [
+          {
+            id: 'comment_fav_004',
+            user: {
+              id: 'user_064',
+              nickname: '设计爱好者',
+              avatar: getUserAvatar('user_064')
+            },
+            content: 'AI设计工具确实越来越强大了！',
+            time: '2023-10-05 11:00',
+            likeCount: 34,
+            userLiked: false
+          }
+        ]
+      },
+      {
+        id: 'user_fav_005',
+        title: '云原生技术架构演进',
+        content: [
+          { type: 'text', content: '云原生技术正在快速发展，探讨一下架构演进趋势。' },
+          { type: 'image', content: 'https://picsum.photos/id/114/800/400' },
+          { type: 'text', content: '从单体到微服务，再到云原生，架构在不断进化。' }
+        ],
+        author: {
+          id: 'user_065',
+          nickname: '云原生专家',
+          avatar: getUserAvatar('user_065')
+        },
+        createTime: '2023-09-22 16:30',
+        likeCount: 189,
+        userLiked: true,
+        commentCount: 56,
+        comments: [
+          {
+            id: 'comment_fav_005',
+            user: {
+              id: 'user_066',
+              nickname: '运维工程师',
+              avatar: getUserAvatar('user_066')
+            },
+            content: '云原生确实让运维工作更高效了！',
+            time: '2023-09-22 17:15',
+            likeCount: 23,
+            userLiked: false
+          }
+        ]
+      }
+    ],
     // 特色话题 - 专门的数据源
     featuredTopic: {
       id: 'featured_topic_001',
@@ -1272,6 +1650,82 @@ App<IAppOption>({
         content: '王老师：关于ChatGPT的使用问题，我觉得可以辩证看待',
         time: '2025-03-07 14:30',
         read: false
+      }
+    ],
+    
+    // 当前用户关注的用户数据
+    currentUserFollowing: [
+      {
+        id: 'user_002',
+        nickname: '小红',
+        avatar: getUserAvatar('user_002'),
+        signature: '前端开发工程师，热爱新技术',
+        followers: '1.2k',
+        posts: 45
+      },
+      {
+        id: 'user_003',
+        nickname: '小李',
+        avatar: getUserAvatar('user_003'),
+        signature: '产品经理，专注用户体验',
+        followers: '856',
+        posts: 23
+      },
+      {
+        id: 'user_004',
+        nickname: '王老师',
+        avatar: getUserAvatar('user_004'),
+        signature: '资深设计师，十年UI设计经验',
+        followers: '2.3k',
+        posts: 89
+      },
+      {
+        id: 'user_005',
+        nickname: '张工程师',
+        avatar: getUserAvatar('user_005'),
+        signature: '全栈工程师，热爱开源技术',
+        followers: '1.8k',
+        posts: 67
+      },
+      {
+        id: 'user_006',
+        nickname: '陈同学',
+        avatar: getUserAvatar('user_006'),
+        signature: '在校大学生，学习前端开发',
+        followers: '324',
+        posts: 12
+      },
+      {
+        id: 'user_007',
+        nickname: '刘设计师',
+        avatar: getUserAvatar('user_007'),
+        signature: 'UI/UX设计师，追求极简主义',
+        followers: '1.5k',
+        posts: 56
+      },
+      {
+        id: 'user_008',
+        nickname: '赵产品',
+        avatar: getUserAvatar('user_008'),
+        signature: '产品总监，关注商业模式创新',
+        followers: '3.2k',
+        posts: 134
+      },
+      {
+        id: 'user_009',
+        nickname: '孙开发',
+        avatar: getUserAvatar('user_009'),
+        signature: '后端工程师，专注系统架构',
+        followers: '980',
+        posts: 34
+      },
+      {
+        id: 'user_010',
+        nickname: '周运营',
+        avatar: getUserAvatar('user_010'),
+        signature: '运营专员，擅长内容策划',
+        followers: '678',
+        posts: 28
       }
     ]
   },

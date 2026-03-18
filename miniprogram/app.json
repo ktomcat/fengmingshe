@@ -4,7 +4,8 @@
     "pages/logs/logs",
     "pages/topic/topic",
     "pages/featured/featured",
-    "pages/publish/publish"
+    "pages/publish/publish",
+    "pages/profile/profile"
   ],
   "window": {
     "navigationBarTextStyle": "black",

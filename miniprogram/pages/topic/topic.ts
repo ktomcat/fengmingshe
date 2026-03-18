@@ -30,6 +30,13 @@ Page({
     expandedMap: {},
     // 子评论分页显示
     repliesPagination: {}, // 格式: {commentId: {currentPage: 1, pageSize: 10, hasMore: true}}
+    
+    // 吸顶相关数据
+    isCommentNavSticky: false,
+    navbarHeight: 0,
+    commentNavHeight: 0,
+    commentNavOriginalTop: 0, // 评论导航原始距离顶部的距离
+    scrollTop: 0, // 当前滚动位置
   },
 
   onLoad(options: any) {
@@ -47,11 +54,26 @@ Page({
     let targetTopic = null
     
     if (topicId) {
-      // 根据topicId查找对应的话题
+      // 根据topicId查找对应的话题，依次从不同数据源查找
       if (globalData.featuredTopic && globalData.featuredTopic.id === topicId) {
         targetTopic = globalData.featuredTopic
       } else if (globalData.topics) {
-        targetTopic = globalData.topics.find((topic: any) => topic.id === topicId) || globalData.topics[0]
+        targetTopic = globalData.topics.find((topic: any) => topic.id === topicId)
+      }
+      
+      // 如果在前两个数据源中没找到，尝试从当前用户发布的帖子中查找
+      if (!targetTopic && globalData.currentUserPosts) {
+        targetTopic = globalData.currentUserPosts.find((post: any) => post.id === topicId)
+      }
+      
+      // 如果还没找到，尝试从当前用户收藏的帖子中查找
+      if (!targetTopic && globalData.currentUserFavorites) {
+        targetTopic = globalData.currentUserFavorites.find((favorite: any) => favorite.id === topicId)
+      }
+      
+      // 如果还没找到，使用默认数据
+      if (!targetTopic) {
+        targetTopic = globalData.featuredTopic || (globalData.topics ? globalData.topics[0] : null)
       }
     } else {
       // 如果没有topicId参数，使用默认数据
@@ -84,6 +106,13 @@ Page({
       expandedComments: []
     })
     
+    // 获取导航栏和评论导航的高度
+    setTimeout(() => {
+      this.getNavbarHeight()
+      this.getCommentNavHeight()
+      this.calculateCommentNavOriginalTop()
+    }, 200)
+    
     // 如果需要滚动到评论列表，延迟执行滚动操作
     if (scrollToComments) {
       setTimeout(() => {
@@ -97,6 +126,114 @@ Page({
         this.focusCommentInput()
       }, 500)
     }
+  },
+
+  onReady() {
+    // 再次确保获取高度
+    setTimeout(() => {
+      this.getNavbarHeight()
+      this.getCommentNavHeight()
+      this.calculateCommentNavOriginalTop()
+    }, 300)
+  },
+
+  // 页面滚动监听
+  onPageScroll(e: any) {
+    const { scrollTop } = e
+    const { commentNavOriginalTop, navbarHeight, isCommentNavSticky } = this.data
+    
+    // 保存当前滚动位置
+    this.setData({
+      scrollTop: scrollTop
+    })
+    
+    // 如果还没有计算出原始位置，不处理
+    if (!commentNavOriginalTop || !navbarHeight) return
+    
+    // 计算触发吸顶的阈值（评论导航原始位置 - 导航栏高度）
+    const stickyThreshold = Math.max(0, commentNavOriginalTop - navbarHeight)
+    
+    // 判断是否应该吸顶
+    // 当滚动距离 >= 阈值时，开始吸顶
+    // 当滚动距离 < 阈值时，取消吸顶
+    const shouldSticky = scrollTop >= stickyThreshold
+    
+    if (shouldSticky !== isCommentNavSticky) {
+      console.log('【吸顶效果】状态变化:', { 
+        shouldSticky, 
+        isCommentNavSticky,
+        scrollTop,
+        stickyThreshold,
+        commentNavOriginalTop,
+        navbarHeight
+      })
+      
+      this.setData({
+        isCommentNavSticky: shouldSticky
+      })
+    }
+  },
+
+  // 获取导航栏高度
+  getNavbarHeight() {
+    const query = wx.createSelectorQuery()
+    query.select('#fixed-navbar').boundingClientRect()
+    query.exec((res: any) => {
+      if (res && res[0]) {
+        console.log('【吸顶效果】导航栏高度:', res[0].height)
+        this.setData({
+          navbarHeight: res[0].height
+        })
+      }
+    })
+  },
+
+  // 获取评论导航高度
+  getCommentNavHeight() {
+    const query = wx.createSelectorQuery()
+    query.select('#comment-nav').boundingClientRect()
+    query.exec((res: any) => {
+      if (res && res[0]) {
+        console.log('【吸顶效果】评论导航高度:', res[0].height)
+        this.setData({
+          commentNavHeight: res[0].height
+        })
+      }
+    })
+  },
+
+  // 计算评论导航原始距离顶部的距离
+  calculateCommentNavOriginalTop() {
+    wx.createSelectorQuery()
+      .select('.topic-header')
+      .boundingClientRect((headerRect: any) => {
+        if (!headerRect) {
+          console.log('【吸顶效果】获取话题头部高度失败，稍后重试')
+          setTimeout(() => {
+            this.calculateCommentNavOriginalTop()
+          }, 500)
+          return
+        }
+        
+        // page-content 的 padding-top 是 88rpx，转换为px
+        const systemInfo = wx.getSystemInfoSync()
+        const pxPerRpx = systemInfo.windowWidth / 750
+        const pageContentPaddingTop = 88 * pxPerRpx
+        
+        const commentNavOriginalTop = headerRect.height + pageContentPaddingTop
+        
+        console.log('【吸顶效果】计算原始位置:', {
+          headerHeight: headerRect.height,
+          pageContentPaddingTop,
+          commentNavOriginalTop,
+          pxPerRpx
+        })
+        
+        this.setData({
+          commentNavOriginalTop: commentNavOriginalTop
+        })
+      })
+      .exec()
   },
 
   // 底部导航栏切换
@@ -150,17 +287,12 @@ Page({
     })
   },
 
-  onCopyLink() {
-    console.log('【话题页】点击复制链接按钮')
+  onCollection() {
+    console.log('【话题页】点击收藏话题按钮')
     this.closeBottomSheet()
-    wx.setClipboardData({
-      data: 'https://fengming.example.com/topic/123',
-      success: () => {
-        wx.showToast({
-          title: '链接已复制',
-          icon: 'success'
-        })
-      }
+    wx.showToast({
+      title: '收藏成功',
+      icon: 'success'
     })
   },
 
@@ -328,7 +460,11 @@ Page({
     
     // 获取当前用户信息
     const app = getApp()
-    const currentUser = app.globalData.userInfo
+    const currentUser = app.globalData.userInfo || {
+      id: 'user_' + Date.now(),
+      nickname: '当前用户',
+      avatar: '/static/default-avatar.png'
+    }
     
     // 生成新的评论或回复
     const newComment = {
@@ -458,11 +594,11 @@ Page({
         pagination.hasMore = pagination.currentPage * pagination.pageSize < targetComment.replies.length
       }
       
-    // 获取当前评论的展开状态
-    const { expandedComments, expandedMap } = this.data
-    const currentExpandedComments = Array.isArray(expandedComments) ? expandedComments : []
-    const newExpandedComments = [...currentExpandedComments]
-    const newExpandedMap = { ...(expandedMap as any) }
+      // 获取当前评论的展开状态
+      const { expandedComments, expandedMap } = this.data
+      const currentExpandedComments = Array.isArray(expandedComments) ? expandedComments : []
+      const newExpandedComments = [...currentExpandedComments]
+      const newExpandedMap = { ...(expandedMap as any) }
       
       // 如果目标评论之前没有回复（replyCount为0或1），自动展开
       const originalReplyCount = targetComment.replyCount - 1 // 减去刚添加的新回复
@@ -502,30 +638,73 @@ Page({
   },
   
   // 显示回复输入框
-  showReplyInput(e: any) {
-    const comment = e.currentTarget.dataset.comment
-    const index = e.currentTarget.dataset.index
-    const reply = e.currentTarget.dataset.reply
-    
-    console.log('【回复输入框】显示回复输入框，参数:', { comment, index, reply })
-    
-    const placeholder = reply ? 
-      `回复 @${reply.author.nickname}` : 
-      `回复 @${comment.author.nickname}`
-    
-    this.setData({
-      'replyInput.visible': true,
-      'replyInput.targetCommentId': comment.id,
-      'replyInput.targetCommentIndex': index,
-      'replyInput.targetReplyId': reply ? reply.id : '',
-      'replyInput.placeholder': placeholder,
-      'replyInput.isReplyToComment': !reply,
-      'replyInput.content': ''
-    })
-    
-    // 移除自动滚动，保持用户当前阅读位置
-    // 让用户自己决定是否需要滚动到输入框
-  },
+  // 显示回复输入框
+showReplyInput(e: any) {
+  const comment = e.currentTarget.dataset.comment
+  const index = e.currentTarget.dataset.index
+  const reply = e.currentTarget.dataset.reply
+  
+  console.log('【回复输入框】显示回复输入框，参数:', { comment, index, reply })
+  
+  const placeholder = reply ? 
+    `回复 @${reply.author.nickname}` : 
+    `回复 @${comment.author.nickname}`
+  
+  this.setData({
+    'replyInput.visible': true,
+    'replyInput.targetCommentId': comment.id,
+    'replyInput.targetCommentIndex': index,
+    'replyInput.targetReplyId': reply ? reply.id : '',
+    'replyInput.placeholder': placeholder,
+    'replyInput.isReplyToComment': !reply,
+    'replyInput.content': ''
+  })
+  
+  // 自动滚动到输入框，考虑吸顶导航栏的遮挡
+  setTimeout(() => {
+    this.scrollToReplyInput()
+  }, 100)
+},
+
+// 滚动到回复输入框
+scrollToReplyInput() {
+  const { isCommentNavSticky, navbarHeight, commentNavHeight } = this.data
+  
+  const query = wx.createSelectorQuery()
+  query.select('.reply-input-section').boundingClientRect()
+  query.selectViewport().scrollOffset()
+  query.exec((res: any) => {
+    if (res && res[0] && res[1]) {
+      const elementTop = res[0].top
+      const scrollTop = res[1].scrollTop
+      
+      // 计算目标滚动位置
+      let targetScrollTop = elementTop + scrollTop
+      
+      // 如果评论导航处于吸顶状态，需要减去导航栏高度和评论导航高度
+      if (isCommentNavSticky) {
+        targetScrollTop = targetScrollTop - navbarHeight - commentNavHeight - 20
+      } else {
+        // 如果不在吸顶状态，减去导航栏高度和一点额外空间
+        targetScrollTop = targetScrollTop - navbarHeight - 20
+      }
+      
+      console.log('【滚动到回复输入框】计算参数:', {
+        elementTop,
+        scrollTop,
+        targetScrollTop,
+        isCommentNavSticky,
+        navbarHeight,
+        commentNavHeight
+      })
+      
+      wx.pageScrollTo({
+        scrollTop: Math.max(0, targetScrollTop),
+        duration: 300
+      })
+    }
+  })
+},
   
   // 取消回复
   cancelReply() {
@@ -555,7 +734,6 @@ Page({
 
   // 展开/折叠评论的回复
   toggleReplies(e: any) {
-   
     const commentId = e.currentTarget.dataset.commentId
     const { expandedComments, expandedMap } = this.data
   
@@ -847,39 +1025,70 @@ Page({
   },
 
   // 滚动到评论列表
-  scrollToCommentsList() {
-    const query = wx.createSelectorQuery()
-    query.select('.comment-section').boundingClientRect()
-    query.selectViewport().scrollOffset()
-    query.exec((res: any) => {
-      if (res[0]) {
-        const elementTop = res[0].top
-        const scrollTop = res[1].scrollTop
-        const targetScrollTop = elementTop + scrollTop - 50
-        
-        wx.pageScrollTo({
-          scrollTop: targetScrollTop,
-          duration: 500
-        })
+ // 滚动到评论列表
+scrollToCommentsList() {
+  const { isCommentNavSticky, navbarHeight, commentNavHeight } = this.data
+  
+  const query = wx.createSelectorQuery()
+  query.select('.comment-section').boundingClientRect()
+  query.selectViewport().scrollOffset()
+  query.exec((res: any) => {
+    if (res && res[0] && res[1]) {
+      const elementTop = res[0].top
+      const scrollTop = res[1].scrollTop
+      
+      // 计算目标滚动位置
+      let targetScrollTop = elementTop + scrollTop
+      
+      // 如果评论导航处于吸顶状态，需要减去导航栏高度和评论导航高度
+      if (isCommentNavSticky) {
+        targetScrollTop = targetScrollTop - navbarHeight - commentNavHeight
       } else {
-        const backupQuery = wx.createSelectorQuery()
-        backupQuery.select('.comment-nav').boundingClientRect()
-        backupQuery.selectViewport().scrollOffset()
-        backupQuery.exec((backupRes: any) => {
-          if (backupRes[0]) {
-            const elementTop = backupRes[0].top
-            const scrollTop = backupRes[1].scrollTop
-            const targetScrollTop = elementTop + scrollTop - 50
-            
-            wx.pageScrollTo({
-              scrollTop: targetScrollTop,
-              duration: 500
-            })
-          }
-        })
+        // 如果不在吸顶状态，减去导航栏高度和一点额外空间
+        targetScrollTop = targetScrollTop - navbarHeight - 20
       }
-    })
-  },
+      
+      console.log('【滚动到评论】计算参数:', {
+        elementTop,
+        scrollTop,
+        targetScrollTop,
+        isCommentNavSticky,
+        navbarHeight,
+        commentNavHeight
+      })
+      
+      wx.pageScrollTo({
+        scrollTop: Math.max(0, targetScrollTop),
+        duration: 300
+      })
+    } else {
+      // 如果找不到.comment-section，尝试使用.comment-nav作为备选
+      const backupQuery = wx.createSelectorQuery()
+      backupQuery.select('.comment-nav').boundingClientRect()
+      backupQuery.selectViewport().scrollOffset()
+      backupQuery.exec((backupRes: any) => {
+        if (backupRes && backupRes[0] && backupRes[1]) {
+          const elementTop = backupRes[0].top
+          const scrollTop = backupRes[1].scrollTop
+          
+          let targetScrollTop = elementTop + scrollTop
+          
+          // 如果评论导航处于吸顶状态，需要减去导航栏高度
+          if (isCommentNavSticky) {
+            targetScrollTop = targetScrollTop - navbarHeight
+          } else {
+            targetScrollTop = targetScrollTop - navbarHeight - 20
+          }
+          
+          wx.pageScrollTo({
+            scrollTop: Math.max(0, targetScrollTop),
+            duration: 300
+          })
+        }
+      })
+    }
+  })
+},
   
   // 格式化时间
   formatTime(date: any): string {

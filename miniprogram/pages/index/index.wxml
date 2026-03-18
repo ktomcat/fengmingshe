@@ -132,9 +132,9 @@
         <text class="sheet-icon">📤</text>
         <text class="sheet-text">分享帖子</text>
       </view>
-      <view class="sheet-item" bindtap="onCopyLink">
-        <text class="sheet-icon">🔗</text>
-        <text class="sheet-text">复制链接</text>
+      <view class="sheet-item" bindtap="onCollection">
+        <text class="sheet-icon">📦</text>
+        <text class="sheet-text">收藏话题</text>
       </view>
       <view class="sheet-item" bindtap="onReportContent">
         <text class="sheet-icon">🚩</text>
