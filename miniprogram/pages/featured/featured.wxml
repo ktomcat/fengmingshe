@@ -29,7 +29,7 @@
             <image class="avatar" src="{{item.author.avatar}}" />
             <view class="user-details">
               <text class="username">{{item.author.nickname}}</text>
-              <text class="post-info">{{item.createTime}} </text>
+              <text class="post-info">{{formatTime(item.createTime)}} </text>
             </view>
           </view>
           <view class="more-btn" catchtap="showBottomSheet" data-topic="{{item}}">

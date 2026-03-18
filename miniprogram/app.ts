@@ -158,7 +158,7 @@ App<IAppOption>({
         nickname: '小明',
         avatar: getUserAvatar('user_001')
       },
-      createTime: '2025-03-09 08:00:00',
+      createTime: '2025-03-09 08:00',
       likeCount: 156,
       commentCount: 89,
       comments: [
@@ -170,7 +170,7 @@ App<IAppOption>({
             avatar: getUserAvatar('user_009')
           },
           content: '我是做AI开发的，说实话AI确实会替代一些重复性工作，但也会创造新岗位。我们现在最缺的是懂AI的复合型人才，而不是单纯担心被取代。',
-          time: '2025-03-09 09:15:00',
+          time: '2025-03-09 09:15',
           likeCount: 34,
           replies: [
             {
@@ -186,7 +186,7 @@ App<IAppOption>({
               avatar: getUserAvatar('user_009')
             },
               content: '问题是学习的速度赶不上AI迭代的速度啊，我刚学会的东西AI已经能自动生成了',
-              time: '2025-03-09 09:45:00',
+              time: '2025-03-09 09:45',
               likeCount: 12
             },
             {
@@ -202,7 +202,7 @@ App<IAppOption>({
               avatar: getUserAvatar('user_010')
             },
               content: '那就别学那些容易被替代的，往架构、算法、业务理解这些方向发展，AI是工具不是敌人',
-              time: '2025-03-09 10:02:00',
+              time: '2025-03-09 10:02',
               likeCount: 8
             }
           ]
@@ -215,7 +215,7 @@ App<IAppOption>({
             avatar: getUserAvatar('user_011')
           },
           content: '作为插画师，我真的快被AI搞崩溃了。客户拿着AI生成的图来砍价："你看AI几秒钟就画出来了，你凭什么收这么贵？"但AI用的都是我们画师的素材训练的，这公平吗？',
-          time: '2025-03-09 10:30:00',
+          time: '2025-03-09 10:30',
           likeCount: 56
         },
         {
@@ -226,7 +226,7 @@ App<IAppOption>({
             avatar: getUserAvatar('user_012')
           },
           content: '我关心的是伦理问题。如果自动驾驶出车祸，是车主的错还是算法的错？如果AI诊断失误，谁负责？这些法律和伦理框架都还没建立起来，就大规模推广，太危险了。',
-          time: '2025-03-09 11:20:00',
+          time: '2025-03-09 11:20',
           likeCount: 23
         }
       ]
@@ -270,7 +270,7 @@ App<IAppOption>({
           nickname: '教育观察者',
           avatar: getUserAvatar('user_002')
         },
-        createTime: '2025-03-08 20:15:00',
+        createTime: '2025-03-08 20:15',
         likeCount: 234,
         commentCount: 156,
         comments: [
@@ -282,7 +282,7 @@ App<IAppOption>({
               avatar: getUserAvatar('user_013')
             },
             content: '我现在大二，每天上课就在想：我学的这些东西到底有什么用？高数、线代，以后工作真的用得上吗？还是说只是为了拿个文凭？',
-            time: '2025-03-09 08:30:00',
+            time: '2025-03-09 08:30',
             likeCount: 45
           },
           {
@@ -293,7 +293,7 @@ App<IAppOption>({
               avatar: getUserAvatar('user_014')
             },
             content: '我做了十年招聘，说实话学历确实是敲门砖。同样两个应届生，985的和二本的，只要985的不是太差，我们肯定优先选985。这不是歧视，是筛选成本问题。',
-            time: '2025-03-09 09:15:00',
+            time: '2025-03-09 09:15',
             likeCount: 67,
             replies: [
               {
@@ -309,7 +309,7 @@ App<IAppOption>({
                   avatar: getUserAvatar('user_014')
                 },
                 content: '这不就是学历歧视吗？我高中毕业自学编程，现在带团队，手下好几个研究生。能力比学历重要多了。',
-                time: '2025-03-09 10:05:00',
+                time: '2025-03-09 10:05',
                 likeCount: 28
               },
               {
@@ -325,7 +325,7 @@ App<IAppOption>({
                   avatar: getUserAvatar('user_015')
                 },
                 content: '你说得对，但你是特例。大多数没学历的，连展示能力的机会都没有。有学历至少证明你有一定的学习能力和毅力。',
-                time: '2025-03-09 10:30:00',
+                time: '2025-03-09 10:30',
                 likeCount: 31
               }
             ]
@@ -338,7 +338,7 @@ App<IAppOption>({
               avatar: getUserAvatar('user_016')
             },
             content: '我家是农村的，父母种地供我上大学。对我来说，大学是改变命运的唯一出路。虽然现在工作也不咋地，但至少不用像父母那样面朝黄土背朝天。',
-            time: '2025-03-09 11:00:00',
+            time: '2025-03-09 11:00',
             likeCount: 89
           },
           {
@@ -349,7 +349,7 @@ App<IAppOption>({
               avatar: getUserAvatar('user_017')
             },
             content: '我在国外读过书，感觉国内外大学最大的区别是：国外更注重批判性思维和自主学习，国内还是填鸭式教育居多。不是大学没用，是咱们的教育方式该改革了。',
-            time: '2025-03-09 13:20:00',
+            time: '2025-03-09 13:20',
             likeCount: 52
           }
         ]
@@ -391,7 +391,7 @@ App<IAppOption>({
           nickname: '职场观察员',
           avatar: getUserAvatar('user_003')
         },
-        createTime: '2025-03-07 14:30:00',
+        createTime: '2025-03-07 14:30',
         likeCount: 512,
         commentCount: 378,
         comments: [
@@ -403,7 +403,7 @@ App<IAppOption>({
               avatar: getUserAvatar('user_018')
             },
             content: '我就是你说的那个在大理的UI设计姑娘！哈哈，没想到被写进文章了。说实话，数字游民确实有孤独的时候，但对我来说，自由的快乐远大于孤独的痛苦。',
-            time: '2025-03-08 09:20:00',
+            time: '2025-03-08 09:20',
             likeCount: 78,
             replies: [
               {
@@ -419,7 +419,7 @@ App<IAppOption>({
                   avatar: getUserAvatar('user_018')
                 },
                 content: '姐妹你是怎么找到客户的？我也想试试，但怕收入不稳定',
-                time: '2025-03-08 10:15:00',
+                time: '2025-03-08 10:15',
                 likeCount: 23
               },
               {
@@ -435,7 +435,7 @@ App<IAppOption>({
                   avatar: getUserAvatar('user_019')
                 },
                 content: '我是先在upwork上接单积累口碑，慢慢有了固定客户。刚开始确实难，建议先不要辞职，业余时间接点小单试试水。',
-                time: '2025-03-08 11:30:00',
+                time: '2025-03-08 11:30',
                 likeCount: 45
               }
             ]
@@ -448,7 +448,7 @@ App<IAppOption>({
               avatar: getUserAvatar('user_020')
             },
             content: '我在国企干了二十年，虽然工资不高，但公积金高、福利好、稳定。去年女儿结婚，单位还给了婚假和礼金。这种安全感，数字游民给不了。',
-            time: '2025-03-08 14:45:00',
+            time: '2025-03-08 14:45',
             likeCount: 56
           },
           {
@@ -459,7 +459,7 @@ App<IAppOption>({
               avatar: getUserAvatar('user_021')
             },
             content: '我就是文中的阿杰...现在回公司上班了，但说实话，还是怀念自由职业的日子。现在每天开会、写周报、应付办公室政治，感觉在浪费生命。',
-            time: '2025-03-08 16:20:00',
+            time: '2025-03-08 16:20',
             likeCount: 42,
             replies: [
               {
@@ -475,7 +475,7 @@ App<IAppOption>({
                   avatar: getUserAvatar('user_021')
                 },
                 content: '那为什么还要回去呢？自由职业不好吗？',
-                time: '2025-03-08 17:05:00',
+                time: '2025-03-08 17:05',
                 likeCount: 8
               },
               {
@@ -491,7 +491,7 @@ App<IAppOption>({
                   avatar: getUserAvatar('user_022')
                 },
                 content: '因为要结婚买房啊，自由职业贷款都批不下来。现实问题，没办法。',
-                time: '2025-03-08 17:30:00',
+                time: '2025-03-08 17:30',
                 likeCount: 34
               }
             ]
@@ -534,7 +534,7 @@ App<IAppOption>({
           nickname: '社会观察家',
           avatar: getUserAvatar('user_004')
         },
-        createTime: '2025-03-06 09:20:00',
+        createTime: '2025-03-06 09:20',
         likeCount: 678,
         commentCount: 445,
         comments: [
@@ -546,7 +546,7 @@ App<IAppOption>({
               avatar: getUserAvatar('user_023')
             },
             content: '我也想躺平，可房贷谁帮我还？孩子学费谁出？父母养老钱谁给？我们这些80后，上有老下有小，躺不平也卷不动，卡在中间最难受。',
-            time: '2025-03-07 08:30:00',
+            time: '2025-03-07 08:30',
             likeCount: 123
           },
           {
@@ -557,7 +557,7 @@ App<IAppOption>({
               avatar: getUserAvatar('user_024')
             },
             content: '我就是文中小陈的原型！哈哈哈，被写进文章了。现在父母天天催我找对象，说躺平没出息。可我觉得，快乐最重要啊，为什么要用别人的标准衡量自己？',
-            time: '2025-03-07 10:15:00',
+            time: '2025-03-07 10:15',
             likeCount: 89,
             replies: [
               {
@@ -573,7 +573,7 @@ App<IAppOption>({
                   avatar: getUserAvatar('user_024')
                 },
                 content: '孩子，等你到了我这个年纪就明白了，人不能只看眼前。你现在觉得快乐，老了怎么办？',
-                time: '2025-03-07 11:20:00',
+                time: '2025-03-07 11:20',
                 likeCount: 34
               },
               {
@@ -589,7 +589,7 @@ App<IAppOption>({
                   avatar: getUserAvatar('user_025')
                 },
                 content: '阿姨，我们这代人想通了，与其焦虑未来，不如过好现在。未来什么样谁知道呢？',
-                time: '2025-03-07 13:45:00',
+                time: '2025-03-07 13:45',
                 likeCount: 56
               }
             ]
@@ -602,7 +602,7 @@ App<IAppOption>({
               avatar: getUserAvatar('user_026')
             },
             content: '我就是你说的那个找到平衡点的姐姐！没想到有人把我的话写进文章。其实我就是想通了：工作是为了生活，不是生活为了工作。该努力时努力，该休息时休息，别被任何人绑架。',
-            time: '2025-03-07 15:30:00',
+            time: '2025-03-07 15:30',
             likeCount: 67
           },
           {
@@ -613,7 +613,7 @@ App<IAppOption>({
               avatar: getUserAvatar('user_027')
             },
             content: '我就是老王本王！现在胃病严重，每天吃药。说实话，如果能重来，我不会这么拼。但没办法，已经到这个位置了，下不来。年轻人，身体是革命的本钱，别学我。',
-            time: '2025-03-07 18:20:00',
+            time: '2025-03-07 18:20',
             likeCount: 145
           }
         ]
@@ -656,7 +656,7 @@ App<IAppOption>({
           nickname: '80后独生子',
           avatar: getUserAvatar('user_005')
         },
-        createTime: '2025-03-05 18:45:00',
+        createTime: '2025-03-05 18:45',
         likeCount: 345,
         commentCount: 289,
         comments: [
@@ -668,7 +668,7 @@ App<IAppOption>({
               avatar: getUserAvatar('user_028')
             },
             content: '我就是你文中的小张...看到这篇文章眼泪都下来了。每天被亲戚邻居骂不孝，我妈也怨我。可我真的尽力了，在北京打拼不容易，我也有自己的小家要养。谁能告诉我，到底该怎么办？',
-            time: '2025-03-06 08:30:00',
+            time: '2025-03-06 08:30',
             likeCount: 156,
             replies: [
               {
@@ -684,7 +684,7 @@ App<IAppOption>({
                   avatar: getUserAvatar('user_028')
                 },
                 content: '小张，你已经做得很好了。孝道不应该是道德绑架。定期去看妈妈，多视频，让她感受到你的关心，比整天在一起却充满怨气要好。',
-                time: '2025-03-06 09:45:00',
+                time: '2025-03-06 09:45',
                 likeCount: 45
               },
               {
@@ -700,7 +700,7 @@ App<IAppOption>({
                   avatar: getUserAvatar('user_029')
                 },
                 content: '说得轻巧，父母养你小，你养父母老，这是天经地义的！送养老院就是逃避责任！',
-                time: '2025-03-06 10:20:00',
+                time: '2025-03-06 10:20',
                 likeCount: 12
               },
               {
@@ -716,7 +716,7 @@ App<IAppOption>({
                   avatar: getUserAvatar('user_030')
                 },
                 content: '我在养老院工作十年，很多老人其实在养老院比在家开心，有同龄人聊天，有专业护理。在家反而孤单，子女上班去了，一整天没人说话。',
-                time: '2025-03-06 11:05:00',
+                time: '2025-03-06 11:05',
                 likeCount: 78
               }
             ]
@@ -729,7 +729,7 @@ App<IAppOption>({
               avatar: getUserAvatar('user_032')
             },
             content: '我就是你文中那个在国外工作的女儿。我每年回国两次，平时每天视频。我爸妈说，他们在小区里可自豪了，说女儿在国外很有出息。但我知道，他们生病的时候我都不在身边，心里很愧疚。',
-            time: '2025-03-06 13:15:00',
+            time: '2025-03-06 13:15',
             likeCount: 67
           },
           {
@@ -740,7 +740,7 @@ App<IAppOption>({
               avatar: getUserAvatar('user_033')
             },
             content: '我是60后，我想说，我们这代人其实也不想拖累孩子。我和老伴商量好了，以后就去养老院，不给孩子添麻烦。孩子们过好自己的日子，我们就满足了。',
-            time: '2025-03-06 15:40:00',
+            time: '2025-03-06 15:40',
             likeCount: 89
           }
         ]
@@ -782,7 +782,7 @@ App<IAppOption>({
           nickname: '教育科技观察者',
           avatar: getUserAvatar('user_006')
         },
-        createTime: '2025-03-04 10:30:00',
+        createTime: '2025-03-04 10:30',
         likeCount: 423,
         commentCount: 312,
         comments: [
@@ -794,7 +794,7 @@ App<IAppOption>({
               avatar: getUserAvatar('user_034')
             },
             content: '我就是那个侄子！叔你居然把我写进文章了。其实我说那句话的意思是：现在的作业太无聊了，如果作业有意义，我们也不会想用AI糊弄。',
-            time: '2025-03-05 08:20:00',
+            time: '2025-03-05 08:20',
             likeCount: 87
           },
           {
@@ -805,7 +805,7 @@ App<IAppOption>({
               avatar: getUserAvatar('user_035')
             },
             content: '我是高中老师，现在批改作业像在玩"找AI"游戏。最气的是有些学生连改都不改，直接复制粘贴，一眼就能看出来。但说实话，我也在反思，是不是我们的作业形式该变了？',
-            time: '2025-03-05 09:45:00',
+            time: '2025-03-05 09:45',
             likeCount: 112,
             replies: [
               {
@@ -821,7 +821,7 @@ App<IAppOption>({
                   avatar: getUserAvatar('user_035')
                 },
                 content: '老师，我觉得可以让学生先用AI写，然后指出AI的问题，再自己优化。这样反而能锻炼批判性思维。',
-                time: '2025-03-05 10:30:00',
+                time: '2025-03-05 10:30',
                 likeCount: 45
               },
               {
@@ -837,7 +837,7 @@ App<IAppOption>({
                   avatar: getUserAvatar('user_036')
                 },
                 content: '有道理，我试试看。不过还得先研究怎么用AI，感觉我们老师也要跟上时代了。',
-                time: '2025-03-05 11:15:00',
+                time: '2025-03-05 11:15',
                 likeCount: 34
               }
             ]
@@ -850,7 +850,7 @@ App<IAppOption>({
               avatar: getUserAvatar('user_037')
             },
             content: '我就是文中那个乐观的大学教授。其实我已经在课堂上教学生用AI了，告诉他们怎么提问、怎么甄别、怎么优化。与其禁止，不如教会他们驾驭工具。',
-            time: '2025-03-05 14:20:00',
+            time: '2025-03-05 14:20',
             likeCount: 76
           },
           {
@@ -861,7 +861,7 @@ App<IAppOption>({
               avatar: getUserAvatar('user_038')
             },
             content: '我孩子才小学六年级，现在写作文就用AI。我担心以后他连基本的写作能力都没有了。可我说他，他还嫌我out了。怎么办啊？',
-            time: '2025-03-05 16:10:00',
+            time: '2025-03-05 16:10',
             likeCount: 54,
             replies: [
               {
@@ -877,7 +877,7 @@ App<IAppOption>({
                   avatar: getUserAvatar('user_038')
                 },
                 content: '建议您和孩子一起用AI，让他先自己写，然后用AI优化，对比有什么区别。这样既锻炼了写作能力，又学会了使用工具。',
-                time: '2025-03-05 17:30:00',
+                time: '2025-03-05 17:30',
                 likeCount: 42
               }
             ]
@@ -921,7 +921,7 @@ App<IAppOption>({
           nickname: '楼市观察者',
           avatar: getUserAvatar('user_007')
         },
-        createTime: '2025-03-03 16:15:00',
+        createTime: '2025-03-03 16:15',
         likeCount: 567,
         commentCount: 432,
         comments: [
@@ -933,7 +933,7 @@ App<IAppOption>({
               avatar: getUserAvatar('user_040')
             },
             content: '我就是阿强！说实话，每个月还完房贷真的挺难的，但看到房价涨了，心里又觉得值了。前两天小区同户型卖了350万，感觉自己赚了50万。',
-            time: '2025-03-04 09:15:00',
+            time: '2025-03-04 09:15',
             likeCount: 67,
             replies: [
               {
@@ -949,7 +949,7 @@ App<IAppOption>({
                   avatar: getUserAvatar('user_040')
                 },
                 content: '纸面富贵而已，你又没卖。而且现在这个行情，能涨多久还不一定呢。',
-                time: '2025-03-04 10:20:00',
+                time: '2025-03-04 10:20',
                 likeCount: 23
               },
               {
@@ -965,7 +965,7 @@ App<IAppOption>({
                   avatar: getUserAvatar('user_041')
                 },
                 content: '至少有个盼头吧。租房的话，每个月6000给房东，啥也落不着。',
-                time: '2025-03-04 11:05:00',
+                time: '2025-03-04 11:05',
                 likeCount: 45
               }
             ]
@@ -978,7 +978,7 @@ App<IAppOption>({
               avatar: getUserAvatar('user_042')
             },
             content: '我是阿珍！看到被写进文章好惊喜。其实我和男朋友现在过得挺开心的，每年出国玩两次，周末探店、看展。买房的朋友羡慕我们，我们还羡慕他们有房呢，各有各的好吧。',
-            time: '2025-03-04 13:30:00',
+            time: '2025-03-04 13:30',
             likeCount: 89
           },
           {
@@ -989,7 +989,7 @@ App<IAppOption>({
               avatar: getUserAvatar('user_043')
             },
             content: '我在北京租房十年了，最大的痛就是搬家。五年搬了7次，每次都被房东涨价或者卖房赶走。真的累了，今年咬牙买了房，虽然远点小点，但再也不用看房东脸色了。',
-            time: '2025-03-04 15:45:00',
+            time: '2025-03-04 15:45',
             likeCount: 134
           },
           {
@@ -1000,7 +1000,7 @@ App<IAppOption>({
               avatar: getUserAvatar('user_044')
             },
             content: '从投资角度说，现在买房确实不是好时机。租售比太低，200万的房子一年租金才3万，还不如存银行。但架不住中国人对房子的执念啊。',
-            time: '2025-03-04 18:20:00',
+            time: '2025-03-04 18:20',
             likeCount: 56
           }
         ]
@@ -1042,7 +1042,7 @@ App<IAppOption>({
           nickname: '育儿那些事儿',
           avatar: getUserAvatar('user_008')
         },
-        createTime: '2025-03-02 09:45:00',
+        createTime: '2025-03-02 09:45',
         likeCount: 345,
         commentCount: 289,
         comments: [
@@ -1054,7 +1054,7 @@ App<IAppOption>({
               avatar: getUserAvatar('user_045')
             },
             content: '我就是那个二年级小朋友！叔叔你发这篇文章，我妈看到了，她说明天给我减掉一个班。谢谢叔叔！',
-            time: '2025-03-03 08:10:00',
+            time: '2025-03-03 08:10',
             likeCount: 234,
             replies: [
               {
@@ -1070,7 +1070,7 @@ App<IAppOption>({
                   avatar: getUserAvatar('user_045')
                 },
                 content: '我是妈妈，看到评论里孩子的话，眼泪下来了。可能我真的太焦虑了，对不起宝贝。',
-                time: '2025-03-03 09:20:00',
+                time: '2025-03-03 09:20',
                 likeCount: 156
               },
               {
@@ -1086,7 +1086,7 @@ App<IAppOption>({
                   avatar: getUserAvatar('user_046')
                 },
                 content: '妈妈不哭，我知道你是为我好。只要少上两个班，我就很开心啦！',
-                time: '2025-03-03 10:05:00',
+                time: '2025-03-03 10:05',
                 likeCount: 189
               }
             ]
@@ -1099,7 +1099,7 @@ App<IAppOption>({
               avatar: getUserAvatar('user_047')
             },
             content: '我就是老张！现在真的焦虑了，孩子回来哭着说同学笑他，我也很内疚。但报班又怕孩子太累，太难了。',
-            time: '2025-03-03 11:30:00',
+            time: '2025-03-03 11:30',
             likeCount: 45
           },
           {
@@ -1110,7 +1110,7 @@ App<IAppOption>({
               avatar: getUserAvatar('user_048')
             },
             content: '我是教钢琴的，见过太多被逼着来的孩子。其实兴趣班的关键在于"兴趣"两个字。如果孩子不喜欢，再好的老师也教不进去。',
-            time: '2025-03-03 14:15:00',
+            time: '2025-03-03 14:15',
             likeCount: 67,
             replies: [
               {
@@ -1126,7 +1126,7 @@ App<IAppOption>({
                   avatar: getUserAvatar('user_048')
                 },
                 content: '老师，我家孩子一开始喜欢，学了一年就不想学了，要逼着继续吗？',
-                time: '2025-03-03 15:20:00',
+                time: '2025-03-03 15:20',
                 likeCount: 12
               },
               {
@@ -1142,7 +1142,7 @@ App<IAppOption>({
                   avatar: getUserAvatar('user_049')
                 },
                 content: '可以和孩子商量，定个小目标，比如再坚持半年，如果还是不想学就停。很多孩子过了瓶颈期又会重新喜欢上的。',
-                time: '2025-03-03 16:10:00',
+                time: '2025-03-03 16:10',
                 likeCount: 34
               }
             ]
@@ -1155,7 +1155,7 @@ App<IAppOption>({
               avatar: getUserAvatar('user_050')
             },
             content: '我小时候被逼着学书法，当时恨死我妈了。现在在公司，领导总夸我字写得好，年会还让我写对联。真的感谢我妈当年的坚持。',
-            time: '2025-03-03 18:45:00',
+            time: '2025-03-03 18:45',
             likeCount: 78
           }
         ]
@@ -1179,7 +1179,7 @@ App<IAppOption>({
         type: 'like',
         title: '小红点赞了你的话题',
         content: '小红点赞了你发布的"大学教育：究竟是塑造人才还是浪费时间？"',
-        time: '2025-03-09 10:15:00',
+        time: '2025-03-09 10:15',
         read: false
       },
       {
@@ -1187,7 +1187,7 @@ App<IAppOption>({
         type: 'comment',
         title: '小李评论了你的话题',
         content: '小李：我觉得大学教育还是很重要的，不仅是学知识，更是学做人',
-        time: '2025-03-09 09:45:00',
+        time: '2025-03-09 09:45',
         read: false
       },
       {
@@ -1195,7 +1195,7 @@ App<IAppOption>({
         type: 'vote',
         title: '你的投票有了新结果',
         content: '你参与的"你支持还是反对躺平的生活态度？"话题投票人数已突破800人',
-        time: '2025-03-08 16:30:00',
+        time: '2025-03-08 16:30',
         read: true
       },
       {
@@ -1203,7 +1203,7 @@ App<IAppOption>({
         type: 'follow',
         title: '小张关注了你',
         content: '小张成为了你的新粉丝',
-        time: '2025-03-08 11:20:00',
+        time: '2025-03-08 11:20',
         read: true
       },
       {
@@ -1211,7 +1211,7 @@ App<IAppOption>({
         type: 'comment',
         title: '王老师评论了你的话题',
         content: '王老师：关于ChatGPT的使用问题，我觉得可以辩证看待',
-        time: '2025-03-07 14:30:00',
+        time: '2025-03-07 14:30',
         read: false
       }
     ]

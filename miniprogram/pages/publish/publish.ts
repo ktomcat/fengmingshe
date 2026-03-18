@@ -361,9 +361,17 @@ Component({
         }).filter(Boolean),
         author: {
           nickname: app.globalData.userInfo?.nickname || '匿名用户',
-          avatar: app.globalData.userInfo?.avatar || 'https://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRna42FI242Lcia07jQodd2FJGIYQfG0LAJGFxM4FbnQP6yfMxBgJ0F3YRqJCJ1aPAK2dQagdusBZg/0'
+          avatar: app.globalData.userInfo?.avatar || ''
         },
-        createTime: new Date().toLocaleString('zh-CN'),
+        createTime: (() => {
+          const now = new Date();
+          const year = now.getFullYear();
+          const month = String(now.getMonth() + 1).padStart(2, '0');
+          const day = String(now.getDate()).padStart(2, '0');
+          const hours = String(now.getHours()).padStart(2, '0');
+          const minutes = String(now.getMinutes()).padStart(2, '0');
+          return `${year}-${month}-${day} ${hours}:${minutes}`;
+        })(),
         likeCount: 0,
         commentCount: 0,
         share: 0
