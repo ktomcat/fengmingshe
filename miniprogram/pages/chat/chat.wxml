@@ -1,0 +1,100 @@
+<!-- 消息页面 -->
+<view class="chat-container">
+  <!-- 顶部导航栏 - 与profile页面统一 -->
+  <view class="fixed-navbar" id="fixed-navbar">
+    <navigation-bar 
+      title="蜂鸣社" 
+      background="#ffffff" 
+      color="#D7423D" 
+      back="{{false}}"
+      home-button="{{false}}"
+      left-logo="{{true}}"
+      show-title="{{false}}"
+    ></navigation-bar>
+  </view>
+
+  <!-- 页面内容 -->
+  <view class="page-content">
+    <!-- 消息列表 -->
+    <view class="chat-list">
+      <!-- 消息分类 -->
+      <view class="chat-categories">
+        <view class="category-item {{activeCategory === 'all' ? 'active' : ''}}" bindtap="switchCategory" data-category="all">
+          <text class="category-text">全部消息</text>
+        </view>
+        <view class="category-item {{activeCategory === 'interaction' ? 'active' : ''}}" bindtap="switchCategory" data-category="interaction">
+          <text class="category-text">互动消息</text>
+        </view>
+        <view class="category-item {{activeCategory === 'system' ? 'active' : ''}}" bindtap="switchCategory" data-category="system">
+          <text class="category-text">系统通知</text>
+        </view>
+      </view>
+
+      <!-- 消息列表 -->
+      <view class="messages-section">
+        <!-- 全部消息 -->
+        <view class="message-list" wx:if="{{activeCategory === 'all'}}">
+          <view class="message-item" wx:for="{{messages}}" wx:key="id" wx:for-item="item" bindtap="onMessageTap" data-message="{{item}}">
+            <view class="message-avatar">
+              <image class="avatar" src="{{item.avatar}}" mode="aspectFill" />
+              <view class="badge" wx:if="{{!item.read}}"></view>
+            </view>
+            <view class="message-content">
+              <view class="message-header">
+                <text class="sender-name">{{item.sender}}</text>
+                <text class="message-time">{{item.time}}</text>
+              </view>
+              <text class="message-preview">{{item.preview}}</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 互动消息 -->
+        <view class="message-list" wx:if="{{activeCategory === 'interaction'}}">
+          <view class="message-item" wx:for="{{interactionMessages}}" wx:key="id" wx:for-item="item" bindtap="onMessageTap" data-message="{{item}}">
+            <view class="message-avatar">
+              <image class="avatar" src="{{item.avatar}}" mode="aspectFill" />
+              <view class="badge" wx:if="{{!item.read}}"></view>
+            </view>
+            <view class="message-content">
+              <view class="message-header">
+                <text class="sender-name">{{item.sender}}</text>
+                <text class="message-time">{{item.time}}</text>
+              </view>
+              <text class="message-preview">{{item.preview}}</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 系统通知 -->
+        <view class="message-list" wx:if="{{activeCategory === 'system'}}">
+          <view class="message-item" wx:for="{{systemMessages}}" wx:key="id" wx:for-item="item" bindtap="onMessageTap" data-message="{{item}}">
+            <view class="message-avatar">
+              <image class="avatar" src="{{item.avatar}}" mode="aspectFill" />
+              <view class="badge" wx:if="{{!item.read}}"></view>
+            </view>
+            <view class="message-content">
+              <view class="message-header">
+                <text class="sender-name">{{item.sender}}</text>
+                <text class="message-time">{{item.time}}</text>
+              </view>
+              <text class="message-preview">{{item.preview}}</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 空状态 -->
+        <view class="empty-state" wx:if="{{(activeCategory === 'all' && messages.length === 0) || (activeCategory === 'interaction' && interactionMessages.length === 0) || (activeCategory === 'system' && systemMessages.length === 0)}}">
+          <text>暂无消息</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部导航栏 -->
+  <bottom-nav 
+    wx:if="{{true}}"
+    current="{{currentTab}}" 
+    bind:change="onTabChange"
+  />
+</view>

@@ -1,0 +1,190 @@
+/** chat.less **/
+page {
+  background-color: #f8f5f5;
+  min-height: 100vh;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+.chat-container {
+  position: relative;
+  min-height: 100vh;
+  width: 100%;
+  background-color: #ffffff;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  padding-top: 80rpx;
+  padding-bottom: 60rpx;
+}
+
+/* 固定导航栏样式 - 与profile页面完全一致 */
+.fixed-navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  background-color: #ffffff;
+}
+
+/* 页面内容区域 - 与profile页面完全一致 */
+.page-content {
+  padding-top: 88rpx;
+  padding-bottom: 68rpx;
+  min-height: calc(100vh - 88rpx - 200rpx);
+  width: 100%;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+
+/* 消息列表容器 */
+.chat-list {
+  background-color: #ffffff;
+}
+
+/* 消息分类 */
+.chat-categories {
+  display: flex;
+  border-bottom: 1rpx solid #f3f4f6;
+  padding: 0 48rpx;
+  background-color: #ffffff;
+}
+
+.category-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24rpx 0;
+  cursor: pointer;
+  position: relative;
+}
+
+.category-item.active {
+  .category-text {
+    color: #D7423D;
+    font-weight: 600;
+  }
+}
+
+.category-item::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 4rpx;
+  background-color: #D7423D;
+  border-radius: 2rpx;
+  transition: width 0.3s ease;
+}
+
+.category-item.active::after {
+  width: 60rpx;
+}
+
+.category-text {
+  color: #6b7280;
+  font-size: 28rpx;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+/* 消息内容区域 */
+.messages-section {
+  min-height: 400rpx;
+}
+
+/* 消息列表 */
+.message-list {
+  padding: 0;
+}
+
+.message-item {
+  display: flex;
+  align-items: center;
+  padding: 32rpx 48rpx;
+  border-bottom: 1rpx solid #f3f4f6;
+  background-color: #ffffff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.message-item:active {
+  background-color: #f8f9fa;
+}
+
+.message-avatar {
+  position: relative;
+  margin-right: 24rpx;
+}
+
+.avatar {
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 50%;
+  background-color: #f3f4f6;
+}
+
+.badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 20rpx;
+  height: 20rpx;
+  border-radius: 50%;
+  background-color: #D7423D;
+  border: 2rpx solid #ffffff;
+}
+
+.message-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.message-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sender-name {
+  color: #374151;
+  font-size: 32rpx;
+  font-weight: 600;
+}
+
+.message-time {
+  color: #9ca3af;
+  font-size: 24rpx;
+}
+
+.message-preview {
+  color: #6b7280;
+  font-size: 28rpx;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* 空状态 */
+.empty-state {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 400rpx;
+  color: #9ca3af;
+  font-size: 28rpx;
+}
+
+/* 加载更多 */
+.load-more {
+  text-align: center;
+  padding: 40rpx;
+  color: #9ca3af;
+  font-size: 28rpx;
+}

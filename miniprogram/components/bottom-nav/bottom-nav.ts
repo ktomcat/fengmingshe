@@ -30,7 +30,7 @@ Component({
       { icon: '🏠', text: '首页', page: 'index' },
       { icon: '🔍', text: '精选', page: 'featured' },
       { icon: '🔈', text: '发布', page: 'publish' },
-      { icon: '💬', text: '消息', page: 'message' },
+      { icon: '💬', text: '消息', page: 'chat' },
       { icon: '👤', text: '我的', page: 'profile' }
     ]
   },
@@ -98,9 +98,9 @@ Component({
             url: '/pages/publish/publish'
           })
           break
-        case 'message':
+        case 'chat':
           wx.reLaunch({
-            url: '/pages/message/message'
+            url: '/pages/chat/chat'
           })
           break
         case 'profile':
