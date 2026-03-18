@@ -461,10 +461,16 @@ Page({
     const user = e.currentTarget.dataset.user
     console.log('点击关注用户:', user)
     
-    wx.showToast({
-      title: '跳转到用户主页',
-      icon: 'none',
-      duration: 1500
+    // 跳转到用户主页
+    wx.navigateTo({
+      url: `/pages/user/user?userId=${user.id}`,
+      fail: (err) => {
+        console.error('跳转到用户主页失败:', err)
+        wx.showToast({
+          title: '跳转失败',
+          icon: 'none'
+        })
+      }
     })
   },
 

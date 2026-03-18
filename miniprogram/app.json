@@ -5,7 +5,8 @@
     "pages/topic/topic",
     "pages/featured/featured",
     "pages/publish/publish",
-    "pages/profile/profile"
+    "pages/profile/profile",
+    "pages/user/user"
   ],
   "window": {
     "navigationBarTextStyle": "black",
