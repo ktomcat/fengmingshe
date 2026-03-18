@@ -555,34 +555,25 @@ Page({
 
   // 展开/折叠评论的回复
   toggleReplies(e: any) {
-    console.log('【展开/折叠】点击事件触发，参数:', e.currentTarget.dataset)
-    
+   
     const commentId = e.currentTarget.dataset.commentId
     const { expandedComments, expandedMap } = this.data
-    
-    console.log('【展开/折叠】当前展开状态:', expandedComments, '目标评论ID:', commentId)
-    
+  
     // 确保expandedComments是数组
     const currentExpandedComments = Array.isArray(expandedComments) ? expandedComments : []
     
     const newExpandedComments = [...currentExpandedComments]
     const index = newExpandedComments.indexOf(commentId)
-    
-    console.log('【展开/折叠】当前评论ID在数组中的索引:', index)
-    
+  
     if (index > -1) {
       newExpandedComments.splice(index, 1)
-      console.log('【展开/折叠】收起评论:', commentId)
     } else {
       newExpandedComments.push(commentId)
-      console.log('【展开/折叠】展开评论:', commentId)
     }
     
     // 更新展开映射
     const newExpandedMap = { ...expandedMap }
     newExpandedMap[commentId] = index === -1
-    
-    console.log('【展开/折叠】更新后展开状态:', newExpandedComments)
     
     this.setData({
       expandedComments: newExpandedComments,
@@ -774,6 +765,7 @@ Page({
       createTime: comment.time,
       likeCount: comment.likeCount,
       replyCount: comment.replies ? comment.replies.length : 0,
+      userLiked: comment.userLiked !== undefined ? comment.userLiked : false,
       replies: comment.replies ? comment.replies.map((reply: any) => ({
         id: reply.id,
         content: reply.content,
@@ -789,7 +781,7 @@ Page({
         } : null,
         createTime: reply.time,
         likeCount: reply.likeCount,
-        userLiked: false
+        userLiked: reply.userLiked !== undefined ? reply.userLiked : false
       })) : [],
       isFeatured: comment.likeCount > 10
     }))
