@@ -1,18 +1,128 @@
 // app.ts
+
+// 头像池
+const avatarPool = [
+  // randomuser.me 男性头像
+  'https://randomuser.me/api/portraits/men/1.jpg',
+  'https://randomuser.me/api/portraits/men/5.jpg',
+  'https://randomuser.me/api/portraits/men/12.jpg',
+  'https://randomuser.me/api/portraits/men/18.jpg',
+  'https://randomuser.me/api/portraits/men/23.jpg',
+  'https://randomuser.me/api/portraits/men/27.jpg',
+  'https://randomuser.me/api/portraits/men/32.jpg',
+  'https://randomuser.me/api/portraits/men/36.jpg',
+  'https://randomuser.me/api/portraits/men/41.jpg',
+  'https://randomuser.me/api/portraits/men/45.jpg',
+  'https://randomuser.me/api/portraits/men/49.jpg',
+  'https://randomuser.me/api/portraits/men/52.jpg',
+  'https://randomuser.me/api/portraits/men/58.jpg',
+  'https://randomuser.me/api/portraits/men/63.jpg',
+  'https://randomuser.me/api/portraits/men/67.jpg',
+  'https://randomuser.me/api/portraits/men/72.jpg',
+  'https://randomuser.me/api/portraits/men/76.jpg',
+  'https://randomuser.me/api/portraits/men/81.jpg',
+  'https://randomuser.me/api/portraits/men/85.jpg',
+  'https://randomuser.me/api/portraits/men/92.jpg',
+  
+  // randomuser.me 女性头像
+  'https://randomuser.me/api/portraits/women/2.jpg',
+  'https://randomuser.me/api/portraits/women/7.jpg',
+  'https://randomuser.me/api/portraits/women/11.jpg',
+  'https://randomuser.me/api/portraits/women/16.jpg',
+  'https://randomuser.me/api/portraits/women/20.jpg',
+  'https://randomuser.me/api/portraits/women/24.jpg',
+  'https://randomuser.me/api/portraits/women/29.jpg',
+  'https://randomuser.me/api/portraits/women/33.jpg',
+  'https://randomuser.me/api/portraits/women/38.jpg',
+  'https://randomuser.me/api/portraits/women/42.jpg',
+  'https://randomuser.me/api/portraits/women/46.jpg',
+  'https://randomuser.me/api/portraits/women/51.jpg',
+  'https://randomuser.me/api/portraits/women/55.jpg',
+  'https://randomuser.me/api/portraits/women/59.jpg',
+  'https://randomuser.me/api/portraits/women/64.jpg',
+  'https://randomuser.me/api/portraits/women/68.jpg',
+  'https://randomuser.me/api/portraits/women/73.jpg',
+  'https://randomuser.me/api/portraits/women/77.jpg',
+  'https://randomuser.me/api/portraits/women/82.jpg',
+  'https://randomuser.me/api/portraits/women/88.jpg',
+  
+  
+  // dicebear 机器人头像 - 改为PNG格式
+  'https://api.dicebear.com/7.x/bottts/png?seed=Fluffy&size=100',
+  'https://api.dicebear.com/7.x/bottts/png?seed=Robot1&size=100',
+  'https://api.dicebear.com/7.x/bottts/png?seed=CatBot&size=100',
+  'https://api.dicebear.com/7.x/bottts/png?seed=DogBot&size=100',
+  'https://api.dicebear.com/7.x/bottts/png?seed=BearBot&size=100',
+  'https://api.dicebear.com/7.x/bottts/png?seed=Panda&size=100',
+  'https://api.dicebear.com/7.x/bottts/png?seed=Kitty&size=100',
+  'https://api.dicebear.com/7.x/bottts/png?seed=Penguin&size=100',
+  'https://api.dicebear.com/7.x/bottts/png?seed=Monkey&size=100',
+  'https://api.dicebear.com/7.x/bottts/png?seed=Elephant&size=100',
+  
+  // dicebear 像素艺术头像 - 改为PNG格式
+  'https://api.dicebear.com/7.x/pixel-art/png?seed=Mario&size=100',
+  'https://api.dicebear.com/7.x/pixel-art/png?seed=Luigi&size=100',
+  'https://api.dicebear.com/7.x/pixel-art/png?seed=Peach&size=100',
+  'https://api.dicebear.com/7.x/pixel-art/png?seed=Toad&size=100',
+  'https://api.dicebear.com/7.x/pixel-art/png?seed=Yoshi&size=100',
+  'https://api.dicebear.com/7.x/pixel-art/png?seed=Link&size=100',
+  'https://api.dicebear.com/7.x/pixel-art/png?seed=Zelda&size=100',
+  'https://api.dicebear.com/7.x/pixel-art/png?seed=Samus&size=100',
+  'https://api.dicebear.com/7.x/pixel-art/png?seed=Kirby&size=100',
+  'https://api.dicebear.com/7.x/pixel-art/png?seed=Pikachu&size=100',
+  
+  // dicebear 冒险者头像 - 改为PNG格式
+  'https://api.dicebear.com/7.x/adventurer/png?seed=Alex&size=100',
+  'https://api.dicebear.com/7.x/adventurer/png?seed=Jordan&size=100',
+  'https://api.dicebear.com/7.x/adventurer/png?seed=Taylor&size=100',
+  'https://api.dicebear.com/7.x/adventurer/png?seed=Casey&size=100',
+  'https://api.dicebear.com/7.x/adventurer/png?seed=Riley&size=100',
+  
+  // dicebear Micah 头像 - 改为PNG格式
+  'https://api.dicebear.com/7.x/micah/png?seed=Emma&size=100',
+  'https://api.dicebear.com/7.x/micah/png?seed=Olivia&size=100',
+  'https://api.dicebear.com/7.x/micah/png?seed=Noah&size=100',
+  'https://api.dicebear.com/7.x/micah/png?seed=Liam&size=100',
+  'https://api.dicebear.com/7.x/micah/png?seed=James&size=100',
+  
+  // picsum 照片头像
+  'https://picsum.photos/id/100/200/200',
+  'https://picsum.photos/id/101/200/200',
+  'https://picsum.photos/id/102/200/200',
+  'https://picsum.photos/id/103/200/200',
+  'https://picsum.photos/id/104/200/200',
+  'https://picsum.photos/id/106/200/200',
+  'https://picsum.photos/id/107/200/200',
+  'https://picsum.photos/id/108/200/200',
+  'https://picsum.photos/id/169/200/200',
+  'https://picsum.photos/id/155/200/200'
+]
+
+// 根据用户ID获取固定头像（确保同一用户每次显示相同头像）
+function getUserAvatar(userId: string) {
+  // 使用用户ID的哈希值来确定头像索引，确保同一用户始终显示相同头像
+  let hash = 0
+  for (let i = 0; i < userId.length; i++) {
+    hash = ((hash << 5) - hash) + userId.charCodeAt(i)
+    hash = hash & hash // 转换为32位整数
+  }
+  const index = Math.abs(hash) % avatarPool.length
+  return avatarPool[index]
+}
+
 App<IAppOption>({
   globalData: {
     // 用户信息
     userInfo: {
       id: 'user_001',
       nickname: '小明',
-      avatar: 'https://i.pravatar.cc/150?u=user_001',
+      avatar: getUserAvatar('user_001'),
       level: 2,
       points: 150,
       followCount: 25,
       fansCount: 18,
       signature: '热爱生活，分享美好时光'
     },
-    
     // 特色话题 - 专门的数据源
     featuredTopic: {
       id: 'featured_topic_001',
@@ -46,7 +156,7 @@ App<IAppOption>({
       author: {
         id: 'user_001',
         nickname: '小明',
-        avatar: 'https://i.pravatar.cc/150?u=user_001'
+        avatar: getUserAvatar('user_001')
       },
       createTime: '2025-03-09 08:00:00',
       likeCount: 156,
@@ -57,7 +167,7 @@ App<IAppOption>({
           user: {
             id: 'user_009',
             nickname: 'AI工程师小李',
-            avatar: 'https://i.pravatar.cc/150?u=user_009'
+            avatar: getUserAvatar('user_009')
           },
           content: '我是做AI开发的，说实话AI确实会替代一些重复性工作，但也会创造新岗位。我们现在最缺的是懂AI的复合型人才，而不是单纯担心被取代。',
           time: '2025-03-09 09:15:00',
@@ -65,22 +175,32 @@ App<IAppOption>({
           replies: [
             {
               id: 'reply_001',
-              user: {
-                id: 'user_010',
-                nickname: '焦虑的程序员',
-                avatar: 'https://i.pravatar.cc/150?u=user_010'
-              },
+            user: {
+              id: 'user_010',
+              nickname: '焦虑的程序员',
+              avatar: getUserAvatar('user_010')
+            },
+            replyTo: {
+              id: 'user_009',
+              nickname: 'AI工程师小李',
+              avatar: getUserAvatar('user_009')
+            },
               content: '问题是学习的速度赶不上AI迭代的速度啊，我刚学会的东西AI已经能自动生成了',
               time: '2025-03-09 09:45:00',
               likeCount: 12
             },
             {
               id: 'reply_002',
-              user: {
-                id: 'user_009',
-                nickname: 'AI工程师小李',
-                avatar: 'https://i.pravatar.cc/150?u=user_009'
-              },
+            user: {
+              id: 'user_009',
+              nickname: 'AI工程师小李',
+              avatar: getUserAvatar('user_009')
+            },
+            replyTo: {
+              id: 'user_010',
+              nickname: '焦虑的程序员',
+              avatar: getUserAvatar('user_010')
+            },
               content: '那就别学那些容易被替代的，往架构、算法、业务理解这些方向发展，AI是工具不是敌人',
               time: '2025-03-09 10:02:00',
               likeCount: 8
@@ -92,7 +212,7 @@ App<IAppOption>({
           user: {
             id: 'user_011',
             nickname: '插画师小美',
-            avatar: 'https://i.pravatar.cc/150?u=user_011'
+            avatar: getUserAvatar('user_011')
           },
           content: '作为插画师，我真的快被AI搞崩溃了。客户拿着AI生成的图来砍价："你看AI几秒钟就画出来了，你凭什么收这么贵？"但AI用的都是我们画师的素材训练的，这公平吗？',
           time: '2025-03-09 10:30:00',
@@ -103,7 +223,7 @@ App<IAppOption>({
           user: {
             id: 'user_012',
             nickname: '哲学系学生',
-            avatar: 'https://i.pravatar.cc/150?u=user_012'
+            avatar: getUserAvatar('user_012')
           },
           content: '我关心的是伦理问题。如果自动驾驶出车祸，是车主的错还是算法的错？如果AI诊断失误，谁负责？这些法律和伦理框架都还没建立起来，就大规模推广，太危险了。',
           time: '2025-03-09 11:20:00',
@@ -148,7 +268,7 @@ App<IAppOption>({
         author: {
           id: 'user_002',
           nickname: '教育观察者',
-          avatar: 'https://i.pravatar.cc/150?u=user_002'
+          avatar: getUserAvatar('user_002')
         },
         createTime: '2025-03-08 20:15:00',
         likeCount: 234,
@@ -159,7 +279,7 @@ App<IAppOption>({
             user: {
               id: 'user_013',
               nickname: '大二在读生',
-              avatar: 'https://i.pravatar.cc/150?u=user_013'
+              avatar: getUserAvatar('user_013')
             },
             content: '我现在大二，每天上课就在想：我学的这些东西到底有什么用？高数、线代，以后工作真的用得上吗？还是说只是为了拿个文凭？',
             time: '2025-03-09 08:30:00',
@@ -170,7 +290,7 @@ App<IAppOption>({
             user: {
               id: 'user_014',
               nickname: 'HR老张',
-              avatar: 'https://i.pravatar.cc/150?u=user_014'
+              avatar: getUserAvatar('user_014')
             },
             content: '我做了十年招聘，说实话学历确实是敲门砖。同样两个应届生，985的和二本的，只要985的不是太差，我们肯定优先选985。这不是歧视，是筛选成本问题。',
             time: '2025-03-09 09:15:00',
@@ -181,7 +301,12 @@ App<IAppOption>({
                 user: {
                   id: 'user_015',
                   nickname: '自学成才',
-                  avatar: 'https://i.pravatar.cc/150?u=user_015'
+                  avatar: getUserAvatar('user_015')
+                },
+                replyTo: {
+                  id: 'user_014',
+                  nickname: 'HR老张',
+                  avatar: getUserAvatar('user_014')
                 },
                 content: '这不就是学历歧视吗？我高中毕业自学编程，现在带团队，手下好几个研究生。能力比学历重要多了。',
                 time: '2025-03-09 10:05:00',
@@ -192,7 +317,12 @@ App<IAppOption>({
                 user: {
                   id: 'user_014',
                   nickname: 'HR老张',
-                  avatar: 'https://i.pravatar.cc/150?u=user_014'
+                  avatar: getUserAvatar('user_014')
+                },
+                replyTo: {
+                  id: 'user_015',
+                  nickname: '自学成才',
+                  avatar: getUserAvatar('user_015')
                 },
                 content: '你说得对，但你是特例。大多数没学历的，连展示能力的机会都没有。有学历至少证明你有一定的学习能力和毅力。',
                 time: '2025-03-09 10:30:00',
@@ -205,7 +335,7 @@ App<IAppOption>({
             user: {
               id: 'user_016',
               nickname: '农村孩子',
-              avatar: 'https://i.pravatar.cc/150?u=user_016'
+              avatar: getUserAvatar('user_016')
             },
             content: '我家是农村的，父母种地供我上大学。对我来说，大学是改变命运的唯一出路。虽然现在工作也不咋地，但至少不用像父母那样面朝黄土背朝天。',
             time: '2025-03-09 11:00:00',
@@ -216,7 +346,7 @@ App<IAppOption>({
             user: {
               id: 'user_017',
               nickname: '留学海归',
-              avatar: 'https://i.pravatar.cc/150?u=user_017'
+              avatar: getUserAvatar('user_017')
             },
             content: '我在国外读过书，感觉国内外大学最大的区别是：国外更注重批判性思维和自主学习，国内还是填鸭式教育居多。不是大学没用，是咱们的教育方式该改革了。',
             time: '2025-03-09 13:20:00',
@@ -259,7 +389,7 @@ App<IAppOption>({
         author: {
           id: 'user_003',
           nickname: '职场观察员',
-          avatar: 'https://i.pravatar.cc/150?u=user_003'
+          avatar: getUserAvatar('user_003')
         },
         createTime: '2025-03-07 14:30:00',
         likeCount: 512,
@@ -270,7 +400,7 @@ App<IAppOption>({
             user: {
               id: 'user_018',
               nickname: '大理数字游民',
-              avatar: 'https://i.pravatar.cc/150?u=user_018'
+              avatar: getUserAvatar('user_018')
             },
             content: '我就是你说的那个在大理的UI设计姑娘！哈哈，没想到被写进文章了。说实话，数字游民确实有孤独的时候，但对我来说，自由的快乐远大于孤独的痛苦。',
             time: '2025-03-08 09:20:00',
@@ -281,7 +411,12 @@ App<IAppOption>({
                 user: {
                   id: 'user_019',
                   nickname: '想辞职的小王',
-                  avatar: 'https://i.pravatar.cc/150?u=user_019'
+                  avatar: getUserAvatar('user_019')
+                },
+                replyTo: {
+                  id: 'user_018',
+                  nickname: '大理数字游民',
+                  avatar: getUserAvatar('user_018')
                 },
                 content: '姐妹你是怎么找到客户的？我也想试试，但怕收入不稳定',
                 time: '2025-03-08 10:15:00',
@@ -292,7 +427,12 @@ App<IAppOption>({
                 user: {
                   id: 'user_018',
                   nickname: '大理数字游民',
-                  avatar: 'https://i.pravatar.cc/150?u=user_018'
+                  avatar: getUserAvatar('user_018')
+                },
+                replyTo: {
+                  id: 'user_019',
+                  nickname: '想辞职的小王',
+                  avatar: getUserAvatar('user_019')
                 },
                 content: '我是先在upwork上接单积累口碑，慢慢有了固定客户。刚开始确实难，建议先不要辞职，业余时间接点小单试试水。',
                 time: '2025-03-08 11:30:00',
@@ -305,7 +445,7 @@ App<IAppOption>({
             user: {
               id: 'user_020',
               nickname: '国企老员工',
-              avatar: 'https://i.pravatar.cc/150?u=user_020'
+              avatar: getUserAvatar('user_020')
             },
             content: '我在国企干了二十年，虽然工资不高，但公积金高、福利好、稳定。去年女儿结婚，单位还给了婚假和礼金。这种安全感，数字游民给不了。',
             time: '2025-03-08 14:45:00',
@@ -316,7 +456,7 @@ App<IAppOption>({
             user: {
               id: 'user_021',
               nickname: '自由职业者阿杰',
-              avatar: 'https://i.pravatar.cc/150?u=user_021'
+              avatar: getUserAvatar('user_021')
             },
             content: '我就是文中的阿杰...现在回公司上班了，但说实话，还是怀念自由职业的日子。现在每天开会、写周报、应付办公室政治，感觉在浪费生命。',
             time: '2025-03-08 16:20:00',
@@ -327,7 +467,12 @@ App<IAppOption>({
                 user: {
                   id: 'user_022',
                   nickname: '职场小白',
-                  avatar: 'https://i.pravatar.cc/150?u=user_022'
+                  avatar: getUserAvatar('user_022')
+                },
+                replyTo: {
+                  id: 'user_021',
+                  nickname: '自由职业者阿杰',
+                  avatar: getUserAvatar('user_021')
                 },
                 content: '那为什么还要回去呢？自由职业不好吗？',
                 time: '2025-03-08 17:05:00',
@@ -338,7 +483,12 @@ App<IAppOption>({
                 user: {
                   id: 'user_021',
                   nickname: '自由职业者阿杰',
-                  avatar: 'https://i.pravatar.cc/150?u=user_021'
+                  avatar: getUserAvatar('user_021')
+                },
+                replyTo: {
+                  id: 'user_022',
+                  nickname: '职场小白',
+                  avatar: getUserAvatar('user_022')
                 },
                 content: '因为要结婚买房啊，自由职业贷款都批不下来。现实问题，没办法。',
                 time: '2025-03-08 17:30:00',
@@ -382,7 +532,7 @@ App<IAppOption>({
         author: {
           id: 'user_004',
           nickname: '社会观察家',
-          avatar: 'https://i.pravatar.cc/150?u=user_004'
+          avatar: getUserAvatar('user_004')
         },
         createTime: '2025-03-06 09:20:00',
         likeCount: 678,
@@ -393,7 +543,7 @@ App<IAppOption>({
             user: {
               id: 'user_023',
               nickname: '房贷狗',
-              avatar: 'https://i.pravatar.cc/150?u=user_023'
+              avatar: getUserAvatar('user_023')
             },
             content: '我也想躺平，可房贷谁帮我还？孩子学费谁出？父母养老钱谁给？我们这些80后，上有老下有小，躺不平也卷不动，卡在中间最难受。',
             time: '2025-03-07 08:30:00',
@@ -404,7 +554,7 @@ App<IAppOption>({
             user: {
               id: 'user_024',
               nickname: '00后小陈',
-              avatar: 'https://i.pravatar.cc/150?u=user_024'
+              avatar: getUserAvatar('user_024')
             },
             content: '我就是文中小陈的原型！哈哈哈，被写进文章了。现在父母天天催我找对象，说躺平没出息。可我觉得，快乐最重要啊，为什么要用别人的标准衡量自己？',
             time: '2025-03-07 10:15:00',
@@ -415,7 +565,12 @@ App<IAppOption>({
                 user: {
                   id: 'user_025',
                   nickname: '焦虑的妈妈',
-                  avatar: 'https://i.pravatar.cc/150?u=user_025'
+                  avatar: getUserAvatar('user_025')
+                },
+                replyTo: {
+                  id: 'user_024',
+                  nickname: '00后小陈',
+                  avatar: getUserAvatar('user_024')
                 },
                 content: '孩子，等你到了我这个年纪就明白了，人不能只看眼前。你现在觉得快乐，老了怎么办？',
                 time: '2025-03-07 11:20:00',
@@ -426,7 +581,12 @@ App<IAppOption>({
                 user: {
                   id: 'user_024',
                   nickname: '00后小陈',
-                  avatar: 'https://i.pravatar.cc/150?u=user_024'
+                  avatar: getUserAvatar('user_024')
+                },
+                replyTo: {
+                  id: 'user_025',
+                  nickname: '焦虑的妈妈',
+                  avatar: getUserAvatar('user_025')
                 },
                 content: '阿姨，我们这代人想通了，与其焦虑未来，不如过好现在。未来什么样谁知道呢？',
                 time: '2025-03-07 13:45:00',
@@ -439,7 +599,7 @@ App<IAppOption>({
             user: {
               id: 'user_026',
               nickname: '清醒的姐姐',
-              avatar: 'https://i.pravatar.cc/150?u=user_026'
+              avatar: getUserAvatar('user_026')
             },
             content: '我就是你说的那个找到平衡点的姐姐！没想到有人把我的话写进文章。其实我就是想通了：工作是为了生活，不是生活为了工作。该努力时努力，该休息时休息，别被任何人绑架。',
             time: '2025-03-07 15:30:00',
@@ -450,7 +610,7 @@ App<IAppOption>({
             user: {
               id: 'user_027',
               nickname: '创业者老王',
-              avatar: 'https://i.pravatar.cc/150?u=user_027'
+              avatar: getUserAvatar('user_027')
             },
             content: '我就是老王本王！现在胃病严重，每天吃药。说实话，如果能重来，我不会这么拼。但没办法，已经到这个位置了，下不来。年轻人，身体是革命的本钱，别学我。',
             time: '2025-03-07 18:20:00',
@@ -494,7 +654,7 @@ App<IAppOption>({
         author: {
           id: 'user_005',
           nickname: '80后独生子',
-          avatar: 'https://i.pravatar.cc/150?u=user_005'
+          avatar: getUserAvatar('user_005')
         },
         createTime: '2025-03-05 18:45:00',
         likeCount: 345,
@@ -505,7 +665,7 @@ App<IAppOption>({
             user: {
               id: 'user_028',
               nickname: '王阿姨的儿子',
-              avatar: 'https://i.pravatar.cc/150?u=user_028'
+              avatar: getUserAvatar('user_028')
             },
             content: '我就是你文中的小张...看到这篇文章眼泪都下来了。每天被亲戚邻居骂不孝，我妈也怨我。可我真的尽力了，在北京打拼不容易，我也有自己的小家要养。谁能告诉我，到底该怎么办？',
             time: '2025-03-06 08:30:00',
@@ -516,7 +676,12 @@ App<IAppOption>({
                 user: {
                   id: 'user_029',
                   nickname: '心理咨询师',
-                  avatar: 'https://i.pravatar.cc/150?u=user_029'
+                  avatar: getUserAvatar('user_029')
+                },
+                replyTo: {
+                  id: 'user_028',
+                  nickname: '王阿姨的儿子',
+                  avatar: getUserAvatar('user_028')
                 },
                 content: '小张，你已经做得很好了。孝道不应该是道德绑架。定期去看妈妈，多视频，让她感受到你的关心，比整天在一起却充满怨气要好。',
                 time: '2025-03-06 09:45:00',
@@ -527,7 +692,12 @@ App<IAppOption>({
                 user: {
                   id: 'user_030',
                   nickname: '邻居大妈',
-                  avatar: 'https://i.pravatar.cc/150?u=user_030'
+                  avatar: getUserAvatar('user_030')
+                },
+                replyTo: {
+                  id: 'user_029',
+                  nickname: '心理咨询师',
+                  avatar: getUserAvatar('user_029')
                 },
                 content: '说得轻巧，父母养你小，你养父母老，这是天经地义的！送养老院就是逃避责任！',
                 time: '2025-03-06 10:20:00',
@@ -538,7 +708,12 @@ App<IAppOption>({
                 user: {
                   id: 'user_031',
                   nickname: '养老院护工',
-                  avatar: 'https://i.pravatar.cc/150?u=user_031'
+                  avatar: getUserAvatar('user_031')
+                },
+                replyTo: {
+                  id: 'user_030',
+                  nickname: '邻居大妈',
+                  avatar: getUserAvatar('user_030')
                 },
                 content: '我在养老院工作十年，很多老人其实在养老院比在家开心，有同龄人聊天，有专业护理。在家反而孤单，子女上班去了，一整天没人说话。',
                 time: '2025-03-06 11:05:00',
@@ -551,7 +726,7 @@ App<IAppOption>({
             user: {
               id: 'user_032',
               nickname: '海归女儿',
-              avatar: 'https://i.pravatar.cc/150?u=user_032'
+              avatar: getUserAvatar('user_032')
             },
             content: '我就是你文中那个在国外工作的女儿。我每年回国两次，平时每天视频。我爸妈说，他们在小区里可自豪了，说女儿在国外很有出息。但我知道，他们生病的时候我都不在身边，心里很愧疚。',
             time: '2025-03-06 13:15:00',
@@ -562,7 +737,7 @@ App<IAppOption>({
             user: {
               id: 'user_033',
               nickname: '60后老刘',
-              avatar: 'https://i.pravatar.cc/150?u=user_033'
+              avatar: getUserAvatar('user_033')
             },
             content: '我是60后，我想说，我们这代人其实也不想拖累孩子。我和老伴商量好了，以后就去养老院，不给孩子添麻烦。孩子们过好自己的日子，我们就满足了。',
             time: '2025-03-06 15:40:00',
@@ -605,7 +780,7 @@ App<IAppOption>({
         author: {
           id: 'user_006',
           nickname: '教育科技观察者',
-          avatar: 'https://i.pravatar.cc/150?u=user_006'
+          avatar: getUserAvatar('user_006')
         },
         createTime: '2025-03-04 10:30:00',
         likeCount: 423,
@@ -616,7 +791,7 @@ App<IAppOption>({
             user: {
               id: 'user_034',
               nickname: '高一学生',
-              avatar: 'https://i.pravatar.cc/150?u=user_034'
+              avatar: getUserAvatar('user_034')
             },
             content: '我就是那个侄子！叔你居然把我写进文章了。其实我说那句话的意思是：现在的作业太无聊了，如果作业有意义，我们也不会想用AI糊弄。',
             time: '2025-03-05 08:20:00',
@@ -627,7 +802,7 @@ App<IAppOption>({
             user: {
               id: 'user_035',
               nickname: '高中语文老师',
-              avatar: 'https://i.pravatar.cc/150?u=user_035'
+              avatar: getUserAvatar('user_035')
             },
             content: '我是高中老师，现在批改作业像在玩"找AI"游戏。最气的是有些学生连改都不改，直接复制粘贴，一眼就能看出来。但说实话，我也在反思，是不是我们的作业形式该变了？',
             time: '2025-03-05 09:45:00',
@@ -638,7 +813,12 @@ App<IAppOption>({
                 user: {
                   id: 'user_036',
                   nickname: '教育改革派',
-                  avatar: 'https://i.pravatar.cc/150?u=user_036'
+                  avatar: getUserAvatar('user_036')
+                },
+                replyTo: {
+                  id: 'user_035',
+                  nickname: '高中语文老师',
+                  avatar: getUserAvatar('user_035')
                 },
                 content: '老师，我觉得可以让学生先用AI写，然后指出AI的问题，再自己优化。这样反而能锻炼批判性思维。',
                 time: '2025-03-05 10:30:00',
@@ -649,7 +829,12 @@ App<IAppOption>({
                 user: {
                   id: 'user_035',
                   nickname: '高中语文老师',
-                  avatar: 'https://i.pravatar.cc/150?u=user_035'
+                  avatar: getUserAvatar('user_035')
+                },
+                replyTo: {
+                  id: 'user_036',
+                  nickname: '教育改革派',
+                  avatar: getUserAvatar('user_036')
                 },
                 content: '有道理，我试试看。不过还得先研究怎么用AI，感觉我们老师也要跟上时代了。',
                 time: '2025-03-05 11:15:00',
@@ -662,7 +847,7 @@ App<IAppOption>({
             user: {
               id: 'user_037',
               nickname: '大学教授',
-              avatar: 'https://i.pravatar.cc/150?u=user_037'
+              avatar: getUserAvatar('user_037')
             },
             content: '我就是文中那个乐观的大学教授。其实我已经在课堂上教学生用AI了，告诉他们怎么提问、怎么甄别、怎么优化。与其禁止，不如教会他们驾驭工具。',
             time: '2025-03-05 14:20:00',
@@ -673,7 +858,7 @@ App<IAppOption>({
             user: {
               id: 'user_038',
               nickname: '焦虑的家长',
-              avatar: 'https://i.pravatar.cc/150?u=user_038'
+              avatar: getUserAvatar('user_038')
             },
             content: '我孩子才小学六年级，现在写作文就用AI。我担心以后他连基本的写作能力都没有了。可我说他，他还嫌我out了。怎么办啊？',
             time: '2025-03-05 16:10:00',
@@ -684,7 +869,12 @@ App<IAppOption>({
                 user: {
                   id: 'user_039',
                   nickname: '教育专家',
-                  avatar: 'https://i.pravatar.cc/150?u=user_039'
+                  avatar: getUserAvatar('user_039')
+                },
+                replyTo: {
+                  id: 'user_038',
+                  nickname: '焦虑的家长',
+                  avatar: getUserAvatar('user_038')
                 },
                 content: '建议您和孩子一起用AI，让他先自己写，然后用AI优化，对比有什么区别。这样既锻炼了写作能力，又学会了使用工具。',
                 time: '2025-03-05 17:30:00',
@@ -729,7 +919,7 @@ App<IAppOption>({
         author: {
           id: 'user_007',
           nickname: '楼市观察者',
-          avatar: 'https://i.pravatar.cc/150?u=user_007'
+          avatar: getUserAvatar('user_007')
         },
         createTime: '2025-03-03 16:15:00',
         likeCount: 567,
@@ -740,7 +930,7 @@ App<IAppOption>({
             user: {
               id: 'user_040',
               nickname: '杭州阿强',
-              avatar: 'https://i.pravatar.cc/150?u=user_040'
+              avatar: getUserAvatar('user_040')
             },
             content: '我就是阿强！说实话，每个月还完房贷真的挺难的，但看到房价涨了，心里又觉得值了。前两天小区同户型卖了350万，感觉自己赚了50万。',
             time: '2025-03-04 09:15:00',
@@ -751,7 +941,12 @@ App<IAppOption>({
                 user: {
                   id: 'user_041',
                   nickname: '投资客',
-                  avatar: 'https://i.pravatar.cc/150?u=user_041'
+                  avatar: getUserAvatar('user_041')
+                },
+                replyTo: {
+                  id: 'user_040',
+                  nickname: '杭州阿强',
+                  avatar: getUserAvatar('user_040')
                 },
                 content: '纸面富贵而已，你又没卖。而且现在这个行情，能涨多久还不一定呢。',
                 time: '2025-03-04 10:20:00',
@@ -762,7 +957,12 @@ App<IAppOption>({
                 user: {
                   id: 'user_040',
                   nickname: '杭州阿强',
-                  avatar: 'https://i.pravatar.cc/150?u=user_040'
+                  avatar: getUserAvatar('user_040')
+                },
+                replyTo: {
+                  id: 'user_041',
+                  nickname: '投资客',
+                  avatar: getUserAvatar('user_041')
                 },
                 content: '至少有个盼头吧。租房的话，每个月6000给房东，啥也落不着。',
                 time: '2025-03-04 11:05:00',
@@ -775,7 +975,7 @@ App<IAppOption>({
             user: {
               id: 'user_042',
               nickname: '深圳阿珍',
-              avatar: 'https://i.pravatar.cc/150?u=user_042'
+              avatar: getUserAvatar('user_042')
             },
             content: '我是阿珍！看到被写进文章好惊喜。其实我和男朋友现在过得挺开心的，每年出国玩两次，周末探店、看展。买房的朋友羡慕我们，我们还羡慕他们有房呢，各有各的好吧。',
             time: '2025-03-04 13:30:00',
@@ -786,7 +986,7 @@ App<IAppOption>({
             user: {
               id: 'user_043',
               nickname: '北漂十年',
-              avatar: 'https://i.pravatar.cc/150?u=user_043'
+              avatar: getUserAvatar('user_043')
             },
             content: '我在北京租房十年了，最大的痛就是搬家。五年搬了7次，每次都被房东涨价或者卖房赶走。真的累了，今年咬牙买了房，虽然远点小点，但再也不用看房东脸色了。',
             time: '2025-03-04 15:45:00',
@@ -797,7 +997,7 @@ App<IAppOption>({
             user: {
               id: 'user_044',
               nickname: '理财达人',
-              avatar: 'https://i.pravatar.cc/150?u=user_044'
+              avatar: getUserAvatar('user_044')
             },
             content: '从投资角度说，现在买房确实不是好时机。租售比太低，200万的房子一年租金才3万，还不如存银行。但架不住中国人对房子的执念啊。',
             time: '2025-03-04 18:20:00',
@@ -840,7 +1040,7 @@ App<IAppOption>({
         author: {
           id: 'user_008',
           nickname: '育儿那些事儿',
-          avatar: 'https://i.pravatar.cc/150?u=user_008'
+          avatar: getUserAvatar('user_008')
         },
         createTime: '2025-03-02 09:45:00',
         likeCount: 345,
@@ -851,7 +1051,7 @@ App<IAppOption>({
             user: {
               id: 'user_045',
               nickname: '累坏的小学生',
-              avatar: 'https://i.pravatar.cc/150?u=user_045'
+              avatar: getUserAvatar('user_045')
             },
             content: '我就是那个二年级小朋友！叔叔你发这篇文章，我妈看到了，她说明天给我减掉一个班。谢谢叔叔！',
             time: '2025-03-03 08:10:00',
@@ -862,7 +1062,12 @@ App<IAppOption>({
                 user: {
                   id: 'user_046',
                   nickname: '孩子妈',
-                  avatar: 'https://i.pravatar.cc/150?u=user_046'
+                  avatar: getUserAvatar('user_046')
+                },
+                replyTo: {
+                  id: 'user_045',
+                  nickname: '累坏的小学生',
+                  avatar: getUserAvatar('user_045')
                 },
                 content: '我是妈妈，看到评论里孩子的话，眼泪下来了。可能我真的太焦虑了，对不起宝贝。',
                 time: '2025-03-03 09:20:00',
@@ -873,7 +1078,12 @@ App<IAppOption>({
                 user: {
                   id: 'user_045',
                   nickname: '累坏的小学生',
-                  avatar: 'https://i.pravatar.cc/150?u=user_045'
+                  avatar: getUserAvatar('user_045')
+                },
+                replyTo: {
+                  id: 'user_046',
+                  nickname: '孩子妈',
+                  avatar: getUserAvatar('user_046')
                 },
                 content: '妈妈不哭，我知道你是为我好。只要少上两个班，我就很开心啦！',
                 time: '2025-03-03 10:05:00',
@@ -886,7 +1096,7 @@ App<IAppOption>({
             user: {
               id: 'user_047',
               nickname: '快乐教育爸爸',
-              avatar: 'https://i.pravatar.cc/150?u=user_047'
+              avatar: getUserAvatar('user_047')
             },
             content: '我就是老张！现在真的焦虑了，孩子回来哭着说同学笑他，我也很内疚。但报班又怕孩子太累，太难了。',
             time: '2025-03-03 11:30:00',
@@ -897,7 +1107,7 @@ App<IAppOption>({
             user: {
               id: 'user_048',
               nickname: '钢琴老师',
-              avatar: 'https://i.pravatar.cc/150?u=user_048'
+              avatar: getUserAvatar('user_048')
             },
             content: '我是教钢琴的，见过太多被逼着来的孩子。其实兴趣班的关键在于"兴趣"两个字。如果孩子不喜欢，再好的老师也教不进去。',
             time: '2025-03-03 14:15:00',
@@ -908,7 +1118,12 @@ App<IAppOption>({
                 user: {
                   id: 'user_049',
                   nickname: '琴童家长',
-                  avatar: 'https://i.pravatar.cc/150?u=user_049'
+                  avatar: getUserAvatar('user_049')
+                },
+                replyTo: {
+                  id: 'user_048',
+                  nickname: '钢琴老师',
+                  avatar: getUserAvatar('user_048')
                 },
                 content: '老师，我家孩子一开始喜欢，学了一年就不想学了，要逼着继续吗？',
                 time: '2025-03-03 15:20:00',
@@ -919,7 +1134,12 @@ App<IAppOption>({
                 user: {
                   id: 'user_048',
                   nickname: '钢琴老师',
-                  avatar: 'https://i.pravatar.cc/150?u=user_048'
+                  avatar: getUserAvatar('user_048')
+                },
+                replyTo: {
+                  id: 'user_049',
+                  nickname: '琴童家长',
+                  avatar: getUserAvatar('user_049')
                 },
                 content: '可以和孩子商量，定个小目标，比如再坚持半年，如果还是不想学就停。很多孩子过了瓶颈期又会重新喜欢上的。',
                 time: '2025-03-03 16:10:00',
@@ -932,7 +1152,7 @@ App<IAppOption>({
             user: {
               id: 'user_050',
               nickname: '过来人',
-              avatar: 'https://i.pravatar.cc/150?u=user_050'
+              avatar: getUserAvatar('user_050')
             },
             content: '我小时候被逼着学书法，当时恨死我妈了。现在在公司，领导总夸我字写得好，年会还让我写对联。真的感谢我妈当年的坚持。',
             time: '2025-03-03 18:45:00',
@@ -1007,6 +1227,7 @@ App<IAppOption>({
     wx.login({
       success: res => {
         console.log(res.code)
+        console.log(this.globalData.userInfo)
         // 发送 res.code 到后台换取 openId, sessionKey, unionId
       },
     })

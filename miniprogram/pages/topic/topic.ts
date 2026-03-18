@@ -327,6 +327,7 @@ Page({
     }
     
     // 获取当前用户信息
+    const app = getApp()
     const currentUser = app.globalData.userInfo
     
     // 生成新的评论或回复
