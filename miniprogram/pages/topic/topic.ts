@@ -611,7 +611,8 @@ Page({
     
     // 获取当前用户信息
     const app = getApp()
-    const currentUser = app.globalData.userInfo || {
+    const db = app.globalData
+    const currentUser = db.getCurrentUser() || {
       id: 'user_' + Date.now(),
       nickname: '当前用户',
       avatar: '/static/default-avatar.png'
@@ -629,7 +630,6 @@ Page({
     }
     
     // 使用dataService进行数据持久化
-    const db = app.globalData
     const savedComment = db.createComment(commentData)
     
     if (!savedComment) {
@@ -828,33 +828,30 @@ Page({
   },
   
   // 显示回复输入框
-  // 显示回复输入框
-showReplyInput(e: any) {
-  const comment = e.currentTarget.dataset.comment
-  const index = e.currentTarget.dataset.index
-  const reply = e.currentTarget.dataset.reply
-  
-  console.log('【回复输入框】显示回复输入框，参数:', { comment, index, reply })
-  
-  const placeholder = reply ? 
-    `回复 @${reply.author.nickname}` : 
-    `回复 @${comment.author.nickname}`
-  
-  this.setData({
-    'replyInput.visible': true,
-    'replyInput.targetCommentId': comment.id,
-    'replyInput.targetCommentIndex': index,
-    'replyInput.targetReplyId': reply ? reply.id : '',
-    'replyInput.placeholder': placeholder,
-    'replyInput.isReplyToComment': !reply,
-    'replyInput.content': ''
-  })
-  
-  // 自动滚动到输入框，考虑吸顶导航栏的遮挡
-  setTimeout(() => {
-    this.scrollToReplyInput()
-  }, 100)
-},
+  showReplyInput(e: any) {
+    const comment = e.currentTarget.dataset.comment
+    const index = e.currentTarget.dataset.index
+    const reply = e.currentTarget.dataset.reply
+    
+    console.log('【回复输入框】显示回复输入框，参数:', { comment, index, reply })
+    
+    const placeholder = reply ? 
+      `回复 @${reply.author.nickname}` : 
+      `回复 @${comment.author.nickname}`
+    
+    this.setData({
+      'replyInput.visible': true,
+      'replyInput.targetCommentId': comment.id,
+      'replyInput.targetCommentIndex': index,
+      'replyInput.targetReplyId': reply ? reply.id : '',
+      'replyInput.placeholder': placeholder,
+      'replyInput.isReplyToComment': !reply,
+      'replyInput.content': ''
+    })
+    
+    // 移除自动滚动，保持用户体验的连贯性
+    // 用户可以在当前浏览位置直接回复，无需页面滚动
+  },
 
 // 滚动到回复输入框
 scrollToReplyInput() {
