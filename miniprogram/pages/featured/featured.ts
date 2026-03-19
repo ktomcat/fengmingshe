@@ -1,5 +1,7 @@
 // featured.ts
 
+import { recordOperation, OperationType } from '../../utils/testDataStorage'
+
 Component({
   lifetimes: {
     attached() {
@@ -70,6 +72,7 @@ Component({
     canIUseNicknameComp: wx.canIUse('input.type.nickname'),
     currentTab: 0, // 当前选中的导航项索引
     showBottomSheet: false, // 控制底部菜单栏显示
+    selectedTopic: null as any, // 当前选中的话题（用于底部菜单栏）
     discussions: [] as any[], // 讨论列表
   },
   methods: {
@@ -85,12 +88,30 @@ Component({
 
     // 底部菜单栏相关方法
     showBottomSheet(e:any) {
-      console.log('【首页】显示底部菜单栏')
+      const topic = e.currentTarget.dataset.topic
+      console.log('【精选页】显示底部菜单栏，话题信息:', topic)
       if (e && typeof e.stopPropagation === 'function') {
         e.stopPropagation()
       }
+      
+      // 获取当前用户和数据服务
+      const app = getApp()
+      const db = app.globalData
+      const currentUser = db.getCurrentUser()
+      
+      // 动态查询最新的收藏状态
+      const currentIsFavorited = db.isFavorited(currentUser.id, topic.id)
+      console.log('【精选页】动态查询收藏状态:', currentIsFavorited)
+      
+      // 更新话题的收藏状态
+      const updatedTopic = {
+        ...topic,
+        isFavorited: currentIsFavorited
+      }
+      
       this.setData({
-        showBottomSheet: true
+        showBottomSheet: true,
+        selectedTopic: updatedTopic
       })
     },
 
@@ -119,23 +140,55 @@ Component({
       })
     },
 
-    onSharePost() {
-      console.log('【首页】点击分享帖子按钮')
+    // 收藏帖子（底部菜单栏）
+    onCollection() {
+      console.log('【精选页】点击收藏话题按钮')
+      
+      const { selectedTopic } = this.data
+      if (selectedTopic) {
+        this.onFavoriteTopic(selectedTopic)
+      }
+      
       this.closeBottomSheet()
-      wx.showToast({
-        title: '分享成功',
-        icon: 'success'
-      })
     },
 
-    onCollection() {
-      console.log('【首页】点击收藏话题按钮')
+    // 分享帖子（底部菜单栏）
+    onSharePost() {
+      console.log('【精选页】点击分享帖子按钮')
+      
+      const { selectedTopic } = this.data
+      if (selectedTopic) {
+        // 显示分享弹窗
+        wx.showActionSheet({
+          itemList: ['分享给好友', '分享到朋友圈'],
+          success: (res) => {
+            const tapIndex = res.tapIndex
+            console.log('【精选页】分享弹窗选择，索引:', tapIndex)
+            switch(tapIndex) {
+              case 0:
+                wx.showToast({
+                  title: '已分享给好友',
+                  icon: 'success'
+                })
+                break
+              case 1:
+                wx.showToast({
+                  title: '已分享到朋友圈',
+                  icon: 'success'
+                })
+                break
+            }
+          },
+          fail: (err) => {
+            console.error('【精选页】分享弹窗失败:', err)
+          }
+        })
+      }
+      
       this.closeBottomSheet()
-      wx.showToast({
-        title: '收藏成功',
-        icon: 'success'
-      })
     },
+
+
 
     // 搜索相关方法
     onSearchInput(e: any) {
@@ -309,6 +362,37 @@ Component({
       }
     },
 
+    // 收藏帖子
+    onFavoriteTopic(topic: any) {
+      console.log('【精选页】收藏话题，话题ID:', topic.id)
+      
+      // 获取当前用户和数据服务
+      const app = getApp()
+      const db = app.globalData
+      const currentUser = db.getCurrentUser()
+      
+      const isFavorited = !topic.isFavorited
+      
+      // 使用dataService进行数据持久化
+      const operationResult = db.toggleFavorite(currentUser.id, topic.id)
+      console.log('【精选页】toggleFavorite操作结果:', operationResult)
+      
+      // 记录操作到测试数据存储
+      recordOperation(
+        OperationType.FAVORITE,
+        currentUser.id,
+        'topic',
+        topic.id,
+        { isFavorited }
+      )
+      
+      // 显示操作成功提示
+      wx.showToast({
+        title: isFavorited ? '收藏成功' : '取消收藏',
+        icon: 'success'
+      })
+    },
+
     // 分享帖子（帖子列表中的分享按钮）
     onSharePostInList(e: any) {
       // 安全地阻止事件冒泡
@@ -316,49 +400,40 @@ Component({
         e.stopPropagation()
       }
       const topic = e.currentTarget.dataset.topic
-      console.log('【首页】点击分享帖子（列表），帖子信息:', topic)
+      console.log('【精选页】点击分享帖子（列表），帖子信息:', topic)
+      
+      // 保存this引用，确保在回调中能正确访问
+      const that = this
       
       // 显示分享弹窗
       wx.showActionSheet({
         itemList: ['分享给好友', '分享到朋友圈', '收藏话题'],
         success: (res) => {
           const tapIndex = res.tapIndex
-          console.log('【首页】分享弹窗选择，索引:', tapIndex)
+          console.log('【精选页】分享弹窗选择，索引:', tapIndex)
           switch(tapIndex) {
             case 0:
-              console.log('【首页】选择分享给好友')
+              console.log('【精选页】选择分享给好友')
               wx.showToast({
                 title: '已分享给好友',
                 icon: 'success'
               })
               break
             case 1:
-              console.log('【首页】选择分享到朋友圈')
+              console.log('【精选页】选择分享到朋友圈')
               wx.showToast({
                 title: '已分享到朋友圈',
                 icon: 'success'
               })
               break
             case 2:
-              console.log('【首页】选择收藏话题')
-              wx.setClipboardData({
-                data: `https://fengming.example.com/topic/${topic.id}`,
-                success: () => {
-                  console.log('【首页】收藏话题成功')
-                  wx.showToast({
-                    title: '收藏成功',
-                    icon: 'success'
-                  })
-                },
-                fail: (err) => {
-                  console.error('【首页】收藏话题失败:', err)
-                }
-              })
+              console.log('【精选页】选择收藏话题')
+              that.onFavoriteTopic(topic)
               break
           }
         },
         fail: (err) => {
-          console.error('【首页】分享弹窗失败:', err)
+          console.error('【精选页】分享弹窗失败:', err)
         }
       })
     },

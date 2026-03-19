@@ -3455,15 +3455,20 @@ class DataService {
   }
 
   toggleFavorite(userId: string, topicId: string) {
+    console.log('【app.ts】toggleFavorite 调用，用户ID:', userId, '话题ID:', topicId)
+    
     const existing = this.favorites.find(f => f.userId === userId && f.topicId === topicId)
     
     if (existing) {
       // 取消收藏
+      console.log('【app.ts】取消收藏，用户ID:', userId, '话题ID:', topicId)
       this.favorites = this.favorites.filter(f => f !== existing)
       this.emit('favoriteRemoved', { userId, topicId })
+      console.log('【app.ts】取消收藏成功，当前收藏总数:', this.favorites.length)
       return false
     } else {
       // 添加收藏
+      console.log('【app.ts】添加收藏，用户ID:', userId, '话题ID:', topicId)
       const newFavorite = {
         userId,
         topicId,
@@ -3471,6 +3476,7 @@ class DataService {
       }
       this.favorites.push(newFavorite)
       this.emit('favoriteAdded', newFavorite)
+      console.log('【app.ts】添加收藏成功，当前收藏总数:', this.favorites.length)
       return true
     }
   }

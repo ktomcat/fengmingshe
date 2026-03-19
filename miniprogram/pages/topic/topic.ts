@@ -1,5 +1,9 @@
 // topic.ts
 
+import { recordOperation, OperationType } from '../../utils/testDataStorage'
+
+declare const Object: any;
+
 Page({
   data: {
     currentTab: 0,
@@ -247,8 +251,33 @@ Page({
   // 底部菜单栏相关方法
   showBottomSheet() {
     console.log('【话题页】显示底部菜单栏')
+    
+    const { topic } = this.data
+    if (!topic) {
+      this.setData({
+        showBottomSheet: true
+      })
+      return
+    }
+    
+    // 获取当前用户和数据服务
+    const app = getApp()
+    const db = app.globalData
+    const currentUser = db.getCurrentUser()
+    
+    // 动态查询最新的收藏状态
+    const currentIsFavorited = db.isFavorited(currentUser.id, topic.id)
+    console.log('【话题页】动态查询收藏状态:', currentIsFavorited)
+    
+    // 更新话题的收藏状态
+    const updatedTopic = {
+      ...topic,
+      isFavorited: currentIsFavorited
+    }
+    
     this.setData({
-      showBottomSheet: true
+      showBottomSheet: true,
+      topic: updatedTopic
     })
   },
 
@@ -288,11 +317,42 @@ Page({
 
   onCollection() {
     console.log('【话题页】点击收藏话题按钮')
+    
+    const { topic } = this.data
+    if (topic) {
+      // 获取当前用户和数据服务
+      const app = getApp()
+      const db = app.globalData
+      const currentUser = db.getCurrentUser()
+      
+      const isFavorited = !topic.isFavorited
+      
+      // 使用dataService进行数据持久化
+      const success = db.toggleFavorite(currentUser.id, topic.id)
+
+      this.setData({
+        topic: Object.assign({}, topic, {
+          isFavorited: isFavorited
+        })
+      })
+      
+      // 记录操作到测试数据存储
+      recordOperation(
+        OperationType.FAVORITE,
+        currentUser.id,
+        'topic',
+        topic.id,
+        { isFavorited }
+      )
+      
+      wx.showToast({
+        title: isFavorited ? '收藏成功' : '取消收藏',
+        icon: 'success'
+      })
+      
+    }
+    
     this.closeBottomSheet()
-    wx.showToast({
-      title: '收藏成功',
-      icon: 'success'
-    })
   },
 
   // 点赞话题
@@ -301,20 +361,43 @@ Page({
     
     const { topic } = this.data
     if (topic) {
+      // 获取当前用户和数据服务
+      const app = getApp()
+      const db = app.globalData
+      const currentUser = db.getCurrentUser()
+      
       const isLiked = !topic.userLiked
-      const likeCountChange = isLiked ? 1 : -1
       
-      this.setData({
-        topic: Object.assign({}, topic, {
-          userLiked: isLiked,
-          likeCount: Math.max(0, (topic.likeCount || 0) + likeCountChange)
+      // 使用dataService进行数据持久化
+      const success = db.toggleLike(currentUser.id, 'topic', topic.id)
+      
+      if (success) {
+        this.setData({
+          topic: Object.assign({}, topic, {
+            userLiked: isLiked,
+            likeCount: isLiked ? (topic.likeCount || 0) + 1 : Math.max(0, (topic.likeCount || 0) - 1)
+          })
         })
-      })
-      
-      wx.showToast({
-        title: isLiked ? '点赞成功' : '取消点赞',
-        icon: 'success'
-      })
+        
+        // 记录操作到测试数据存储
+        recordOperation(
+          OperationType.LIKE_TOPIC,
+          currentUser.id,
+          'topic',
+          topic.id,
+          { isLiked }
+        )
+        
+        wx.showToast({
+          title: isLiked ? '点赞成功' : '取消点赞',
+          icon: 'success'
+        })
+      } else {
+        wx.showToast({
+          title: '操作失败',
+          icon: 'error'
+        })
+      }
     }
   },
 
@@ -354,28 +437,47 @@ Page({
     const db = app.globalData
     const currentUser = db.getCurrentUser()
     
-    // 更新投票数据
+    // 使用dataService进行数据持久化
+    const voteResult = db.castVote(currentUser.id, topic.id, choice)
+    
+    if (voteResult) {
+      // 更新投票数据
       const updatedTopic = Object.assign({}, topic)
       const vote = Object.assign({}, updatedTopic.content[contentIndex].content)
-    
-    vote[choice].count += 1
-    vote.totalVotes += 1
-    
-    // 重新计算百分比
-    const updatedVote = this.calculateVotePercentagesForItem(vote)
-    updatedTopic.content[contentIndex].content = updatedVote
-    
-    // 更新话题级别的投票状态
-    updatedTopic.voteChoice = choice
+      
+      vote[choice].count += 1
+      vote.totalVotes += 1
+      
+      // 重新计算百分比
+      const updatedVote = this.calculateVotePercentagesForItem(vote)
+      updatedTopic.content[contentIndex].content = updatedVote
+      
+      // 更新话题级别的投票状态
+      updatedTopic.voteChoice = choice
 
-    this.setData({
-      topic: updatedTopic
-    })
+      this.setData({
+        topic: updatedTopic
+      })
 
-    wx.showToast({
-      title: `你选择了${choice === 'positive' ? '正方' : '反方'}`,
-      icon: 'success'
-    })
+      // 记录操作到测试数据存储
+      recordOperation(
+        OperationType.VOTE,
+        currentUser.id,
+        'topic',
+        topic.id,
+        { choice, voteResult }
+      )
+
+      wx.showToast({
+        title: `你选择了${choice === 'positive' ? '正方' : '反方'}`,
+        icon: 'success'
+      })
+    } else {
+      wx.showToast({
+        title: '投票失败',
+        icon: 'error'
+      })
+    }
   },
 
   // 点赞评论
@@ -385,24 +487,47 @@ Page({
     
     const { comments } = this.data
     if (comments && comments[index]) {
+      // 获取当前用户和数据服务
+      const app = getApp()
+      const db = app.globalData
+      const currentUser = db.getCurrentUser()
+      
       const currentComment = comments[index]
       const isLiked = !currentComment.userLiked
-      const likeCountChange = isLiked ? 1 : -1
       
-      const updatedComments = comments.slice()
-      updatedComments[index] = Object.assign({}, currentComment, {
-        userLiked: isLiked,
-        likeCount: Math.max(0, (currentComment.likeCount || 0) + likeCountChange)
-      })
+      // 使用dataService进行数据持久化
+      const success = db.toggleLike(currentUser.id, 'comment', comment.id)
       
-      this.setData({
-        comments: updatedComments
-      })
-      
-      wx.showToast({
-        title: isLiked ? '点赞成功' : '取消点赞',
-        icon: 'success'
-      })
+      if (success) {
+        const updatedComments = comments.slice()
+        updatedComments[index] = Object.assign({}, currentComment, {
+          userLiked: isLiked,
+          likeCount: isLiked ? (currentComment.likeCount || 0) + 1 : Math.max(0, (currentComment.likeCount || 0) - 1)
+        })
+        
+        this.setData({
+          comments: updatedComments
+        })
+        
+        // 记录操作到测试数据存储
+        recordOperation(
+          OperationType.LIKE_COMMENT,
+          currentUser.id,
+          'comment',
+          comment.id,
+          { isLiked }
+        )
+        
+        wx.showToast({
+          title: isLiked ? '点赞成功' : '取消点赞',
+          icon: 'success'
+        })
+      } else {
+        wx.showToast({
+          title: '操作失败',
+          icon: 'error'
+        })
+      }
     }
   },
 
@@ -414,30 +539,53 @@ Page({
     
     const { comments } = this.data
     if (comments && comments[index] && comments[index].replies) {
+      // 获取当前用户和数据服务
+      const app = getApp()
+      const db = app.globalData
+      const currentUser = db.getCurrentUser()
+      
       const replyIndex = comments[index].replies.findIndex((r: any) => r.id === reply.id)
       if (replyIndex >= 0) {
         const currentReply = comments[index].replies[replyIndex]
         const isLiked = !currentReply.userLiked
-        const likeCountChange = isLiked ? 1 : -1
         
-        const updatedComments = comments.slice()
-        const updatedReplies = updatedComments[index].replies.slice()
+        // 使用dataService进行数据持久化
+        const success = db.toggleLike(currentUser.id, 'comment', reply.id)
         
-        updatedReplies[replyIndex] = Object.assign({}, currentReply, {
-          userLiked: isLiked,
-          likeCount: Math.max(0, (currentReply.likeCount || 0) + likeCountChange)
-        })
-        
-        updatedComments[index].replies = updatedReplies
-        
-        this.setData({
-          comments: updatedComments
-        })
-        
-        wx.showToast({
-          title: isLiked ? '点赞成功' : '取消点赞',
-          icon: 'success'
-        })
+        if (success) {
+          const updatedComments = comments.slice()
+          const updatedReplies = updatedComments[index].replies.slice()
+          
+          updatedReplies[replyIndex] = Object.assign({}, currentReply, {
+            userLiked: isLiked,
+            likeCount: isLiked ? (currentReply.likeCount || 0) + 1 : Math.max(0, (currentReply.likeCount || 0) - 1)
+          })
+          
+          updatedComments[index].replies = updatedReplies
+          
+          this.setData({
+            comments: updatedComments
+          })
+          
+          // 记录操作到测试数据存储
+          recordOperation(
+            OperationType.LIKE_COMMENT,
+            currentUser.id,
+            'comment',
+            reply.id,
+            { isLiked }
+          )
+          
+          wx.showToast({
+            title: isLiked ? '点赞成功' : '取消点赞',
+            icon: 'success'
+          })
+        } else {
+          wx.showToast({
+            title: '操作失败',
+            icon: 'error'
+          })
+        }
       }
     }
   },
@@ -469,16 +617,42 @@ Page({
       avatar: '/static/default-avatar.png'
     }
     
+    // 生成新的评论或回复数据
+    const commentData = {
+      content: replyInput.content.trim(),
+      userId: currentUser.id,
+      topicId: this.data.topic.id,
+      parentId: replyInput.visible && replyInput.targetCommentId ? 
+                (replyInput.isReplyToComment ? replyInput.targetCommentId : replyInput.targetReplyId) : 
+                null,
+      replyToId: replyInput.visible && !replyInput.isReplyToComment ? replyInput.targetReplyId : null
+    }
+    
+    // 使用dataService进行数据持久化
+    const db = app.globalData
+    const savedComment = db.createComment(commentData)
+    
+    if (!savedComment) {
+      wx.showToast({
+        title: '评论失败',
+        icon: 'error'
+      })
+      return
+    }
+    
+    // 获取评论作者信息
+    const author = db.getUserById(currentUser.id) || {
+      id: currentUser.id,
+      nickname: currentUser.nickname || '当前用户',
+      avatar: currentUser.avatar || 'https://api.dicebear.com/7.x/adventurer/png?seed=default&size=100'
+    }
+    
     // 生成新的评论或回复
     const newComment = {
-      id: 'comment_' + Date.now(),
-      content: replyInput.content.trim(),
-      author: {
-        id: currentUser.id,
-        nickname: currentUser.nickname,
-        avatar: currentUser.avatar
-      },
-      createTime: this.formatTime(new Date()),
+      id: savedComment.id,
+      content: savedComment.content,
+      author: author,
+      createTime: savedComment.time,
       likeCount: 0,
       replyCount: 0,
       replies: [],
@@ -486,6 +660,19 @@ Page({
       isFeatured: false,
       isNew: true // 标记为新评论
     }
+    
+    // 记录操作到测试数据存储
+    const operationType = replyInput.visible && replyInput.targetCommentId ? 
+                         OperationType.CREATE_COMMENT : 
+                         OperationType.CREATE_COMMENT
+    
+    recordOperation(
+      operationType,
+      currentUser.id,
+      replyInput.visible && replyInput.targetCommentId ? 'comment' : 'topic',
+      replyInput.visible && replyInput.targetCommentId ? replyInput.targetCommentId : this.data.topic.id,
+      { content: replyInput.content.trim(), isReply: replyInput.visible }
+    )
     
     if (replyInput.visible && replyInput.targetCommentId) {
       // 回复评论
@@ -720,20 +907,7 @@ scrollToReplyInput() {
     })
   },
   
-  // 滚动到回复输入框
-  scrollToReplyInput() {
-    const query = wx.createSelectorQuery()
-    query.select('.reply-input-section').boundingClientRect()
-    query.selectViewport().scrollOffset()
-    query.exec((res: any) => {
-      if (res[0]) {
-        wx.pageScrollTo({
-          scrollTop: res[0].top + res[1].scrollTop - 50,
-          duration: 300
-        })
-      }
-    })
-  },
+
 
   // 展开/折叠评论的回复
   toggleReplies(e: any) {

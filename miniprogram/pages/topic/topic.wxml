@@ -271,7 +271,7 @@
       </view>
       <view class="sheet-item" bindtap="onCollection">
         <text class="sheet-icon">📦</text>
-        <text class="sheet-text">收藏话题</text>
+        <text class="sheet-text">{{topic && topic.isFavorited ? '取消收藏' : '收藏话题'}}</text>
       </view>
       <view class="sheet-item" bindtap="onReportContent">
         <text class="sheet-icon">🚩</text>

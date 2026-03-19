@@ -99,11 +99,4 @@
       </view>
     </view>
   </view>
-
-  <!-- 底部导航栏 -->
-  <bottom-nav 
-    wx:if="{{true}}"
-    current="{{-1}}" 
-    bind:change="onTabChange"
-  />
 </view>

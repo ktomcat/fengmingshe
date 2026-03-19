@@ -1,6 +1,6 @@
 // search.ts
 
-// search.ts
+import { recordOperation, OperationType } from '../../utils/testDataStorage'
 
 Page({
   data: {
@@ -95,6 +95,23 @@ Page({
         topics: results.topics.length,
         users: results.users.length
       })
+      
+      // 记录搜索操作到测试数据存储
+      const app = getApp()
+      const db = app.globalData
+      const currentUser = db.getCurrentUser()
+      
+      recordOperation(
+        OperationType.SEARCH,
+        currentUser.id,
+        'search',
+        searchText,
+        {
+          keyword: searchText,
+          topicCount: results.topics.length,
+          userCount: results.users.length
+        }
+      )
     }, 500)
   },
 
@@ -189,6 +206,24 @@ Page({
         topics: results.topics.length,
         users: results.users.length
       })
+      
+      // 记录自动搜索操作到测试数据存储
+      const app = getApp()
+      const db = app.globalData
+      const currentUser = db.getCurrentUser()
+      
+      recordOperation(
+        OperationType.SEARCH,
+        currentUser.id,
+        'search',
+        keyword,
+        {
+          keyword: keyword,
+          topicCount: results.topics.length,
+          userCount: results.users.length,
+          isAutoSearch: true
+        }
+      )
     }, 500)
   },
 
