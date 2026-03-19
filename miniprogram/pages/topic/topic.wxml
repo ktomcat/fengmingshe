@@ -22,10 +22,12 @@
     <view class="topic-header" wx:if="{{topic}}" id="topic-header">
       <!-- 作者信息 -->
       <view class="author-info">
-        <image class="avatar" src="{{topic.author.avatar}}" />
-        <view class="author-details">
-          <text class="author-name">{{topic.author.nickname}}</text>
-          <text class="post-time">{{topic.createTime}}</text>
+        <view class="author-info-left" bindtap="goToUserProfile" data-user-id="{{topic.authorId}}">
+          <image class="avatar" src="{{topic.author.avatar}}" />
+          <view class="author-details">
+            <text class="author-name">{{topic.author.nickname}}</text>
+            <text class="post-time">{{topic.createTime}}</text>
+          </view>
         </view>
         <view class="more-btn" bindtap="showBottomSheet">
           <text class="more-icon">⋯</text>
@@ -130,7 +132,7 @@
     <view class="comment-section">
       <view class="comment-card" wx:for="{{comments}}" wx:key="id">
         <view class="comment-header">
-          <view class="user-info">
+          <view class="user-info" bindtap="goToUserProfile" data-user-id="{{item.authorId}}">
             <image class="avatar" src="{{item.author.avatar}}" />
             <view class="user-details">
               <view class="username-row">
@@ -172,12 +174,12 @@
           <view class="replies-list" wx:if="{{expandedMap[item.id]}}">
             <view class="reply-item" wx:for="{{item.replies}}" wx:for-item="replyItem" wx:for-index="replyIndex" wx:key="id" wx:if="{{replyItem.isNew || replyIndex < (repliesPagination[item.id] ? repliesPagination[item.id].currentPage * 6 : 6)}}">
               <view class="reply-header">
-                <image class="reply-avatar" src="{{replyItem.author.avatar}}" />
-              <view class="reply-user-info">
-                <text class="reply-username">{{replyItem.author.nickname}}</text>
-                <text class="reply-arrow">→</text>
-                <text class="reply-reply-to">{{replyItem.replyTo ? replyItem.replyTo.nickname : '用户'}}</text>
-              </view>
+                <image class="reply-avatar" src="{{replyItem.author.avatar}}" bindtap="goToUserProfile" data-user-id="{{replyItem.authorId}}" />
+                <view class="reply-user-info">
+                  <text class="reply-username" bindtap="goToUserProfile" data-user-id="{{replyItem.authorId}}">{{replyItem.author.nickname}}</text>
+                  <text class="reply-arrow">→</text>
+                  <text class="reply-reply-to" bindtap="goToUserProfile" data-user-id="{{replyItem.replyTo ? replyItem.replyTo.id : ''}}">{{replyItem.replyTo ? replyItem.replyTo.nickname : '用户'}}</text>
+                </view>
               </view>
               <text class="reply-content" bindtap="showReplyInput" data-comment="{{item}}" data-index="{{index}}" data-reply="{{replyItem}}">{{replyItem.content}}</text>
               <view class="reply-footer">

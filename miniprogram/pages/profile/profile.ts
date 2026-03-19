@@ -227,8 +227,12 @@ Page({
       }
     })
     
-    // 获取当前用户关注的用户数据
-    const userFollowing = db.getUserFollowing(currentUser.id)
+    // 获取当前用户关注的用户数据，并添加粉丝数和帖子数
+    const userFollowing = db.getUserFollowing(currentUser.id).map(user => ({
+      ...user,
+      followers: this.formatNumber(user.fansCount || 0),
+      posts: db.getUserTopics(user.id).length
+    }))
     
     this.setData({
       userInfo: {

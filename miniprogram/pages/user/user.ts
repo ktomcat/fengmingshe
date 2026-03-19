@@ -200,61 +200,88 @@ Page({
 
   // 关注用户
   followUser() {
-    const app = getApp<IAppOption>()
-    const newFollowing = [...app.globalData.currentUserFollowing]
+    const app = getApp()
+    const db = app.globalData
+    const currentUser = this.data.currentUser
+    const targetUserId = this.data.userInfo.id || 'user_002'
     
-    // 添加用户到关注列表
-    newFollowing.push({
-      id: this.data.userInfo.id || 'user_002',
-      nickname: this.data.userInfo.name,
-      avatar: this.data.userInfo.avatar,
-      signature: this.data.userInfo.signature,
-      followers: this.data.stats.followers,
-      posts: this.data.posts.length
-    })
+    // 调用数据持久化方法
+    const result = db.toggleFollow(currentUser.id, targetUserId)
     
-    // 更新全局数据
-    app.globalData.currentUserFollowing = newFollowing
-    
-    // 更新页面数据
-    this.setData({
-      isFollowing: true,
-      'stats.followers': this.formatNumber(parseInt(this.data.stats.followers) + 1)
-    })
-    
-    wx.showToast({
-      title: '关注成功',
-      icon: 'success',
-      duration: 1500
-    })
-    
-    console.log('关注用户成功')
+    if (result) {
+      // 添加用户到关注列表
+      const newFollowing = [...(app.globalData.currentUserFollowing || [])]
+      newFollowing.push({
+        id: this.data.userInfo.id || 'user_002',
+        nickname: this.data.userInfo.name,
+        avatar: this.data.userInfo.avatar,
+        signature: this.data.userInfo.signature,
+        followers: this.data.stats.followers,
+        posts: this.data.posts.length
+      })
+      
+      // 更新全局数据
+      app.globalData.currentUserFollowing = newFollowing
+      
+      // 更新页面数据
+      this.setData({
+        isFollowing: true,
+        'stats.followers': this.formatNumber(Number(this.data.stats.followers) + 1)
+      })
+      
+      wx.showToast({
+        title: '关注成功',
+        icon: 'success',
+        duration: 1500
+      })
+      
+      console.log('关注用户成功')
+    } else {
+      wx.showToast({
+        title: '关注失败',
+        icon: 'none',
+        duration: 1500
+      })
+    }
   },
 
   // 取消关注用户
   unfollowUser() {
-    const app = getApp<IAppOption>()
-    const userId = this.data.userInfo.id || 'user_002'
+    const app = getApp()
+    const db = app.globalData
+    const currentUser = this.data.currentUser
+    const targetUserId = this.data.userInfo.id || 'user_002'
     
-    // 从关注列表中移除
-    const newFollowing = app.globalData.currentUserFollowing.filter(user => user.id !== userId)
+    // 调用数据持久化方法
+    const result = db.toggleFollow(currentUser.id, targetUserId)
     
-    // 更新全局数据
-    app.globalData.currentUserFollowing = newFollowing
-    
-    // 更新页面数据
-    this.setData({
-      isFollowing: false,
-      'stats.followers': this.formatNumber(Math.max(0, parseInt(this.data.stats.followers) - 1))
-    })
-    
-    wx.showToast({
-      title: '已取消关注',
-      icon: 'success',
-      duration: 1500
-    })
-    
-    console.log('取消关注用户成功')
+    if (result === false) {
+      // 从关注列表中移除
+      const newFollowing = (app.globalData.currentUserFollowing || []).filter(user => user.id !== targetUserId)
+      
+      // 更新全局数据
+      app.globalData.currentUserFollowing = newFollowing
+      
+      // 更新页面数据
+      this.setData({
+        isFollowing: false,
+        'stats.followers': this.formatNumber(Math.max(0, Number(this.data.stats.followers) - 1))
+      })
+      
+      wx.showToast({
+        title: '已取消关注',
+        icon: 'success',
+        duration: 1500
+      })
+      
+      console.log('取消关注用户成功')
+    } else {
+      wx.showToast({
+        title: '取消关注失败',
+        icon: 'none',
+        duration: 1500
+      })
+    }
   },
 
   // 点击作品

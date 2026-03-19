@@ -1128,9 +1128,11 @@ scrollToReplyInput() {
             nickname: '未知用户',
             avatar: 'https://api.dicebear.com/7.x/adventurer/png?seed=Unknown&size=100'
           },
+          authorId: reply.userId, // 添加authorId字段
           replyTo: replyToUser ? {
             nickname: replyToUser.nickname,
-            avatar: replyToUser.avatar
+            avatar: replyToUser.avatar,
+            id: replyToUser.id // 添加被回复者的ID
           } : null,
           createTime: reply.time,
           likeCount: reply.likeCount,
@@ -1145,6 +1147,7 @@ scrollToReplyInput() {
           nickname: '未知用户',
           avatar: 'https://api.dicebear.com/7.x/adventurer/png?seed=Unknown&size=100'
         },
+        authorId: comment.userId, // 添加authorId字段
         createTime: comment.time,
         likeCount: comment.likeCount,
         replyCount: comment.replyCount,
@@ -1299,6 +1302,23 @@ scrollToCommentsList() {
              date.getDate().toString().padStart(2, '0') + ' ' +
              date.getHours().toString().padStart(2, '0') + ':' +
              date.getMinutes().toString().padStart(2, '0')
+    }
+  },
+
+  // 跳转到用户主页
+  goToUserProfile(e: any) {
+    const userId = e.currentTarget.dataset.userId
+    console.log('【话题详情页】点击作者信息，用户ID:', userId)
+    
+    if (userId) {
+      wx.navigateTo({
+        url: `/pages/user/user?userId=${userId}`
+      })
+    } else {
+      wx.showToast({
+        title: '用户信息不存在',
+        icon: 'error'
+      })
     }
   }
 })

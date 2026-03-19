@@ -16,7 +16,7 @@
     "noUnusedParameters": false,
     "strict": false,
     "strictPropertyInitialization": false,
-    "lib": [],
+    "lib": ["ES2020", "DOM"],
     "skipLibCheck": true,
     "typeRoots": [
       "./miniprogram/typings"

@@ -49,14 +49,27 @@ page {
 .author-info {
   display: flex;
   align-items: center;
-  gap: 24rpx;
+  justify-content: space-between;
   margin-bottom: 24rpx;
+}
+
+.author-info-left {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  flex: 1;
 }
 
 .author-details {
   display: flex;
   flex-direction: column;
-  flex: 1;
+}
+
+.avatar {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  background-color: #f3f4f6;
 }
 
 .author-name {

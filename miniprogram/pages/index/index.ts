@@ -548,5 +548,22 @@ Component({
         }
       })
     },
+
+    // 跳转到用户主页
+    goToUserProfile(e: any) {
+      const userId = e.currentTarget.dataset.userId
+      console.log('【首页】点击作者信息，用户ID:', userId)
+      
+      if (userId) {
+        wx.navigateTo({
+          url: `/pages/user/user?userId=${userId}`
+        })
+      } else {
+        wx.showToast({
+          title: '用户信息不存在',
+          icon: 'error'
+        })
+      }
+    },
   },
 })
