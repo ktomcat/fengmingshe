@@ -43,6 +43,9 @@ Page({
     console.log('【话题页】页面参数options:', options)
     
     const app = getApp()
+    const db = app.globalData
+    const currentUser = db.getCurrentUser()
+    
     const topicId = options.topicId
     const focusInput = options.focusInput === 'true'
     const scrollToComments = options.scrollToComments === 'true'
@@ -50,39 +53,34 @@ Page({
     console.log('【话题页】解析后的参数:', { topicId, focusInput, scrollToComments })
     
     // 根据topicId加载对应的话题数据
-    const globalData = app.globalData
     let targetTopic = null
     
     if (topicId) {
-      // 根据topicId查找对应的话题，依次从不同数据源查找
-      if (globalData.featuredTopic && globalData.featuredTopic.id === topicId) {
-        targetTopic = globalData.featuredTopic
-      } else if (globalData.topics) {
-        targetTopic = globalData.topics.find((topic: any) => topic.id === topicId)
-      }
-      
-      // 如果在前两个数据源中没找到，尝试从当前用户发布的帖子中查找
-      if (!targetTopic && globalData.currentUserPosts) {
-        targetTopic = globalData.currentUserPosts.find((post: any) => post.id === topicId)
-      }
-      
-      // 如果还没找到，尝试从当前用户收藏的帖子中查找
-      if (!targetTopic && globalData.currentUserFavorites) {
-        targetTopic = globalData.currentUserFavorites.find((favorite: any) => favorite.id === topicId)
-      }
+      // 从全局数据库查找话题
+      targetTopic = db.topics.find(topic => topic.id === topicId)
       
       // 如果还没找到，使用默认数据
       if (!targetTopic) {
-        targetTopic = globalData.featuredTopic || (globalData.topics ? globalData.topics[0] : null)
+        targetTopic = db.getFeaturedTopic() || db.getNormalTopics()[0] || null
       }
     } else {
       // 如果没有topicId参数，使用默认数据
-      targetTopic = globalData.featuredTopic || (globalData.topics ? globalData.topics[0] : null)
+      targetTopic = db.getFeaturedTopic() || db.getNormalTopics()[0] || null
     }
     
-    // 确保userLiked字段正确初始化
-    if (targetTopic && targetTopic.userLiked === undefined) {
-      targetTopic.userLiked = false
+    // 获取作者信息
+    if (targetTopic && targetTopic.authorId) {
+      const author = db.users.find(user => user.id === targetTopic.authorId)
+      if (author) {
+        targetTopic.author = author
+      }
+    }
+    
+    // 检查当前用户是否点赞、投票、收藏
+    if (targetTopic) {
+      targetTopic.userLiked = db.isLiked(currentUser.id, 'topic', targetTopic.id)
+      targetTopic.voteChoice = db.getVote(currentUser.id, targetTopic.id)
+      targetTopic.isFavorited = db.isFavorited(currentUser.id, targetTopic.id)
     }
     
     // 计算投票百分比
@@ -90,7 +88,7 @@ Page({
       targetTopic = this.calculateVotePercentages(targetTopic)
     }
     
-    const allComments = this.getCommentsForTopic(targetTopic)
+    const allComments = this.getCommentsForTopic(targetTopic, db)
     const initialComments = allComments.slice(0, 10)
     
     // 更新数据
@@ -103,7 +101,8 @@ Page({
       'pagination.hasMore': allComments.length > 10,
       'replyInput.visible': false,
       'replyInput.content': '',
-      expandedComments: []
+      expandedComments: [],
+      currentUser: currentUser
     })
     
     // 获取导航栏和评论导航的高度
@@ -346,22 +345,29 @@ Page({
     }
 
     const contentItem = topic.content[contentIndex]
-    if (contentItem.type !== 'vote' || contentItem.content.userVoted) {
+    if (contentItem.type !== 'vote' || topic.voteChoice) {
+      // 如果已经投过票，直接返回
       return
     }
 
+    // 获取当前用户信息
+    const app = getApp()
+    const db = app.globalData
+    const currentUser = db.getCurrentUser()
+    
     // 更新投票数据
     const updatedTopic = { ...topic }
     const vote = { ...updatedTopic.content[contentIndex].content }
     
     vote[choice].count += 1
     vote.totalVotes += 1
-    vote.userVoted = true
-    vote.userChoice = choice
     
     // 重新计算百分比
     const updatedVote = this.calculateVotePercentagesForItem(vote)
     updatedTopic.content[contentIndex].content = updatedVote
+    
+    // 更新话题级别的投票状态
+    updatedTopic.voteChoice = choice
 
     this.setData({
       topic: updatedTopic
@@ -929,40 +935,53 @@ scrollToReplyInput() {
   },
 
   // 生成评论数据
-  getCommentsForTopic(topic: any) {
-    if (!topic || !topic.comments) return []
+  getCommentsForTopic(topic: any, db: any) {
+    if (!topic || !topic.id) return []
     
-    return topic.comments.map((comment: any) => ({
-      id: comment.id,
-      content: comment.content,
-      author: {
-        id: comment.user.id,
-        nickname: comment.user.nickname,
-        avatar: comment.user.avatar
-      },
-      createTime: comment.time,
-      likeCount: comment.likeCount,
-      replyCount: comment.replies ? comment.replies.length : 0,
-      userLiked: comment.userLiked !== undefined ? comment.userLiked : false,
-      replies: comment.replies ? comment.replies.map((reply: any) => ({
-        id: reply.id,
-        content: reply.content,
-        author: {
-          id: reply.user.id,
-          nickname: reply.user.nickname,
-          avatar: reply.user.avatar
+    const currentUser = db.getCurrentUser()
+    const topicComments = db.getTopicComments(topic.id)
+    
+    return topicComments.map((comment: any) => {
+      // 获取评论作者信息
+      const author = db.users.find(user => user.id === comment.userId)
+      
+      // 获取回复信息
+      const replies = db.getCommentReplies(comment.id).map((reply: any) => {
+        const replyAuthor = db.users.find(user => user.id === reply.userId)
+        const replyToUser = reply.replyToId ? db.users.find(user => user.id === reply.replyToId) : null
+        
+        return {
+          id: reply.id,
+          content: reply.content,
+          author: replyAuthor || {
+            nickname: '未知用户',
+            avatar: 'https://api.dicebear.com/7.x/adventurer/png?seed=Unknown&size=100'
+          },
+          replyTo: replyToUser ? {
+            nickname: replyToUser.nickname,
+            avatar: replyToUser.avatar
+          } : null,
+          createTime: reply.time,
+          likeCount: reply.likeCount,
+          userLiked: db.isLiked(currentUser.id, 'comment', reply.id)
+        }
+      })
+      
+      return {
+        id: comment.id,
+        content: comment.content,
+        author: author || {
+          nickname: '未知用户',
+          avatar: 'https://api.dicebear.com/7.x/adventurer/png?seed=Unknown&size=100'
         },
-        replyTo: reply.replyTo ? {
-          id: reply.replyTo.id,
-          nickname: reply.replyTo.nickname,
-          avatar: reply.replyTo.avatar
-        } : null,
-        createTime: reply.time,
-        likeCount: reply.likeCount,
-        userLiked: reply.userLiked !== undefined ? reply.userLiked : false
-      })) : [],
-      isFeatured: comment.likeCount > 10
-    }))
+        createTime: comment.time,
+        likeCount: comment.likeCount,
+        replyCount: comment.replyCount,
+        userLiked: db.isLiked(currentUser.id, 'comment', comment.id),
+        replies: replies,
+        isFeatured: comment.likeCount > 10
+      }
+    })
   },
 
   // 聚焦评论输入框

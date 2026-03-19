@@ -74,7 +74,7 @@
                   </view>
                 </view>
                 
-                <view class="vote-actions" wx:if="{{!contentItem.content.userVoted}}">
+                <view class="vote-actions" wx:if="{{!topic.voteChoice}}">
                   <button class="vote-btn positive" bindtap="onVotePositive" data-content-index="{{index}}">
                     <image class="btn-icon" src="/static/icons/like.png" />
                     <text class="btn-text">支持观点</text>
@@ -85,9 +85,9 @@
                   </button>
                 </view>
                 
-                <view class="vote-result" wx:if="{{contentItem.content.userVoted}}">
+                <view class="vote-result" wx:if="{{topic.voteChoice}}">
                   <text class="result-text">
-                    你选择了 {{contentItem.content.userChoice === 'positive' ? '正方' : '反方'}}
+                    你选择了 {{topic.voteChoice === 'positive' ? '正方' : '反方'}}
                   </text>
                 </view>
               </view>

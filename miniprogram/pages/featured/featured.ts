@@ -5,30 +5,56 @@ Component({
     attached() {
       // 组件挂载时加载测试数据并设置当前选中状态
       const app = getApp()
-      const globalData = app.globalData
+      const db = app.globalData
+      
+      // 获取当前用户
+      const currentUser = db.getCurrentUser()
+      
+      // 获取所有普通话题
+      const normalTopics = db.getNormalTopics()
 
       // 处理讨论列表，为每个话题提取第一个文本内容、图片数量和辩题信息
-      const discussions = globalData.topics?globalData.topics.map(topic => {
+      const discussions = normalTopics.map(topic => {
         if (topic && topic.content) {
           const firstTextContent = this.getFirstTextContent(topic.content)
           const imageCount = this.getImageCount(topic.content)
           const hasVote = this.hasVoteContent(topic.content)
           const voteInfo = hasVote ? this.getVoteInfo(topic.content) : null
+          
+          // 获取作者信息
+          const author = db.users.find(user => user.id === topic.authorId)
+          
+          // 检查当前用户是否点赞、投票、收藏
+          const isLiked = db.isLiked(currentUser.id, 'topic', topic.id)
+          const voteChoice = db.getVote(currentUser.id, topic.id)
+          const isFavorited = db.isFavorited(currentUser.id, topic.id)
+          
           return {
             ...topic,
+            author: author || {
+              nickname: '未知用户',
+              avatar: 'https://api.dicebear.com/7.x/adventurer/png?seed=Unknown&size=100'
+            },
             displayContent: firstTextContent,
             imageCount: imageCount,
             hasVote: hasVote,
-            voteInfo: voteInfo
+            voteInfo: voteInfo,
+            userLiked: isLiked,
+            voteChoice: voteChoice,
+            isFavorited: isFavorited
           }
         }
         return topic
-      }):[]
+      })
       
       // 设置当前选中的导航项索引（精选页面对应索引1）
       this.setData({
         discussions: discussions,
-        userInfo: globalData.userInfo,
+        currentUser: currentUser,
+        userInfo: {
+          avatarUrl: currentUser.avatar,
+          nickName: currentUser.nickname
+        },
         currentTab: 1 // 精选页面对应底部导航栏的第二个标签（索引1）
       })
     }

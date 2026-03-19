@@ -185,58 +185,72 @@ Page({
   initPage() {
     // 从全局数据获取当前用户的帖子和收藏数据
     const app = getApp<IAppOption>()
+    const db = app.globalData
     
-    // 获取用户信息并更新页面数据
-    const userInfo = app.globalData.userInfo
+    // 获取当前用户信息
+    const currentUser = db.getCurrentUser()
     
-    // 计算浏览量、获赞数、粉丝数（基于帖子数据）
-    const totalViews = app.globalData.currentUserPosts.reduce((sum, post) => {
-      return sum + (Math.floor(Math.random() * 5000 + 500));
-    }, 0)
+    // 获取当前用户发布的帖子
+    const userTopics = db.getUserTopics(currentUser.id)
     
-    const totalLikes = app.globalData.currentUserPosts.reduce((sum, post) => {
-      return sum + post.likeCount;
-    }, 0)
+    // 计算浏览量、获赞数、粉丝数
+    const totalViews = userTopics.reduce((sum, topic) => sum + (topic.viewCount || 0), 0)
+    const totalLikes = userTopics.reduce((sum, topic) => sum + (topic.likeCount || 0), 0)
     
     // 获取当前用户发布的帖子（转换为个人主页需要的简化格式）
-    const userPosts = app.globalData.currentUserPosts.map(post => ({
-      id: post.id,
-      title: post.title,
-      date: post.createTime.split(' ')[0], // 只取日期部分
-      views: Math.floor(Math.random() * 5000 + 500) + '', // 随机浏览量
-      likes: post.likeCount + ''
+    const userPosts = userTopics.map(topic => ({
+      id: topic.id,
+      title: topic.title,
+      date: topic.createTime.split(' ')[0], // 只取日期部分
+      views: this.formatNumber(topic.viewCount || 0),
+      likes: this.formatNumber(topic.likeCount || 0)
     }))
     
-    // 获取当前用户收藏的帖子（转换为个人主页需要的简化格式）
-    const userFavorites = app.globalData.currentUserFavorites.map(fav => ({
-      id: fav.id,
-      title: fav.title,
-      date: fav.createTime.split(' ')[0], // 只取日期部分
-      views: Math.floor(Math.random() * 8000 + 1000) + '', // 随机浏览量
-      likes: fav.likeCount + '',
-      author: fav.author // 包含作者信息
-    }))
+    // 获取当前用户收藏的帖子
+    const userFavorites = db.getUserFavorites(currentUser.id).map(topic => {
+      // 查找作者信息
+      const author = db.users.find(u => u.id === topic.authorId)
+      
+      return {
+        id: topic.id,
+        title: topic.title,
+        date: topic.createTime.split(' ')[0],
+        views: this.formatNumber(topic.viewCount || 0),
+        likes: this.formatNumber(topic.likeCount || 0),
+        author: {
+          id: author?.id || 'unknown',
+          nickname: author?.nickname || '未知用户',
+          avatar: author?.avatar || 'https://api.dicebear.com/7.x/adventurer/png?seed=default&size=100'
+        }
+      }
+    })
     
     // 获取当前用户关注的用户数据
-    const userFollowing = app.globalData.currentUserFollowing || []
+    const userFollowing = db.getUserFollowing(currentUser.id)
     
     this.setData({
       userInfo: {
-        name: userInfo.nickname,
-        signature: userInfo.signature || "热爱生活，分享美好时光",
-        avatar: userInfo.avatar
+        name: currentUser.nickname,
+        signature: currentUser.signature || "热爱生活，分享美好时光",
+        avatar: currentUser.avatar,
+        id: currentUser.id
       },
       stats: {
         views: this.formatNumber(totalViews),
         likes: this.formatNumber(totalLikes),
-        followers: this.formatNumber(userInfo.fansCount || 18)
+        followers: this.formatNumber(currentUser.fansCount || 18)
       },
       posts: userPosts,
       favorites: userFavorites,
-      following: userFollowing
+      following: userFollowing,
+      currentUser: currentUser
     })
     
-    console.log('初始化个人中心页面，加载用户数据完成')
+    console.log('初始化个人中心页面，加载用户数据完成', {
+      postsCount: userPosts.length,
+      favoritesCount: userFavorites.length,
+      followingCount: userFollowing.length
+    })
   },
 
   // 数字格式化函数
@@ -403,28 +417,17 @@ Page({
     const post = e.currentTarget.dataset.post
     console.log('点击发布内容:', post)
     
-    // 从全局数据获取完整的帖子数据
-    const app = getApp<IAppOption>()
-    const fullPost = app.globalData.currentUserPosts.find(p => p.id === post.id)
-    
-    if (fullPost) {
-      // 跳转到对应的话题详情页
-      wx.navigateTo({
-        url: `/pages/topic/topic?topicId=${post.id}&scrollToComments=false`,
-        fail: (err) => {
-          console.error('跳转失败:', err)
-          wx.showToast({
-            title: '页面跳转失败',
-            icon: 'none'
-          })
-        }
-      })
-    } else {
-      wx.showToast({
-        title: '帖子数据加载中',
-        icon: 'none'
-      })
-    }
+    // 直接跳转到对应的话题详情页
+    wx.navigateTo({
+      url: `/pages/topic/topic?topicId=${post.id}&scrollToComments=false`,
+      fail: (err) => {
+        console.error('跳转失败:', err)
+        wx.showToast({
+          title: '页面跳转失败',
+          icon: 'none'
+        })
+      }
+    })
   },
 
   // 点击收藏内容
@@ -432,28 +435,17 @@ Page({
     const favorite = e.currentTarget.dataset.favorite
     console.log('点击收藏内容:', favorite)
     
-    // 从全局数据获取完整的收藏数据
-    const app = getApp<IAppOption>()
-    const fullFavorite = app.globalData.currentUserFavorites.find(f => f.id === favorite.id)
-    
-    if (fullFavorite) {
-      // 跳转到对应的话题详情页
-      wx.navigateTo({
-        url: `/pages/topic/topic?topicId=${favorite.id}&scrollToComments=false`,
-        fail: (err) => {
-          console.error('跳转失败:', err)
-          wx.showToast({
-            title: '页面跳转失败',
-            icon: 'none'
-          })
-        }
-      })
-    } else {
-      wx.showToast({
-        title: '收藏数据加载中',
-        icon: 'none'
-      })
-    }
+    // 直接跳转到对应的话题详情页
+    wx.navigateTo({
+      url: `/pages/topic/topic?topicId=${favorite.id}&scrollToComments=false`,
+      fail: (err) => {
+        console.error('跳转失败:', err)
+        wx.showToast({
+          title: '页面跳转失败',
+          icon: 'none'
+        })
+      }
+    })
   },
 
   // 点击关注用户

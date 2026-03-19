@@ -5,37 +5,63 @@ Component({
     attached() {
       // 组件挂载时加载测试数据
       const app = getApp()
-      const globalData = app.globalData
+      const db = app.globalData
       
-      // 处理特色话题，提取第一个文本内容
-      const featuredTopic = globalData.featuredTopic
+      // 获取当前用户信息
+      const currentUser = db.getCurrentUser()
+      
+      // 获取特色话题
+      const featuredTopic = db.getFeaturedTopic()
       if (featuredTopic && featuredTopic.content) {
         const firstTextContent = this.getFirstTextContent(featuredTopic.content)
         featuredTopic.displayContent = firstTextContent
       }
       
+      // 获取所有普通话题
+      const normalTopics = db.getNormalTopics()
+      
       // 处理讨论列表，为每个话题提取第一个文本内容、图片数量和辩题信息
-      const discussions = globalData.topics?globalData.topics.map(topic => {
+      const discussions = normalTopics.map(topic => {
         if (topic && topic.content) {
           const firstTextContent = this.getFirstTextContent(topic.content)
           const imageCount = this.getImageCount(topic.content)
           const hasVote = this.hasVoteContent(topic.content)
           const voteInfo = hasVote ? this.getVoteInfo(topic.content) : null
+          
+          // 获取作者信息
+          const author = db.users.find(user => user.id === topic.authorId)
+          
+          // 检查当前用户是否点赞、投票、收藏
+          const isLiked = db.isLiked(currentUser.id, 'topic', topic.id)
+          const voteChoice = db.getVote(currentUser.id, topic.id)
+          const isFavorited = db.isFavorited(currentUser.id, topic.id)
+          
           return {
             ...topic,
+            author: author || {
+              nickname: '未知用户',
+              avatar: 'https://api.dicebear.com/7.x/adventurer/png?seed=Unknown&size=100'
+            },
             displayContent: firstTextContent,
             imageCount: imageCount,
             hasVote: hasVote,
-            voteInfo: voteInfo
+            voteInfo: voteInfo,
+            userLiked: isLiked,
+            voteChoice: voteChoice,
+            isFavorited: isFavorited
           }
         }
         return topic
-      }):[]
+      })
       
       this.setData({
         featuredTopic: featuredTopic,
         discussions: discussions,
-        userInfo: globalData.userInfo
+        currentUser: currentUser,
+        userInfo: {
+          avatarUrl: currentUser.avatar,
+          nickName: currentUser.nickname
+        }
       })
     }
   },

@@ -1,121 +1,19 @@
 // chat.ts
 Page({
   data: {
-    currentTab: 2, // 当前底部导航索引（消息页面为2）
+    currentTab: 3, // 当前底部导航索引（消息页面为3）
     
     // 当前激活的消息分类
     activeCategory: 'all',
     
     // 全部消息数据
-    messages: [
-      {
-        id: 'msg_001',
-        type: 'like',
-        sender: '小红',
-        avatar: 'https://api.dicebear.com/7.x/adventurer/png?seed=Alex&size=100',
-        preview: '点赞了你的话题"如何利用现代UI设计提升用户留存率？"',
-        time: '10:15',
-        read: false
-      },
-      {
-        id: 'msg_002',
-        type: 'comment',
-        sender: '小李',
-        avatar: 'https://api.dicebear.com/7.x/adventurer/png?seed=Jordan&size=100',
-        preview: '评论了你的话题：我觉得大学教育还是很重要的，不仅是学知识...',
-        time: '09:45',
-        read: false
-      },
-      {
-        id: 'msg_003',
-        type: 'follow',
-        sender: '小张',
-        avatar: 'https://api.dicebear.com/7.x/adventurer/png?seed=Taylor&size=100',
-        preview: '关注了你',
-        time: '昨天 11:20',
-        read: true
-      },
-      {
-        id: 'msg_004',
-        type: 'system',
-        sender: '系统通知',
-        avatar: 'https://api.dicebear.com/7.x/bottts/png?seed=Robot1&size=100',
-        preview: '你的话题"你支持还是反对躺平的生活态度？"投票人数已突破800人',
-        time: '昨天 16:30',
-        read: true
-      },
-      {
-        id: 'msg_005',
-        type: 'comment',
-        sender: '王老师',
-        avatar: 'https://api.dicebear.com/7.x/adventurer/png?seed=Casey&size=100',
-        preview: '评论了你的话题：关于ChatGPT的使用问题，我觉得可以辩证看待',
-        time: '3月7日',
-        read: true
-      }
-    ],
+    messages: [],
     
     // 互动消息数据
-    interactionMessages: [
-      {
-        id: 'interact_001',
-        type: 'like',
-        sender: '小红',
-        avatar: 'https://api.dicebear.com/7.x/adventurer/png?seed=Alex&size=100',
-        preview: '点赞了你的话题"如何利用现代UI设计提升用户留存率？"',
-        time: '10:15',
-        read: false
-      },
-      {
-        id: 'interact_002',
-        type: 'comment',
-        sender: '小李',
-        avatar: 'https://api.dicebear.com/7.x/adventurer/png?seed=Jordan&size=100',
-        preview: '评论了你的话题：我觉得大学教育还是很重要的，不仅是学知识...',
-        time: '09:45',
-        read: false
-      },
-      {
-        id: 'interact_003',
-        type: 'follow',
-        sender: '小张',
-        avatar: 'https://api.dicebear.com/7.x/adventurer/png?seed=Taylor&size=100',
-        preview: '关注了你',
-        time: '昨天 11:20',
-        read: true
-      }
-    ],
+    interactionMessages: [],
     
     // 系统消息数据
-    systemMessages: [
-      {
-        id: 'system_001',
-        type: 'system',
-        sender: '系统通知',
-        avatar: 'https://api.dicebear.com/7.x/bottts/png?seed=Robot1&size=100',
-        preview: '你的话题"你支持还是反对躺平的生活态度？"投票人数已突破800人',
-        time: '昨天 16:30',
-        read: true
-      },
-      {
-        id: 'system_002',
-        type: 'system',
-        sender: '系统通知',
-        avatar: 'https://api.dicebear.com/7.x/bottts/png?seed=Robot1&size=100',
-        preview: '系统维护通知：本周六凌晨2:00-4:00进行系统维护',
-        time: '3月5日',
-        read: true
-      },
-      {
-        id: 'system_003',
-        type: 'system',
-        sender: '系统通知',
-        avatar: 'https://api.dicebear.com/7.x/bottts/png?seed=Robot1&size=100',
-        preview: '版本更新：v1.2.0版本已发布，新增多项功能',
-        time: '3月1日',
-        read: true
-      }
-    ]
+    systemMessages: []
   },
 
   onLoad() {
@@ -130,6 +28,66 @@ Page({
   // 初始化页面
   initPage() {
     console.log('初始化消息页面')
+    
+    const app = getApp<IAppOption>()
+    const db = app.globalData
+    const currentUser = db.getCurrentUser()
+    
+    // 获取用户的所有消息通知
+    const userNotifications = db.getUserNotifications(currentUser.id)
+    
+    // 处理消息数据
+    const messages = userNotifications.map(notify => {
+      // 获取发送者信息
+      const fromUser = notify.fromUserId ? db.users.find(u => u.id === notify.fromUserId) : null
+      
+      // 格式化时间
+      const time = this.formatTime(notify.time)
+      
+      // 处理发送者名称 - 系统消息使用系统名称，其他消息使用用户名称
+      let senderName = ''
+      if (notify.type === 'system' || notify.type === 'vote') {
+        senderName = '系统通知'
+      } else if (fromUser) {
+        senderName = fromUser.nickname
+      } else {
+        senderName = '蜂鸣社'
+      }
+      
+      return {
+        id: notify.id,
+        type: notify.type,
+        sender: senderName,
+        avatar: fromUser ? fromUser.avatar : 'https://api.dicebear.com/7.x/bottts/png?seed=Robot1&size=100',
+        preview: notify.content,
+        time: time,
+        read: notify.read,
+        sourceId: notify.sourceId,
+        sourceType: notify.sourceType,
+        fromUserId: notify.fromUserId
+      }
+    })
+    
+    // 分类消息
+    const interactionMessages = messages.filter(msg => 
+      msg.type === 'like' || msg.type === 'comment' || msg.type === 'follow' || msg.type === 'reply'
+    )
+    
+    const systemMessages = messages.filter(msg => 
+      msg.type === 'system' || msg.type === 'vote'
+    )
+    
+    this.setData({
+      messages: messages,
+      interactionMessages: interactionMessages,
+      systemMessages: systemMessages
+    })
+    
+    console.log('消息页面初始化完成', {
+      totalMessages: messages.length,
+      interactionMessages: interactionMessages.length,
+      systemMessages: systemMessages.length
+    })
   },
 
   // 底部导航栏切换 - 与profile页面完全一致
@@ -189,32 +147,38 @@ Page({
     switch (message.type) {
       case 'like':
       case 'comment':
+      case 'reply':
         // 跳转到对应话题详情页
-        wx.navigateTo({
-          url: '/pages/topic/topic?topicId=user_post_001',
-          fail: (err) => {
-            console.error('跳转失败:', err)
-            wx.showToast({
-              title: '页面跳转失败',
-              icon: 'none'
-            })
-          }
-        })
+        if (message.sourceId) {
+          wx.navigateTo({
+            url: `/pages/topic/topic?topicId=${message.sourceId}`,
+            fail: (err) => {
+              console.error('跳转失败:', err)
+              wx.showToast({
+                title: '页面跳转失败',
+                icon: 'none'
+              })
+            }
+          })
+        }
         break
       case 'follow':
         // 跳转到用户主页
-        wx.navigateTo({
-          url: '/pages/user/user?userId=user_002',
-          fail: (err) => {
-            console.error('跳转失败:', err)
-            wx.showToast({
-              title: '页面跳转失败',
-              icon: 'none'
-            })
-          }
-        })
+        if (message.fromUserId) {
+          wx.navigateTo({
+            url: `/pages/user/user?userId=${message.fromUserId}`,
+            fail: (err) => {
+              console.error('跳转失败:', err)
+              wx.showToast({
+                title: '页面跳转失败',
+                icon: 'none'
+              })
+            }
+          })
+        }
         break
       case 'system':
+      case 'vote':
         // 系统消息，显示详情弹窗
         wx.showModal({
           title: message.sender,
@@ -244,7 +208,7 @@ Page({
     this.setData({
       messages: updateMessageStatus(this.data.messages, messageId),
       interactionMessages: updateMessageStatus(this.data.interactionMessages, messageId),
-      systemMessages: updateMessageStatus(this.data.systemessages, messageId)
+      systemMessages: updateMessageStatus(this.data.systemMessages, messageId)
     })
     
     console.log('消息标记为已读:', messageId)
@@ -262,6 +226,29 @@ Page({
         icon: 'success'
       })
     }, 1000)
+  },
+
+  // 时间格式化函数
+  formatTime(timeStr: string): string {
+    const now = new Date()
+    const time = new Date(timeStr)
+    const diff = now.getTime() - time.getTime()
+    
+    // 计算时间差
+    const minutes = Math.floor(diff / (1000 * 60))
+    const hours = Math.floor(diff / (1000 * 60 * 60))
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24))
+    
+    if (minutes < 60) {
+      return minutes <= 0 ? '刚刚' : `${minutes}分钟前`
+    } else if (hours < 24) {
+      return `${hours}小时前`
+    } else if (days < 7) {
+      return `${days}天前`
+    } else {
+      // 显示具体日期
+      return time.getMonth() + 1 + '月' + time.getDate() + '日'
+    }
   },
 
   // 分享功能
