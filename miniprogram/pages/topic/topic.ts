@@ -305,11 +305,10 @@ Page({
       const likeCountChange = isLiked ? 1 : -1
       
       this.setData({
-        topic: {
-          ...topic,
+        topic: Object.assign({}, topic, {
           userLiked: isLiked,
           likeCount: Math.max(0, (topic.likeCount || 0) + likeCountChange)
-        }
+        })
       })
       
       wx.showToast({
@@ -356,8 +355,8 @@ Page({
     const currentUser = db.getCurrentUser()
     
     // 更新投票数据
-    const updatedTopic = { ...topic }
-    const vote = { ...updatedTopic.content[contentIndex].content }
+      const updatedTopic = Object.assign({}, topic)
+      const vote = Object.assign({}, updatedTopic.content[contentIndex].content)
     
     vote[choice].count += 1
     vote.totalVotes += 1
@@ -390,12 +389,11 @@ Page({
       const isLiked = !currentComment.userLiked
       const likeCountChange = isLiked ? 1 : -1
       
-      const updatedComments = [...comments]
-      updatedComments[index] = {
-        ...currentComment,
+      const updatedComments = comments.slice()
+      updatedComments[index] = Object.assign({}, currentComment, {
         userLiked: isLiked,
         likeCount: Math.max(0, (currentComment.likeCount || 0) + likeCountChange)
-      }
+      })
       
       this.setData({
         comments: updatedComments
@@ -422,14 +420,13 @@ Page({
         const isLiked = !currentReply.userLiked
         const likeCountChange = isLiked ? 1 : -1
         
-        const updatedComments = [...comments]
-        const updatedReplies = [...updatedComments[index].replies]
+        const updatedComments = comments.slice()
+        const updatedReplies = updatedComments[index].replies.slice()
         
-        updatedReplies[replyIndex] = {
-          ...currentReply,
+        updatedReplies[replyIndex] = Object.assign({}, currentReply, {
           userLiked: isLiked,
           likeCount: Math.max(0, (currentReply.likeCount || 0) + likeCountChange)
-        }
+        })
         
         updatedComments[index].replies = updatedReplies
         
@@ -502,7 +499,7 @@ Page({
   // 处理添加评论
   handleAddComment(newComment: any) {
     const { comments, pagination } = this.data
-    const updatedComments = [newComment, ...comments]
+    const updatedComments = [newComment].concat(comments)
     
     this.setData({
       comments: updatedComments,
@@ -531,7 +528,7 @@ Page({
     const targetCommentIndex = comments.findIndex((comment: any) => comment.id === replyInput.targetCommentId)
     
     if (targetCommentIndex >= 0 && targetCommentIndex < comments.length) {
-      const updatedComments = [...comments]
+      const updatedComments = comments.slice()
       const targetComment = updatedComments[targetCommentIndex]
       
       console.log('【处理回复】找到目标评论:', { targetCommentIndex, targetComment })
@@ -563,7 +560,7 @@ Page({
       if (replyInput.isReplyToComment) {
         // 回复评论本身 - 插入到最前面
         targetComment.replies = targetComment.replies || []
-        targetComment.replies = [newReply, ...(targetComment.replies as any[])]
+        targetComment.replies = [newReply].concat(targetComment.replies as any[])
         targetComment.replyCount = (targetComment.replyCount || 0) + 1
         console.log('【处理回复】添加到评论回复列表，新回复数量:', (targetComment.replies as any[]).length)
       } else {
@@ -578,7 +575,7 @@ Page({
           (targetComment.replies as any[]).splice(targetReplyIndex + 1, 0, newReply)
         } else {
           // 如果找不到被回复的子评论，插入到最前面
-          targetComment.replies = [newReply, ...(targetComment.replies as any[])]
+          targetComment.replies = [newReply].concat(targetComment.replies as any[])
         }
         
         targetComment.replyCount = (targetComment.replyCount || 0) + 1
@@ -586,7 +583,7 @@ Page({
       }
       
       // 当添加新的回复时，保持当前的分页状态，但确保新回复可见
-      const newRepliesPagination = { ...this.data.repliesPagination }
+      const newRepliesPagination = Object.assign({}, this.data.repliesPagination)
       if (!newRepliesPagination[targetComment.id]) {
         // 如果没有分页信息，创建新的分页信息（默认显示6条）
         newRepliesPagination[targetComment.id] = {
@@ -603,8 +600,8 @@ Page({
       // 获取当前评论的展开状态
       const { expandedComments, expandedMap } = this.data
       const currentExpandedComments = Array.isArray(expandedComments) ? expandedComments : []
-      const newExpandedComments = [...currentExpandedComments]
-      const newExpandedMap = { ...(expandedMap as any) }
+      const newExpandedComments = currentExpandedComments.slice()
+      const newExpandedMap = Object.assign({}, expandedMap)
       
       // 如果目标评论之前没有回复（replyCount为0或1），自动展开
       const originalReplyCount = targetComment.replyCount - 1 // 减去刚添加的新回复
@@ -859,7 +856,7 @@ scrollToReplyInput() {
       
       if (newComments.length > 0) {
         this.setData({
-          comments: [...comments, ...newComments],
+          comments: comments.concat(newComments),
           'pagination.currentPage': pagination.currentPage + 1,
           'pagination.hasMore': startIndex + pagination.pageSize < allComments.length
         })
@@ -919,7 +916,7 @@ scrollToReplyInput() {
   sortComments(comments: any[]) {
     if (!comments || comments.length === 0) return comments
     
-    const sortedComments = [...comments]
+    const sortedComments = comments.slice()
     
     if (this.data.sortType === 'time') {
       sortedComments.sort((a, b) => new Date(b.createTime).getTime() - new Date(a.createTime).getTime())

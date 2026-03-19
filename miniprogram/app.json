@@ -7,7 +7,8 @@
     "pages/publish/publish",
     "pages/profile/profile",
     "pages/user/user",
-    "pages/chat/chat"
+    "pages/chat/chat",
+    "pages/search/search"
   ],
   "window": {
     "navigationBarTextStyle": "black",

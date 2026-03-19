@@ -14,7 +14,9 @@ Component({
       const featuredTopic = db.getFeaturedTopic()
       if (featuredTopic && featuredTopic.content) {
         const firstTextContent = this.getFirstTextContent(featuredTopic.content)
+        const firstImage = this.getFirstImage(featuredTopic.content)
         featuredTopic.displayContent = firstTextContent
+        featuredTopic.image = firstImage
       }
       
       // 获取所有普通话题
@@ -194,23 +196,17 @@ Component({
     onSearch() {
       if (this.data.searchText.trim()) {
         console.log('【首页】点击搜索按钮，搜索内容:', this.data.searchText)
-        wx.showToast({
-          title: '搜索中...',
-          icon: 'loading',
-          duration: 1000
-        })
         
-        // 模拟搜索请求
-        setTimeout(() => {
-          console.log('【首页】搜索完成')
-          wx.showToast({
-            title: '搜索完成',
-            icon: 'success'
-          })
-          // 这里可以添加实际的搜索逻辑
-        }, 1000)
+        // 跳转到搜索结果页面，并传递搜索关键词
+        wx.navigateTo({
+          url: `/pages/search/search?keyword=${encodeURIComponent(this.data.searchText)}`
+        })
       } else {
         console.log('【首页】搜索内容为空，不执行搜索')
+        wx.showToast({
+          title: '请输入搜索内容',
+          icon: 'none'
+        })
       }
     },
 
@@ -312,6 +308,17 @@ Component({
       // 统计type为'image'的内容数量
       const imageItems = (contentArray as any[]).filter((item: any) => item.type === 'image')
       return imageItems.length
+    },
+
+    // 获取第一张图片URL
+    getFirstImage(contentArray: any[]): string {
+      if (!contentArray || !Array.isArray(contentArray)) {
+        return 'https://api.dicebear.com/7.x/adventurer/png?seed=default&size=400'
+      }
+      
+      // 找到第一个type为'image'的内容
+      const imageItem = (contentArray as any[]).find((item: any) => item.type === 'image')
+      return imageItem ? imageItem.content : 'https://api.dicebear.com/7.x/adventurer/png?seed=default&size=400'
     },
 
     // 判断是否包含辩题内容

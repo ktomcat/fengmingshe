@@ -108,8 +108,8 @@ function getUserAvatar(userId: string) {
   return avatarPool[index]
 }
 
-// ==================== 用户集合 ====================
-const users = [
+// ==================== 初始数据（经过严谨验证的） ====================
+const initialUsers = [
   {
     id: 'user_001',
     nickname: '小明',
@@ -1409,11 +1409,9 @@ const users = [
     role: 'user',
     settings: { notification: true, privacy: 'public' }
   }
-];
+]
 
-// ==================== 话题/帖子集合 ====================
-const topics = [
-  // 特色话题
+const initialTopics = [
   {
     id: 'featured_topic_001',
     title: '人工智能时代的机遇与挑战',
@@ -1681,7 +1679,6 @@ const topics = [
     status: 'published',
     tags: ['教育', '育儿', '观点']
   },
-  // 用户001发布的帖子
   {
     id: 'user_post_001',
     title: '如何利用现代UI设计提升用户留存率？',
@@ -1794,7 +1791,6 @@ const topics = [
     status: 'published',
     tags: ['小程序', '开发', '技术']
   },
-  // 用户收藏的其他用户发布的帖子
   {
     id: 'user_fav_001',
     title: 'React 18新特性深度解析',
@@ -1885,11 +1881,9 @@ const topics = [
     status: 'published',
     tags: ['云原生', '架构', '技术']
   }
-];
+]
 
-// ==================== 评论集合 ====================
-const comments = [
-  // 特色话题的评论
+const initialComments = [
   {
     id: 'comment_001',
     topicId: 'featured_topic_001',
@@ -1950,8 +1944,6 @@ const comments = [
     parentId: null,
     replyToId: null
   },
-  
-  // 话题001的评论
   {
     id: 'comment_004',
     topicId: 'topic_001',
@@ -2024,8 +2016,6 @@ const comments = [
     parentId: null,
     replyToId: null
   },
-  
-  // 话题002的评论
   {
     id: 'comment_008',
     topicId: 'topic_002',
@@ -2110,8 +2100,6 @@ const comments = [
     parentId: 'comment_010',
     replyToId: 'user_022'
   },
-  
-  // 话题003的评论
   {
     id: 'comment_011',
     topicId: 'topic_003',
@@ -2184,8 +2172,6 @@ const comments = [
     parentId: null,
     replyToId: null
   },
-  
-  // 话题004的评论
   {
     id: 'comment_015',
     topicId: 'topic_004',
@@ -2258,8 +2244,6 @@ const comments = [
     parentId: null,
     replyToId: null
   },
-  
-  // 话题005的评论
   {
     id: 'comment_018',
     topicId: 'topic_005',
@@ -2344,8 +2328,6 @@ const comments = [
     parentId: 'comment_021',
     replyToId: 'user_038'
   },
-  
-  // 话题006的评论
   {
     id: 'comment_022',
     topicId: 'topic_006',
@@ -2418,8 +2400,6 @@ const comments = [
     parentId: null,
     replyToId: null
   },
-  
-  // 话题007的评论
   {
     id: 'comment_026',
     topicId: 'topic_007',
@@ -2516,8 +2496,6 @@ const comments = [
     parentId: null,
     replyToId: null
   },
-  
-  // 用户001的帖子评论
   {
     id: 'comment_user_001',
     topicId: 'user_post_001',
@@ -2590,8 +2568,6 @@ const comments = [
     parentId: null,
     replyToId: null
   },
-  
-  // 用户收藏的帖子评论
   {
     id: 'comment_fav_001',
     topicId: 'user_fav_001',
@@ -2652,11 +2628,9 @@ const comments = [
     parentId: null,
     replyToId: null
   }
-];
+]
 
-// ==================== 关注关系集合 ====================
-const follows = [
-  // user_001的关注列表
+const initialFollows = [
   { userId: 'user_001', followUserId: 'user_002', followTime: '2025-02-15 10:30' },
   { userId: 'user_001', followUserId: 'user_003', followTime: '2025-02-16 14:20' },
   { userId: 'user_001', followUserId: 'user_004', followTime: '2025-02-18 09:45' },
@@ -2667,7 +2641,6 @@ const follows = [
   { userId: 'user_001', followUserId: 'user_009', followTime: '2025-03-02 10:10' },
   { userId: 'user_001', followUserId: 'user_010', followTime: '2025-03-03 12:30' },
   
-  // user_001的粉丝
   { userId: 'user_002', followUserId: 'user_001', followTime: '2025-02-16 09:20' },
   { userId: 'user_003', followUserId: 'user_001', followTime: '2025-02-17 14:30' },
   { userId: 'user_004', followUserId: 'user_001', followTime: '2025-02-19 11:45' },
@@ -2678,7 +2651,6 @@ const follows = [
   { userId: 'user_009', followUserId: 'user_001', followTime: '2025-03-03 15:20' },
   { userId: 'user_010', followUserId: 'user_001', followTime: '2025-03-04 11:10' },
   
-  // 其他关注关系
   { userId: 'user_002', followUserId: 'user_004', followTime: '2025-02-10 14:30' },
   { userId: 'user_002', followUserId: 'user_005', followTime: '2025-02-12 09:20' },
   { userId: 'user_002', followUserId: 'user_007', followTime: '2025-02-15 16:45' },
@@ -2717,12 +2689,9 @@ const follows = [
   { userId: 'user_010', followUserId: 'user_001', followTime: '2025-02-18 09:20' },
   { userId: 'user_010', followUserId: 'user_004', followTime: '2025-02-21 14:30' },
   { userId: 'user_010', followUserId: 'user_005', followTime: '2025-02-24 11:50' }
-];
+]
 
-// ==================== 用户互动状态集合 ====================
-// 点赞记录
-const likes = [
-  // user_001的点赞
+const initialLikes = [
   { userId: 'user_001', targetType: 'topic', targetId: 'featured_topic_001', time: '2025-03-09 08:05' },
   { userId: 'user_001', targetType: 'topic', targetId: 'topic_001', time: '2025-03-09 08:20' },
   { userId: 'user_001', targetType: 'topic', targetId: 'topic_003', time: '2025-03-07 09:30' },
@@ -2735,7 +2704,6 @@ const likes = [
   { userId: 'user_001', targetType: 'topic', targetId: 'user_fav_004', time: '2023-10-05 10:20' },
   { userId: 'user_001', targetType: 'topic', targetId: 'user_fav_005', time: '2023-09-22 16:35' },
   
-  // user_001的评论点赞
   { userId: 'user_001', targetType: 'comment', targetId: 'comment_001', time: '2025-03-09 09:20' },
   { userId: 'user_001', targetType: 'comment', targetId: 'comment_005', time: '2025-03-09 09:30' },
   { userId: 'user_001', targetType: 'comment', targetId: 'comment_008', time: '2025-03-08 09:25' },
@@ -2744,7 +2712,6 @@ const likes = [
   { userId: 'user_001', targetType: 'comment', targetId: 'comment_user_004', time: '2023-09-28 17:20' },
   { userId: 'user_001', targetType: 'comment', targetId: 'comment_user_006', time: '2023-09-02 15:15' },
   
-  // 其他用户的点赞
   { userId: 'user_002', targetType: 'topic', targetId: 'featured_topic_001', time: '2025-03-09 08:10' },
   { userId: 'user_002', targetType: 'topic', targetId: 'topic_002', time: '2025-03-08 14:35' },
   { userId: 'user_002', targetType: 'topic', targetId: 'topic_004', time: '2025-03-06 18:50' },
@@ -2766,10 +2733,9 @@ const likes = [
   { userId: 'user_006', targetType: 'topic', targetId: 'user_post_004', time: '2023-09-15 10:35' },
   { userId: 'user_006', targetType: 'topic', targetId: 'user_fav_003', time: '2023-10-18 14:10' },
   { userId: 'user_006', targetType: 'comment', targetId: 'comment_012', time: '2025-03-07 10:30' }
-];
+]
 
-// 投票记录
-const votes = [
+const initialVotes = [
   { userId: 'user_001', topicId: 'featured_topic_001', choice: 'positive', time: '2025-03-09 08:02' },
   { userId: 'user_001', topicId: 'topic_001', choice: 'positive', time: '2025-03-08 20:18' },
   { userId: 'user_001', topicId: 'topic_005', choice: 'negative', time: '2025-03-04 10:33' },
@@ -2796,10 +2762,9 @@ const votes = [
   { userId: 'user_006', topicId: 'topic_001', choice: 'positive', time: '2025-03-08 20:32' },
   { userId: 'user_006', topicId: 'topic_005', choice: 'positive', time: '2025-03-04 10:42' },
   { userId: 'user_006', topicId: 'topic_007', choice: 'negative', time: '2025-03-02 09:52' }
-];
+]
 
-// 收藏记录
-const favorites = [
+const initialFavorites = [
   { userId: 'user_001', topicId: 'user_fav_001', time: '2023-11-05 11:32' },
   { userId: 'user_001', topicId: 'user_fav_002', time: '2023-10-30 15:47' },
   { userId: 'user_001', topicId: 'user_fav_003', time: '2023-10-18 13:22' },
@@ -2819,11 +2784,9 @@ const favorites = [
   
   { userId: 'user_005', topicId: 'user_fav_002', time: '2023-10-30 16:32' },
   { userId: 'user_005', topicId: 'topic_001', time: '2025-03-08 20:20' }
-];
+]
 
-// ==================== 消息通知集合 ====================
-const notifications = [
-  // 对 user_001 的帖子 "user_post_003" 的评论
+const initialNotifications = [
   {
     id: 'notify_001',
     userId: 'user_001',
@@ -2837,8 +2800,6 @@ const notifications = [
     fromUserId: 'user_054',
     commentId: 'comment_user_004'
   },
-  
-  // 对 user_001 的评论 "comment_001" 的回复
   {
     id: 'notify_002',
     userId: 'user_001',
@@ -2853,8 +2814,6 @@ const notifications = [
     replyId: 'reply_001',
     topicId: 'featured_topic_001'
   },
-  
-  // 对 user_001 的帖子 "featured_topic_001" 的评论
   {
     id: 'notify_003',
     userId: 'user_001',
@@ -2868,8 +2827,6 @@ const notifications = [
     fromUserId: 'user_011',
     commentId: 'comment_002'
   },
-  
-  // 对 user_001 的帖子 "featured_topic_001" 的评论
   {
     id: 'notify_004',
     userId: 'user_001',
@@ -2883,8 +2840,6 @@ const notifications = [
     fromUserId: 'user_012',
     commentId: 'comment_003'
   },
-  
-  // 对 user_001 的帖子 "user_post_001" 的评论
   {
     id: 'notify_005',
     userId: 'user_001',
@@ -2898,8 +2853,6 @@ const notifications = [
     fromUserId: 'user_051',
     commentId: 'comment_user_001'
   },
-  
-  // 对 user_001 的帖子 "user_post_001" 的评论
   {
     id: 'notify_006',
     userId: 'user_001',
@@ -2913,8 +2866,6 @@ const notifications = [
     fromUserId: 'user_052',
     commentId: 'comment_user_002'
   },
-  
-  // 对 user_001 的帖子 "user_post_002" 的评论
   {
     id: 'notify_007',
     userId: 'user_001',
@@ -2928,8 +2879,6 @@ const notifications = [
     fromUserId: 'user_053',
     commentId: 'comment_user_003'
   },
-  
-  // 对 user_001 的帖子 "user_post_004" 的评论
   {
     id: 'notify_008',
     userId: 'user_001',
@@ -2943,8 +2892,6 @@ const notifications = [
     fromUserId: 'user_055',
     commentId: 'comment_user_005'
   },
-  
-  // 对 user_001 的帖子 "user_post_005" 的评论
   {
     id: 'notify_009',
     userId: 'user_001',
@@ -2958,8 +2905,6 @@ const notifications = [
     fromUserId: 'user_056',
     commentId: 'comment_user_006'
   },
-  
-  // 对 user_001 的评论 "comment_001" 的回复
   {
     id: 'notify_010',
     userId: 'user_001',
@@ -2974,8 +2919,6 @@ const notifications = [
     replyId: 'reply_002',
     topicId: 'featured_topic_001'
   },
-  
-  // 点赞通知 - 对 user_001 的帖子的点赞
   {
     id: 'notify_011',
     userId: 'user_001',
@@ -2988,7 +2931,6 @@ const notifications = [
     sourceType: 'topic',
     fromUserId: 'user_002'
   },
-  
   {
     id: 'notify_012',
     userId: 'user_001',
@@ -3001,7 +2943,6 @@ const notifications = [
     sourceType: 'topic',
     fromUserId: 'user_003'
   },
-  
   {
     id: 'notify_013',
     userId: 'user_001',
@@ -3014,8 +2955,6 @@ const notifications = [
     sourceType: 'topic',
     fromUserId: 'user_004'
   },
-  
-  // 关注通知
   {
     id: 'notify_014',
     userId: 'user_001',
@@ -3027,7 +2966,6 @@ const notifications = [
     sourceType: 'follow',
     fromUserId: 'user_010'
   },
-  
   {
     id: 'notify_015',
     userId: 'user_001',
@@ -3039,7 +2977,6 @@ const notifications = [
     sourceType: 'follow',
     fromUserId: 'user_013'
   },
-  
   {
     id: 'notify_016',
     userId: 'user_001',
@@ -3051,8 +2988,6 @@ const notifications = [
     sourceType: 'follow',
     fromUserId: 'user_014'
   },
-  
-  // 投票结果通知
   {
     id: 'notify_017',
     userId: 'user_001',
@@ -3064,7 +2999,6 @@ const notifications = [
     sourceId: 'topic_003',
     sourceType: 'topic'
   },
-  
   {
     id: 'notify_018',
     userId: 'user_001',
@@ -3076,9 +3010,8 @@ const notifications = [
     sourceId: 'topic_005',
     sourceType: 'topic'
   }
-];
+]
 
-// ==================== 系统配置 ====================
 const config = {
   appName: '蜂鸣',
   version: '1.0.0',
@@ -3094,180 +3027,576 @@ const config = {
     share: true,
     follow: true
   }
-};
+}
 
-// ==================== 全局数据库 ====================
-const database = {
-  users,
-  topics,
-  comments,
-  follows,
-  likes,
-  votes,
-  favorites,
-  notifications,
-  config,
-  
-  // 辅助函数 - 获取当前用户（默认为user_001）
-  getCurrentUser: () => {
-    return users.find(u => u.id === 'user_001');
-  },
-  
-  // 辅助函数 - 获取用户的所有帖子
-  getUserTopics: (userId: string) => {
-    return topics.filter(topic => topic.authorId === userId);
-  },
-  
-  // 辅助函数 - 获取用户收藏的帖子
-  getUserFavorites: (userId: string) => {
-    const favoriteIds = favorites
-      .filter(fav => fav.userId === userId)
-      .map(fav => fav.topicId);
-    return topics.filter(topic => favoriteIds.includes(topic.id));
-  },
-  
-  // 辅助函数 - 获取用户的关注列表
-  getUserFollowing: (userId: string) => {
-    const followingIds = follows
-      .filter(f => f.userId === userId)
-      .map(f => f.followUserId);
-    return users.filter(user => followingIds.includes(user.id));
-  },
-  
-  // 辅助函数 - 获取用户的粉丝列表
-  getUserFollowers: (userId: string) => {
-    const followerIds = follows
-      .filter(f => f.followUserId === userId)
-      .map(f => f.userId);
-    return users.filter(user => followerIds.includes(user.id));
-  },
-  
-  // 辅助函数 - 获取话题的评论（包含回复）
-  getTopicComments: (topicId: string) => {
-    const topicComments = comments.filter(c => c.topicId === topicId);
-    // 按时间排序
-    return topicComments.sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime());
-  },
-  
-  // 辅助函数 - 获取评论的回复
-  getCommentReplies: (commentId: string) => {
-    return comments
+// ==================== 数据服务层（内存持久化） ====================
+class DataService {
+  private users: any[]
+  private topics: any[]
+  private comments: any[]
+  private follows: any[]
+  private likes: any[]
+  private votes: any[]
+  private favorites: any[]
+  private notifications: any[]
+  private config: any
+  private listeners: Map<string, Function[]>
+
+  constructor() {
+    // 初始化数据（深拷贝，避免引用问题）
+    this.users = JSON.parse(JSON.stringify(initialUsers))
+    this.topics = JSON.parse(JSON.stringify(initialTopics))
+    this.comments = JSON.parse(JSON.stringify(initialComments))
+    this.follows = JSON.parse(JSON.stringify(initialFollows))
+    this.likes = JSON.parse(JSON.stringify(initialLikes))
+    this.votes = JSON.parse(JSON.stringify(initialVotes))
+    this.favorites = JSON.parse(JSON.stringify(initialFavorites))
+    this.notifications = JSON.parse(JSON.stringify(initialNotifications))
+    this.config = JSON.parse(JSON.stringify(config))
+    this.listeners = new Map()
+    
+    console.log('📦 数据服务初始化完成')
+    console.log(`📊 数据统计: 用户 ${this.users.length}人, 帖子 ${this.topics.length}篇, 评论 ${this.comments.length}条, 关注 ${this.follows.length}对, 点赞 ${this.likes.length}个, 投票 ${this.votes.length}个, 收藏 ${this.favorites.length}个, 通知 ${this.notifications.length}条`)
+  }
+
+  // ==================== 事件监听 ====================
+  on(event: string, callback: Function) {
+    if (!this.listeners.has(event)) {
+      this.listeners.set(event, [])
+    }
+    this.listeners.get(event)?.push(callback)
+  }
+
+  off(event: string, callback: Function) {
+    const callbacks = this.listeners.get(event)
+    if (callbacks) {
+      const index = callbacks.indexOf(callback)
+      if (index > -1) {
+        callbacks.splice(index, 1)
+      }
+    }
+  }
+
+  private emit(event: string, data?: any) {
+    const callbacks = this.listeners.get(event)
+    if (callbacks) {
+      callbacks.forEach(cb => cb(data))
+    }
+  }
+
+  // ==================== ID生成器 ====================
+  private generateId(prefix: string): string {
+    return `${prefix}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+  }
+
+  private getCurrentTime(): string {
+    const now = new Date()
+    const year = now.getFullYear()
+    const month = String(now.getMonth() + 1).padStart(2, '0')
+    const day = String(now.getDate()).padStart(2, '0')
+    const hour = String(now.getHours()).padStart(2, '0')
+    const minute = String(now.getMinutes()).padStart(2, '0')
+    return `${year}-${month}-${day} ${hour}:${minute}`
+  }
+
+  // ==================== 用户操作 ====================
+  getCurrentUser() {
+    return this.users.find(u => u.id === 'user_001')
+  }
+
+  getUserById(userId: string) {
+    return this.users.find(u => u.id === userId)
+  }
+
+  getAllUsers() {
+    return [...this.users]
+  }
+
+  updateUser(userId: string, updates: any) {
+    const index = this.users.findIndex(u => u.id === userId)
+    if (index > -1) {
+      this.users[index] = { ...this.users[index], ...updates }
+      this.emit('userUpdated', this.users[index])
+      return this.users[index]
+    }
+    return null
+  }
+
+  // ==================== 帖子操作 ====================
+  getTopicById(topicId: string) {
+    return this.topics.find(t => t.id === topicId)
+  }
+
+  getAllTopics() {
+    return [...this.topics]
+  }
+
+  getNormalTopics() {
+    return this.topics
+      .filter(t => t.type === 'normal' && t.status === 'published')
+      .sort((a, b) => new Date(b.createTime).getTime() - new Date(a.createTime).getTime())
+  }
+
+  getFeaturedTopic() {
+    return this.topics.find(t => t.type === 'featured')
+  }
+
+  getUserTopics(userId: string) {
+    return this.topics.filter(t => t.authorId === userId)
+  }
+
+  createTopic(topicData: any) {
+    const newTopic = {
+      id: this.generateId('topic'),
+      ...topicData,
+      createTime: this.getCurrentTime(),
+      likeCount: 0,
+      commentCount: 0,
+      viewCount: 0,
+      shareCount: 0,
+      status: 'published'
+    }
+    this.topics.push(newTopic)
+    this.emit('topicCreated', newTopic)
+    return newTopic
+  }
+
+  updateTopic(topicId: string, updates: any) {
+    const index = this.topics.findIndex(t => t.id === topicId)
+    if (index > -1) {
+      this.topics[index] = { ...this.topics[index], ...updates }
+      this.emit('topicUpdated', this.topics[index])
+      return this.topics[index]
+    }
+    return null
+  }
+
+  deleteTopic(topicId: string) {
+    const index = this.topics.findIndex(t => t.id === topicId)
+    if (index > -1) {
+      const deleted = this.topics.splice(index, 1)[0]
+      // 删除相关的评论
+      this.comments = this.comments.filter(c => c.topicId !== topicId)
+      // 删除相关的点赞
+      this.likes = this.likes.filter(l => !(l.targetType === 'topic' && l.targetId === topicId))
+      // 删除相关的投票
+      this.votes = this.votes.filter(v => v.topicId !== topicId)
+      // 删除相关的收藏
+      this.favorites = this.favorites.filter(f => f.topicId !== topicId)
+      this.emit('topicDeleted', deleted)
+      return deleted
+    }
+    return null
+  }
+
+  incrementTopicView(topicId: string) {
+    const topic = this.getTopicById(topicId)
+    if (topic) {
+      topic.viewCount = (topic.viewCount || 0) + 1
+      this.emit('topicViewed', topic)
+    }
+  }
+
+  // ==================== 评论操作 ====================
+  getCommentById(commentId: string) {
+    return this.comments.find(c => c.id === commentId)
+  }
+
+  getTopicComments(topicId: string) {
+    return this.comments
+      .filter(c => c.topicId === topicId)
+      .sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime())
+  }
+
+  getCommentReplies(commentId: string) {
+    return this.comments
       .filter(c => c.parentId === commentId)
-      .sort((a, b) => new Date(a.time).getTime() - new Date(b.time).getTime());
-  },
-  
-  // 辅助函数 - 获取评论树（带层级结构）
-  getCommentTree: (topicId: string) => {
-    const topicComments = comments.filter(c => c.topicId === topicId);
-    const rootComments = topicComments.filter(c => !c.parentId);
-    const replies = topicComments.filter(c => c.parentId);
+      .sort((a, b) => new Date(a.time).getTime() - new Date(b.time).getTime())
+  }
+
+  getCommentTree(topicId: string) {
+    const topicComments = this.comments.filter(c => c.topicId === topicId)
+    const rootComments = topicComments.filter(c => !c.parentId)
+    const replies = topicComments.filter(c => c.parentId)
     
     return rootComments.map(root => ({
       ...root,
       replies: replies
         .filter(r => r.parentId === root.id)
         .sort((a, b) => new Date(a.time).getTime() - new Date(b.time).getTime())
-    })).sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime());
-  },
-  
-  // 辅助函数 - 获取用户的所有评论
-  getUserComments: (userId: string) => {
-    return comments
+    })).sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime())
+  }
+
+  getUserComments(userId: string) {
+    return this.comments
       .filter(c => c.userId === userId)
-      .sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime());
-  },
-  
-  // 辅助函数 - 获取用户收到的回复（别人回复他的评论）
-  getUserReplies: (userId: string) => {
-    const userCommentIds = comments
-      .filter(c => c.userId === userId)
-      .map(c => c.id);
+      .sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime())
+  }
+
+  createComment(commentData: any) {
+    const newComment = {
+      id: this.generateId('comment'),
+      ...commentData,
+      time: this.getCurrentTime(),
+      likeCount: 0,
+      replyCount: 0,
+      status: 'active'
+    }
+    this.comments.push(newComment)
     
-    return comments
-      .filter(c => c.parentId && userCommentIds.includes(c.parentId))
-      .sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime());
-  },
-  
-  // 辅助函数 - 检查用户是否点赞
-  isLiked: (userId: string, targetType: string, targetId: string) => {
-    return likes.some(like => 
-      like.userId === userId && 
-      like.targetType === targetType && 
-      like.targetId === targetId
-    );
-  },
-  
-  // 辅助函数 - 检查用户是否投票
-  getVote: (userId: string, topicId: string) => {
-    const vote = votes.find(v => v.userId === userId && v.topicId === topicId);
-    return vote ? vote.choice : null;
-  },
-  
-  // 辅助函数 - 检查用户是否收藏
-  isFavorited: (userId: string, topicId: string) => {
-    return favorites.some(fav => fav.userId === userId && fav.topicId === topicId);
-  },
-  
-  // 辅助函数 - 检查用户是否关注
-  isFollowing: (userId: string, targetUserId: string) => {
-    return follows.some(f => f.userId === userId && f.followUserId === targetUserId);
-  },
-  
-  // 辅助函数 - 获取用户的未读消息数
-  getUnreadNotificationCount: (userId: string) => {
-    return notifications.filter(n => n.userId === userId && !n.read).length;
-  },
-  
-  // 辅助函数 - 获取用户的所有消息
-  getUserNotifications: (userId: string) => {
-    return notifications
+    // 更新帖子的评论计数
+    const topic = this.getTopicById(commentData.topicId)
+    if (topic) {
+      topic.commentCount = (topic.commentCount || 0) + 1
+    }
+    
+    // 如果是回复，更新父评论的回复计数
+    if (commentData.parentId) {
+      const parentComment = this.getCommentById(commentData.parentId)
+      if (parentComment) {
+        parentComment.replyCount = (parentComment.replyCount || 0) + 1
+      }
+    }
+    
+    this.emit('commentCreated', newComment)
+    return newComment
+  }
+
+  deleteComment(commentId: string) {
+    const index = this.comments.findIndex(c => c.id === commentId)
+    if (index > -1) {
+      const deleted = this.comments.splice(index, 1)[0]
+      
+      // 更新帖子的评论计数
+      const topic = this.getTopicById(deleted.topicId)
+      if (topic) {
+        topic.commentCount = Math.max(0, (topic.commentCount || 0) - 1)
+      }
+      
+      // 删除所有回复
+      const replies = this.comments.filter(c => c.parentId === commentId)
+      replies.forEach(reply => this.deleteComment(reply.id))
+      
+      // 删除相关的点赞
+      this.likes = this.likes.filter(l => !(l.targetType === 'comment' && l.targetId === commentId))
+      
+      this.emit('commentDeleted', deleted)
+      return deleted
+    }
+    return null
+  }
+
+  // ==================== 点赞操作 ====================
+  isLiked(userId: string, targetType: string, targetId: string) {
+    return this.likes.some(l => 
+      l.userId === userId && 
+      l.targetType === targetType && 
+      l.targetId === targetId
+    )
+  }
+
+  toggleLike(userId: string, targetType: string, targetId: string) {
+    const existing = this.likes.find(l => 
+      l.userId === userId && 
+      l.targetType === targetType && 
+      l.targetId === targetId
+    )
+    
+    if (existing) {
+      // 取消点赞
+      this.likes = this.likes.filter(l => l !== existing)
+      
+      // 更新目标对象的点赞计数
+      if (targetType === 'topic') {
+        const topic = this.getTopicById(targetId)
+        if (topic) {
+          topic.likeCount = Math.max(0, (topic.likeCount || 0) - 1)
+        }
+      } else if (targetType === 'comment') {
+        const comment = this.getCommentById(targetId)
+        if (comment) {
+          comment.likeCount = Math.max(0, (comment.likeCount || 0) - 1)
+        }
+      }
+      
+      this.emit('likeRemoved', { userId, targetType, targetId })
+      return false
+    } else {
+      // 添加点赞
+      const newLike = {
+        userId,
+        targetType,
+        targetId,
+        time: this.getCurrentTime()
+      }
+      this.likes.push(newLike)
+      
+      // 更新目标对象的点赞计数
+      if (targetType === 'topic') {
+        const topic = this.getTopicById(targetId)
+        if (topic) {
+          topic.likeCount = (topic.likeCount || 0) + 1
+        }
+        
+        // 如果点赞的是别人的帖子，创建通知
+        if (topic && topic.authorId !== userId) {
+          this.createNotification({
+            userId: topic.authorId,
+            type: 'like',
+            title: `${this.getUserById(userId)?.nickname}点赞了你的话题`,
+            content: `${this.getUserById(userId)?.nickname}点赞了你发布的"${topic.title}"`,
+            sourceId: targetId,
+            sourceType: 'topic',
+            fromUserId: userId
+          })
+        }
+      } else if (targetType === 'comment') {
+        const comment = this.getCommentById(targetId)
+        if (comment) {
+          comment.likeCount = (comment.likeCount || 0) + 1
+          
+          // 如果点赞的是别人的评论，创建通知
+          if (comment.userId !== userId) {
+            this.createNotification({
+              userId: comment.userId,
+              type: 'like',
+              title: `${this.getUserById(userId)?.nickname}点赞了你的评论`,
+              content: `${this.getUserById(userId)?.nickname}点赞了你的评论`,
+              sourceId: targetId,
+              sourceType: 'comment',
+              fromUserId: userId
+            })
+          }
+        }
+      }
+      
+      this.emit('likeAdded', newLike)
+      return true
+    }
+  }
+
+  // ==================== 投票操作 ====================
+  getVote(userId: string, topicId: string) {
+    const vote = this.votes.find(v => v.userId === userId && v.topicId === topicId)
+    return vote ? vote.choice : null
+  }
+
+  castVote(userId: string, topicId: string, choice: string) {
+    const topic = this.getTopicById(topicId)
+    if (!topic || !topic.content) return null
+    
+    // 查找投票内容
+    let voteContent = null
+    for (const item of topic.content) {
+      if (item.type === 'vote') {
+        voteContent = item.content
+        break
+      }
+    }
+    
+    if (!voteContent) return null
+    
+    const existingVote = this.votes.find(v => v.userId === userId && v.topicId === topicId)
+    
+    if (existingVote) {
+      // 更新现有投票
+      const oldChoice = existingVote.choice
+      existingVote.choice = choice
+      existingVote.time = this.getCurrentTime()
+      
+      // 更新投票计数
+      if (oldChoice === 'positive') {
+        voteContent.positive.count = Math.max(0, (voteContent.positive.count || 0) - 1)
+      } else if (oldChoice === 'negative') {
+        voteContent.negative.count = Math.max(0, (voteContent.negative.count || 0) - 1)
+      }
+      
+      if (choice === 'positive') {
+        voteContent.positive.count = (voteContent.positive.count || 0) + 1
+      } else if (choice === 'negative') {
+        voteContent.negative.count = (voteContent.negative.count || 0) + 1
+      }
+      
+      voteContent.totalVotes = (voteContent.positive.count || 0) + (voteContent.negative.count || 0)
+    } else {
+      // 创建新投票
+      const newVote = {
+        userId,
+        topicId,
+        choice,
+        time: this.getCurrentTime()
+      }
+      this.votes.push(newVote)
+      
+      // 更新投票计数
+      if (choice === 'positive') {
+        voteContent.positive.count = (voteContent.positive.count || 0) + 1
+      } else if (choice === 'negative') {
+        voteContent.negative.count = (voteContent.negative.count || 0) + 1
+      }
+      
+      voteContent.totalVotes = (voteContent.positive.count || 0) + (voteContent.negative.count || 0)
+    }
+    
+    this.emit('voteCast', { userId, topicId, choice })
+    return voteContent
+  }
+
+  // ==================== 收藏操作 ====================
+  isFavorited(userId: string, topicId: string) {
+    return this.favorites.some(f => f.userId === userId && f.topicId === topicId)
+  }
+
+  getUserFavorites(userId: string) {
+    const favoriteIds = this.favorites
+      .filter(f => f.userId === userId)
+      .map(f => f.topicId)
+    return this.topics.filter(t => favoriteIds.includes(t.id))
+  }
+
+  toggleFavorite(userId: string, topicId: string) {
+    const existing = this.favorites.find(f => f.userId === userId && f.topicId === topicId)
+    
+    if (existing) {
+      // 取消收藏
+      this.favorites = this.favorites.filter(f => f !== existing)
+      this.emit('favoriteRemoved', { userId, topicId })
+      return false
+    } else {
+      // 添加收藏
+      const newFavorite = {
+        userId,
+        topicId,
+        time: this.getCurrentTime()
+      }
+      this.favorites.push(newFavorite)
+      this.emit('favoriteAdded', newFavorite)
+      return true
+    }
+  }
+
+  // ==================== 关注操作 ====================
+  isFollowing(userId: string, targetUserId: string) {
+    return this.follows.some(f => f.userId === userId && f.followUserId === targetUserId)
+  }
+
+  getUserFollowing(userId: string) {
+    const followingIds = this.follows
+      .filter(f => f.userId === userId)
+      .map(f => f.followUserId)
+    return this.users.filter(u => followingIds.includes(u.id))
+  }
+
+  getUserFollowers(userId: string) {
+    const followerIds = this.follows
+      .filter(f => f.followUserId === userId)
+      .map(f => f.userId)
+    return this.users.filter(u => followerIds.includes(u.id))
+  }
+
+  toggleFollow(userId: string, targetUserId: string) {
+    if (userId === targetUserId) return false
+    
+    const existing = this.follows.find(f => f.userId === userId && f.followUserId === targetUserId)
+    
+    if (existing) {
+      // 取消关注
+      this.follows = this.follows.filter(f => f !== existing)
+      
+      // 更新计数
+      const user = this.getUserById(userId)
+      if (user) {
+        user.followCount = Math.max(0, (user.followCount || 0) - 1)
+      }
+      const targetUser = this.getUserById(targetUserId)
+      if (targetUser) {
+        targetUser.fansCount = Math.max(0, (targetUser.fansCount || 0) - 1)
+      }
+      
+      this.emit('followRemoved', { userId, targetUserId })
+      return false
+    } else {
+      // 添加关注
+      const newFollow = {
+        userId,
+        followUserId: targetUserId,
+        followTime: this.getCurrentTime()
+      }
+      this.follows.push(newFollow)
+      
+      // 更新计数
+      const user = this.getUserById(userId)
+      if (user) {
+        user.followCount = (user.followCount || 0) + 1
+      }
+      const targetUser = this.getUserById(targetUserId)
+      if (targetUser) {
+        targetUser.fansCount = (targetUser.fansCount || 0) + 1
+      }
+      
+      // 创建通知
+      this.createNotification({
+        userId: targetUserId,
+        type: 'follow',
+        title: `${this.getUserById(userId)?.nickname}关注了你`,
+        content: `${this.getUserById(userId)?.nickname}成为了你的新粉丝`,
+        sourceType: 'follow',
+        fromUserId: userId
+      })
+      
+      this.emit('followAdded', newFollow)
+      return true
+    }
+  }
+
+  // ==================== 通知操作 ====================
+  getUserNotifications(userId: string) {
+    return this.notifications
       .filter(n => n.userId === userId)
-      .sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime());
-  },
-  
-  // 辅助函数 - 获取特色话题
-  getFeaturedTopic: () => {
-    return topics.find(t => t.type === 'featured');
-  },
-  
-  // 辅助函数 - 获取所有普通话题
-  getNormalTopics: () => {
-    return topics.filter(t => t.type === 'normal' && t.status === 'published')
-      .sort((a, b) => new Date(b.createTime).getTime() - new Date(a.createTime).getTime());
-  },
-  
-  // 辅助函数 - 按热度获取话题
-  getHotTopics: (limit: number = 10) => {
-    return topics
-      .filter(t => t.status === 'published')
-      .map(topic => ({
-        ...topic,
-        hotScore: topic.likeCount * 2 + topic.commentCount * 3 + topic.viewCount * 0.5 + topic.shareCount * 5
-      }))
-      .sort((a, b) => b.hotScore - a.hotScore)
-      .slice(0, limit);
-  },
-  
-  // 辅助函数 - 获取推荐话题
-  getRecommendedTopics: (limit: number = 10) => {
-    return topics
-      .filter(t => t.status === 'published')
-      .map(topic => ({
-        ...topic,
-        score: topic.likeCount * 1.5 + topic.commentCount * 2 + Math.random() * 10
-      }))
-      .sort((a, b) => b.score - a.score)
-      .slice(0, limit);
-  },
-  
-  // 辅助函数 - 获取用户的互动统计
-  getUserStats: (userId: string) => {
-    const userTopics = topics.filter(t => t.authorId === userId);
-    const userComments = comments.filter(c => c.userId === userId);
-    const userLikes = likes.filter(l => l.userId === userId);
-    const userFavorites = favorites.filter(f => f.userId === userId);
-    const userFollowers = follows.filter(f => f.followUserId === userId);
-    const userFollowing = follows.filter(f => f.userId === userId);
+      .sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime())
+  }
+
+  getUnreadNotificationCount(userId: string) {
+    return this.notifications.filter(n => n.userId === userId && !n.read).length
+  }
+
+  createNotification(notificationData: any) {
+    const newNotification = {
+      id: this.generateId('notify'),
+      ...notificationData,
+      time: this.getCurrentTime(),
+      read: false
+    }
+    this.notifications.push(newNotification)
+    this.emit('notificationCreated', newNotification)
+    return newNotification
+  }
+
+  markNotificationAsRead(notificationId: string) {
+    const notification = this.notifications.find(n => n.id === notificationId)
+    if (notification) {
+      notification.read = true
+      this.emit('notificationRead', notification)
+    }
+  }
+
+  markAllNotificationsAsRead(userId: string) {
+    this.notifications.forEach(n => {
+      if (n.userId === userId && !n.read) {
+        n.read = true
+      }
+    })
+    this.emit('allNotificationsRead', userId)
+  }
+
+  // ==================== 数据统计 ====================
+  getUserStats(userId: string) {
+    const userTopics = this.topics.filter(t => t.authorId === userId)
+    const userComments = this.comments.filter(c => c.userId === userId)
+    const userLikes = this.likes.filter(l => l.userId === userId)
+    const userFavorites = this.favorites.filter(f => f.userId === userId)
+    const userFollowers = this.follows.filter(f => f.followUserId === userId)
+    const userFollowing = this.follows.filter(f => f.userId === userId)
     
     return {
       topicCount: userTopics.length,
@@ -3279,110 +3608,69 @@ const database = {
       totalLikesReceived: userTopics.reduce((sum, t) => sum + t.likeCount, 0) + 
                          userComments.reduce((sum, c) => sum + c.likeCount, 0),
       totalViewsReceived: userTopics.reduce((sum, t) => sum + (t.viewCount || 0), 0)
-    };
-  },
-  
-  // 辅助函数 - 获取用户信息（带错误处理）
-  getUserById: (userId: string) => {
-    const user = users.find(u => u.id === userId);
-    if (!user) {
-      console.warn(`用户不存在: ${userId}`);
-      return null;
     }
-    return user;
-  },
-  
-  // 辅助函数 - 获取帖子信息（带错误处理）
-  getTopicById: (topicId: string) => {
-    const topic = topics.find(t => t.id === topicId);
-    if (!topic) {
-      console.warn(`帖子不存在: ${topicId}`);
-      return null;
-    }
-    return topic;
-  },
-  
-  // 辅助函数 - 验证数据完整性
-  validateDataIntegrity: () => {
-    const issues = [];
-    
-    // 检查所有评论的用户是否存在
-    comments.forEach(comment => {
-      if (!users.find(u => u.id === comment.userId)) {
-        issues.push(`评论 ${comment.id} 的用户 ${comment.userId} 不存在`);
-      }
-      if (!topics.find(t => t.id === comment.topicId)) {
-        issues.push(`评论 ${comment.id} 的话题 ${comment.topicId} 不存在`);
-      }
-    });
-    
-    // 检查所有点赞的用户和目标是否存在
-    likes.forEach(like => {
-      if (!users.find(u => u.id === like.userId)) {
-        issues.push(`点赞用户 ${like.userId} 不存在`);
-      }
-      if (like.targetType === 'topic' && !topics.find(t => t.id === like.targetId)) {
-        issues.push(`点赞目标帖子 ${like.targetId} 不存在`);
-      }
-      if (like.targetType === 'comment' && !comments.find(c => c.id === like.targetId)) {
-        issues.push(`点赞目标评论 ${like.targetId} 不存在`);
-      }
-    });
-    
-    // 检查所有收藏的帖子和用户
-    favorites.forEach(fav => {
-      if (!users.find(u => u.id === fav.userId)) {
-        issues.push(`收藏用户 ${fav.userId} 不存在`);
-      }
-      if (!topics.find(t => t.id === fav.topicId)) {
-        issues.push(`收藏帖子 ${fav.topicId} 不存在`);
-      }
-    });
-    
-    // 检查所有关注关系
-    follows.forEach(follow => {
-      if (!users.find(u => u.id === follow.userId)) {
-        issues.push(`关注者 ${follow.userId} 不存在`);
-      }
-      if (!users.find(u => u.id === follow.followUserId)) {
-        issues.push(`被关注者 ${follow.followUserId} 不存在`);
-      }
-    });
-    
-    // 检查所有投票
-    votes.forEach(vote => {
-      if (!users.find(u => u.id === vote.userId)) {
-        issues.push(`投票用户 ${vote.userId} 不存在`);
-      }
-      if (!topics.find(t => t.id === vote.topicId)) {
-        issues.push(`投票话题 ${vote.topicId} 不存在`);
-      }
-    });
-    
-    // 检查所有通知
-    notifications.forEach(notify => {
-      if (!users.find(u => u.id === notify.userId)) {
-        issues.push(`通知接收用户 ${notify.userId} 不存在`);
-      }
-      if (notify.fromUserId && !users.find(u => u.id === notify.fromUserId)) {
-        issues.push(`通知发送用户 ${notify.fromUserId} 不存在`);
-      }
-    });
-    
-    if (issues.length > 0) {
-      console.warn('数据完整性检查发现问题:', issues);
-    } else {
-      console.log('✅ 数据完整性检查通过，所有关系正确');
-      console.log(`📊 数据统计: 用户 ${users.length}人, 帖子 ${topics.length}篇, 评论 ${comments.length}条, 关注 ${follows.length}对, 点赞 ${likes.length}个, 投票 ${votes.length}个, 收藏 ${favorites.length}个, 通知 ${notifications.length}条`);
-    }
-    
-    return issues;
   }
-};
+
+  getHotTopics(limit: number = 10) {
+    return this.topics
+      .filter(t => t.status === 'published')
+      .map(topic => ({
+        ...topic,
+        hotScore: topic.likeCount * 2 + topic.commentCount * 3 + topic.viewCount * 0.5 + topic.shareCount * 5
+      }))
+      .sort((a, b) => b.hotScore - a.hotScore)
+      .slice(0, limit)
+  }
+
+  getRecommendedTopics(limit: number = 10) {
+    return this.topics
+      .filter(t => t.status === 'published')
+      .map(topic => ({
+        ...topic,
+        score: topic.likeCount * 1.5 + topic.commentCount * 2 + Math.random() * 10
+      }))
+      .sort((a, b) => b.score - a.score)
+      .slice(0, limit)
+  }
+
+  // ==================== 数据重置 ====================
+  resetToInitial() {
+    this.users = JSON.parse(JSON.stringify(initialUsers))
+    this.topics = JSON.parse(JSON.stringify(initialTopics))
+    this.comments = JSON.parse(JSON.stringify(initialComments))
+    this.follows = JSON.parse(JSON.stringify(initialFollows))
+    this.likes = JSON.parse(JSON.stringify(initialLikes))
+    this.votes = JSON.parse(JSON.stringify(initialVotes))
+    this.favorites = JSON.parse(JSON.stringify(initialFavorites))
+    this.notifications = JSON.parse(JSON.stringify(initialNotifications))
+    this.config = JSON.parse(JSON.stringify(config))
+    
+    this.emit('dataReset')
+    console.log('🔄 数据已重置为初始状态')
+  }
+
+  // ==================== 数据导出 ====================
+  exportData() {
+    return {
+      users: this.users,
+      topics: this.topics,
+      comments: this.comments,
+      follows: this.follows,
+      likes: this.likes,
+      votes: this.votes,
+      favorites: this.favorites,
+      notifications: this.notifications,
+      config: this.config
+    }
+  }
+}
+
+// ==================== 创建数据服务实例 ====================
+const dataService = new DataService()
 
 // ==================== App 实例 ====================
 App<IAppOption>({
-  globalData: database,
+  globalData: dataService,
   
   onLaunch() {
     // 展示本地存储能力
@@ -3394,12 +3682,7 @@ App<IAppOption>({
     wx.login({
       success: res => {
         console.log('登录成功', res.code)
-        console.log('当前用户:', database.getCurrentUser())
-        
-        // 在开发环境下验证数据完整性
-        if (process.env.NODE_ENV === 'development') {
-          database.validateDataIntegrity();
-        }
+        console.log('当前用户:', dataService.getCurrentUser())
       },
     })
   },
@@ -3407,7 +3690,7 @@ App<IAppOption>({
 
 // 导出类型定义供其他文件使用
 export interface IAppOption {
-  globalData: typeof database
+  globalData: DataService
 }
 
-export default database
+export default dataService

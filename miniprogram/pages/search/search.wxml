@@ -1,0 +1,109 @@
+<!-- 搜索结果页面 -->
+<view class="page-container">
+  <!-- 固定导航栏 -->
+  <view class="fixed-navbar">
+    <navigation-bar 
+      title="搜索结果" 
+      background="#ffffff" 
+      color="#D7423D" 
+      back="{{true}}"
+      home-button="{{false}}"
+      left-logo="{{false}}"
+      show-title="{{true}}"
+    ></navigation-bar>
+  </view>
+
+  <!-- 固定头部区域 -->
+  <view class="fixed-header">
+    <!-- 搜索框 -->
+    <view class="header">
+      <view class="search-container">
+        <view class="search-input-wrapper">
+          <text class="search-icon">🔍</text>
+          <input class="search-input" placeholder="搜索话题、用户" bindinput="onSearchInput" value="{{searchText}}" />
+          <view class="search-btn {{searchText ? 'show' : ''}}" bindtap="onSearch">
+            <text class="search-btn-text">搜索</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- Tab切换 -->
+    <view class="tab-container">
+      <view class="tab-item {{activeTab === 'topics' ? 'active' : ''}}" bindtap="switchTab" data-tab="topics">
+        <text class="tab-text">话题</text>
+        <text class="tab-count" wx:if="{{searchResults.topics.length > 0}}">{{searchResults.topics.length}}</text>
+      </view>
+      <view class="tab-item {{activeTab === 'users' ? 'active' : ''}}" bindtap="switchTab" data-tab="users">
+        <text class="tab-text">用户</text>
+        <text class="tab-count" wx:if="{{searchResults.users.length > 0}}">{{searchResults.users.length}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 页面内容区域 -->
+  <view class="page-content">
+    <!-- 搜索结果 -->
+    <view class="search-results">
+      <!-- 话题结果 -->
+      <view class="result-section" wx:if="{{activeTab === 'topics'}}">
+        <view class="topic-results">
+          <view class="topic-item" wx:for="{{searchResults.topics}}" wx:key="id" bindtap="onTopicTap" data-topic="{{item}}">
+            <view class="topic-content">
+              <text class="topic-title">{{item.title}}</text>
+              <text class="topic-content-preview" wx:if="{{item.displayContent}}">{{item.displayContent}}</text>
+              <view class="topic-meta">
+                <image class="author-avatar" src="{{item.author.avatar}}" />
+                <text class="author-name">{{item.author.nickname}}</text>
+                <text class="topic-stats">{{item.likeCount}} 赞 · {{item.commentCount}} 评论</text>
+              </view>
+            </view>
+          </view>
+        </view>
+        
+        <!-- 话题空状态 -->
+        <view class="empty-state" wx:if="{{searchText && searchResults.topics.length === 0}}">
+          <text class="empty-icon">🔍</text>
+          <text class="empty-text">没有找到相关话题</text>
+          <text class="empty-tip">试试其他关键词</text>
+        </view>
+      </view>
+
+      <!-- 用户结果 -->
+      <view class="result-section" wx:if="{{activeTab === 'users'}}">
+        <view class="user-results">
+          <view class="user-item" wx:for="{{searchResults.users}}" wx:key="id" bindtap="onUserTap" data-user="{{item}}">
+            <image class="user-avatar" src="{{item.avatar}}" />
+            <view class="user-info">
+              <text class="user-name">{{item.nickname}}</text>
+              <text class="user-signature">{{item.signature || '这个人很懒，什么都没有留下'}}</text>
+              <view class="user-stats">
+                <text class="stat-item">{{item.postsCount || 0}} 帖子</text>
+                <text class="stat-item">{{item.followers || 0}} 粉丝</text>
+              </view>
+            </view>
+          </view>
+        </view>
+        
+        <!-- 用户空状态 -->
+        <view class="empty-state" wx:if="{{searchText && searchResults.users.length === 0}}">
+          <text class="empty-icon">🔍</text>
+          <text class="empty-text">没有找到相关用户</text>
+          <text class="empty-tip">试试其他关键词</text>
+        </view>
+      </view>
+
+      <!-- 初始状态 -->
+      <view class="initial-state" wx:if="{{!searchText}}">
+        <text class="initial-text">输入关键词搜索话题或用户</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部导航栏 -->
+  <bottom-nav 
+    wx:if="{{true}}"
+    current="{{-1}}" 
+    bind:change="onTabChange"
+  />
+</view>
