@@ -15,7 +15,7 @@ Page({
   // 分享到微信好友
   onShareAppMessage() {
     const topic = this.data.topic
-    const title = topic ? `${topic.title} - 蜂鸣` : '蜂鸣 - 有趣的话题讨论'
+    const title = topic ? `${topic.title} - 蜂鸣社` : '蜂鸣社 - 微弱也要表达'
     const content = topic && topic.content ? this.getFirstTextContent(topic.content) : '发现有趣的话题讨论'
     
     return {
@@ -29,7 +29,7 @@ Page({
   // 分享到朋友圈
   onShareTimeline() {
     const topic = this.data.topic
-    const title = topic ? `${topic.title} - 蜂鸣` : '蜂鸣 - 有趣的话题讨论'
+    const title = topic ? `${topic.title} - 蜂鸣社` : '蜂鸣社 - 有趣的话题讨论'
     
     return {
       title: title,

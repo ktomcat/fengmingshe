@@ -6,17 +6,17 @@ Page({
   // 分享到微信好友
   onShareAppMessage() {
     return {
-      title: '蜂鸣 - 搜索发现精彩内容',
-      path: '/pages/search/search',
-      imageUrl: '/static/share-logo.png'
+      title: '蜂鸣社 - 微弱也要表达',
+      path: '/pages/index/index',
+      imageUrl: '/static/logo-tmd.png'
     }
   },
   
   // 分享到朋友圈
   onShareTimeline() {
     return {
-      title: '蜂鸣 - 搜索发现精彩内容',
-      imageUrl: '/static/share-logo.png'
+      title: '蜂鸣社 - 微弱也要表达',
+      imageUrl: '/static/logo-tmd.png'
     }
   },
   

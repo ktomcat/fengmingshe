@@ -3,17 +3,17 @@ Page({
   // 分享到微信好友
   onShareAppMessage() {
     return {
-      title: '蜂鸣 - 用户主页',
-      path: '/pages/user/user',
-      imageUrl: '/static/share-logo.png'
+      title: '蜂鸣社 - 微弱也要表达',
+      path: '/pages/index/index',
+      imageUrl: '/static/logo-tmd.png'
     }
   },
   
   // 分享到朋友圈
   onShareTimeline() {
     return {
-      title: '蜂鸣 - 用户主页',
-      imageUrl: '/static/share-logo.png'
+      title: '蜂鸣社 - 微弱也要表达',
+      imageUrl: '/static/logo-tmd.png'
     }
   },
   
