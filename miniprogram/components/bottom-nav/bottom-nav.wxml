@@ -22,7 +22,7 @@
     data-index="2"
   >
     <text wx:if="{{false}}"  class="nav-icon">💬</text>
-    <text class="nav-text-2">➕</text>
+    <text class="nav-text-2">发</text>
   </view>
   <view 
     class="nav-item {{current === 3 ? 'active' : ''}}"
