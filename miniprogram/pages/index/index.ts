@@ -44,6 +44,24 @@ Page({
     
     // 启用分享功能（重要：必须在onLoad中启用）
     this.enableShareMenu()
+    
+    // 监听用户信息更新事件
+    const app = getApp()
+    app.globalData.on('userInfoUpdated', (userInfo: any) => {
+      console.log('【首页】收到用户信息更新事件:', userInfo)
+      this.updateUserInfoDisplay(userInfo)
+    })
+    
+    // 检查用户是否已登录
+    const currentUser = app.globalData.getCurrentUser()
+    if (currentUser) {
+      this.setData({
+        hasUserInfo: true
+      })
+      console.log('【首页】用户已登录:', currentUser.nickname)
+    } else {
+      console.log('【首页】用户未登录')
+    }
   },
 
   // 页面显示时执行
@@ -134,43 +152,7 @@ Page({
     })
   },
 
-  onChooseAvatar(e: any) {
-    console.log('【首页】选择头像，事件详情:', e.detail)
-    const { avatarUrl } = e.detail
-    const { nickName } = this.data.userInfo
-    this.setData({
-      "userInfo.avatarUrl": avatarUrl,
-      hasUserInfo: nickName && avatarUrl && avatarUrl !== 'https://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRna42FI242Lcia07jQodd2FJGIYQfG0LAJGFxM4FbnQP6yfMxBgJ0F3YRqJCJ1aPAK2dQagdusBZg/0',
-    })
-  },
-
-  onInputChange(e: any) {
-    console.log('【首页】输入框内容变化，新昵称:', e.detail.value)
-    const nickName = e.detail.value
-    const { avatarUrl } = this.data.userInfo
-    this.setData({
-      "userInfo.nickName": nickName,
-      hasUserInfo: nickName && avatarUrl && avatarUrl !== 'https://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRna42FI242Lcia07jQodd2FJGIYQfG0LAJGFxM4FbnQP6yfMxBgJ0F3YRqJCJ1aPAK2dQagdusBZg/0',
-    })
-  },
-
-  getUserProfile() {
-    console.log('【首页】点击获取用户信息按钮')
-    // 推荐使用wx.getUserProfile获取用户信息，开发者每次通过该接口获取用户个人信息均需用户确认，开发者妥善保管用户快速填写的头像昵称，避免重复弹窗
-    wx.getUserProfile({
-      desc: '展示用户信息', // 声明获取用户个人信息后的用途，后续会展示在弹窗中，请谨慎填写
-      success: (res) => {
-        console.log('【首页】获取用户信息成功:', res.userInfo)
-        this.setData({
-          userInfo: res.userInfo,
-          hasUserInfo: true
-        })
-      },
-      fail: (err) => {
-        console.error('【首页】获取用户信息失败:', err)
-      }
-    })
-  },
+  // 简化用户信息处理，直接使用wx.login获取的openid信息
 
   // 底部菜单栏相关方法
   showBottomSheet(e: any) {
@@ -570,4 +552,76 @@ Page({
       })
     }
   },
+
+  // 更新用户信息显示
+  updateUserInfoDisplay(userInfo: any) {
+    console.log('【首页】更新用户信息显示:', userInfo)
+    
+    this.setData({
+      userInfo: {
+        avatarUrl: userInfo.avatar,
+        nickName: userInfo.nickname
+      },
+      hasUserInfo: userInfo.avatar && userInfo.nickname
+    })
+  },
+
+  // 获取微信用户信息
+  onGetWeChatUserInfo() {
+    console.log('【首页】用户点击授权按钮')
+    
+    const app = getApp()
+    
+    // 调用微信授权接口
+    wx.getUserProfile({
+      desc: '用于完善用户资料',
+      success: (res) => {
+        console.log('======= 【首页】获取微信用户信息成功 =======')
+        console.log('真实微信用户信息:', JSON.stringify(res.userInfo, null, 2))
+        console.log('微信用户信息详细内容:')
+        console.log('- 昵称:', res.userInfo.nickName)
+        console.log('- 头像:', res.userInfo.avatarUrl)
+        console.log('- 性别:', res.userInfo.gender)
+        console.log('- 国家:', res.userInfo.country)
+        console.log('- 省份:', res.userInfo.province)
+        console.log('- 城市:', res.userInfo.city)
+        console.log('===========================================')
+        
+        // 更新当前用户的微信头像和昵称
+        const userInfo = res.userInfo
+        const currentUser = app.globalData.getCurrentUser()
+        
+        if (currentUser) {
+          // 更新用户信息，标记为已授权微信
+          app.globalData.updateUser(currentUser.id, {
+            nickname: userInfo.nickName,
+            avatar: userInfo.avatarUrl,
+            hasWeChatAuth: true // 标记用户已授权微信信息
+          })
+          
+          // 触发用户信息更新事件
+          app.globalData.emit('userInfoUpdated', app.globalData.getCurrentUser())
+          
+          console.log('【首页】更新后的用户信息:', JSON.stringify(app.globalData.getCurrentUser(), null, 2))
+          
+          // 更新页面显示
+          this.updateUserInfoDisplay(app.globalData.getCurrentUser())
+          
+          wx.showToast({
+            title: '授权成功',
+            icon: 'success',
+            duration: 1500
+          })
+        }
+      },
+      fail: (err) => {
+        console.log('【首页】获取微信用户信息失败:', err)
+        wx.showToast({
+          title: '授权失败',
+          icon: 'none',
+          duration: 1500
+        })
+      }
+    })
+  }
 })

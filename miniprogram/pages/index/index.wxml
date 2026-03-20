@@ -16,8 +16,8 @@
 
   <!-- 页面内容区域 -->
   <view class="page-content">
-    <!-- 头部搜索栏 -->
-    <view class="header">
+  <!-- 头部搜索栏 -->
+  <view class="header">
     <view class="search-container">
       <view class="search-input-wrapper">
         <image class="search-icon" src="/static/icons/search.png" style="width: 20px; height: 20px;" />

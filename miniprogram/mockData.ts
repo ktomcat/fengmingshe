@@ -110,8 +110,8 @@ function getUserAvatar(userId: string) {
 const initialUsers = [
   {
     id: 'user_001',
-    nickname: '黑凤梨',
-    avatar: getUserAvatar('user_001'),
+    nickname: '黑凤梨', // 测试账号昵称
+    avatar: 'https://api.dicebear.com/7.x/adventurer/png?seed=Alex&size=100', // 测试账号头像
     level: 2,
     points: 150,
     followCount: 25,

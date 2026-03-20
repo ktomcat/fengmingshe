@@ -1,4 +1,6 @@
 // profile.ts
+import { IAppOption } from '../../app'
+
 Page({
   // 分享到微信好友
   onShareAppMessage() {
@@ -228,7 +230,7 @@ Page({
     // 获取当前用户收藏的帖子
     const userFavorites = db.getUserFavorites(currentUser.id).map(topic => {
       // 查找作者信息
-      const author = db.users.find(u => u.id === topic.authorId)
+      const author = db.getUserById(topic.authorId)
       
       return {
         id: topic.id,
@@ -261,7 +263,7 @@ Page({
       stats: {
         views: this.formatNumber(totalViews),
         likes: this.formatNumber(totalLikes),
-        followers: this.formatNumber(currentUser.fansCount || 18)
+        followers: this.formatNumber(currentUser.fansCount)
       },
       posts: userPosts,
       favorites: userFavorites,
@@ -328,7 +330,23 @@ Page({
             
             // 更新全局数据
             const app = getApp<IAppOption>()
-            app.globalData.userInfo.nickname = newName
+            const currentUser = app.globalData.getCurrentUser()
+            if (currentUser) {
+              // 更新全局用户数据
+              app.globalData.updateUser(currentUser.id, { nickname: newName })
+              
+              // 更新本地存储的用户信息
+              const localUserInfo = wx.getStorageSync('userInfo') || {}
+              // 确保包含openid，用于下次启动时识别用户
+              if (currentUser.openid) {
+                localUserInfo.openid = currentUser.openid
+              }
+              localUserInfo.nickname = newName
+              wx.setStorageSync('userInfo', localUserInfo)
+              console.log('💾 昵称已保存到本地存储:', newName)
+              
+              // 用户信息已通过updateUser方法更新，无需额外发送事件
+            }
             
             wx.showToast({
               title: '昵称已更新',
@@ -380,7 +398,23 @@ Page({
             
             // 更新全局数据
             const app = getApp<IAppOption>()
-            app.globalData.userInfo.signature = newSignature
+            const currentUser = app.globalData.getCurrentUser()
+            if (currentUser) {
+              // 更新全局用户数据
+              app.globalData.updateUser(currentUser.id, { signature: newSignature })
+              
+              // 更新本地存储的用户信息
+              const localUserInfo = wx.getStorageSync('userInfo') || {}
+              // 确保包含openid，用于下次启动时识别用户
+              if (currentUser.openid) {
+                localUserInfo.openid = currentUser.openid
+              }
+              localUserInfo.signature = newSignature
+              wx.setStorageSync('userInfo', localUserInfo)
+              console.log('💾 个性签名已保存到本地存储:', newSignature)
+              
+              // 用户信息已通过updateUser方法更新，无需额外发送事件
+            }
             
             wx.showToast({
               title: '个性签名已更新',
@@ -472,9 +506,12 @@ Page({
           const following = [...this.data.following]
           following.splice(index, 1)
           
-          // 更新全局数据
+          // 更新全局数据 - 使用DataService的方法来取消关注
           const app = getApp<IAppOption>()
-          app.globalData.currentUserFollowing = following
+          const currentUser = app.globalData.getCurrentUser()
+          if (currentUser) {
+            app.globalData.toggleFollow(currentUser.id, user.id)
+          }
           
           // 更新页面数据
           this.setData({

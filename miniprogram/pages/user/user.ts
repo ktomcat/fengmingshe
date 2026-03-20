@@ -1,4 +1,8 @@
 // user.ts
+import { IAppOption } from '../../app'
+
+const app = getApp<IAppOption>()
+
 Page({
   // 分享到微信好友
   onShareAppMessage() {
@@ -48,8 +52,21 @@ Page({
   onLoad(options: any) {
     console.log('【用户主页】页面加载，参数:', options)
     
-    // 从参数中获取用户ID
-    const userId = options.userId || 'user_002'
+    // 从参数中获取用户ID，如果没有参数则显示当前用户主页
+    const userId = options.userId
+    
+    // 如果没有指定用户ID，默认显示当前用户主页
+    if (!userId) {
+      const app = getApp()
+      const currentUser = app.globalData.getCurrentUser()
+      if (currentUser) {
+        // 跳转到当前用户主页
+        wx.redirectTo({
+          url: `/pages/user/user?userId=${currentUser.id}`
+        })
+        return
+      }
+    }
     
     // 初始化页面
     this.initPage(userId)
@@ -57,6 +74,24 @@ Page({
 
   onShow() {
     console.log('【用户主页】页面显示')
+    
+    // 监听用户信息更新事件
+    const app = getApp()
+    app.globalData.on('userInfoUpdated', (userInfo: any) => {
+      console.log('【用户主页】收到用户信息更新事件:', userInfo)
+      
+      // 如果是当前用户的信息更新，刷新页面显示
+      if (this.data.isCurrentUser) {
+        this.setData({
+          userInfo: {
+            name: userInfo.nickname || '用户',
+            signature: userInfo.signature || '这个人很懒，什么都没有留下',
+            avatar: userInfo.avatar || 'https://api.dicebear.com/7.x/adventurer/png?seed=Alex&size=100',
+            id: userInfo.id
+          }
+        })
+      }
+    })
   },
 
   // 初始化页面
@@ -70,8 +105,11 @@ Page({
     // 检查是否为当前用户
     const isCurrentUser = userId === currentUser.id
     
-    // 获取目标用户信息
-    const targetUser = db.users.find(user => user.id === userId)
+    // 获取目标用户信息 - 确保获取最新的用户数据
+    const targetUser = userId === currentUser.id 
+      ? db.getCurrentUser() // 如果是当前用户，使用最新的授权信息
+      : db.users.find(user => user.id === userId)
+    
     if (!targetUser) {
       wx.showToast({
         title: '用户不存在',

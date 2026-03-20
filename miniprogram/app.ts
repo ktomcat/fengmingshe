@@ -93,7 +93,72 @@ class DataService {
 
   // ==================== 用户操作 ====================
   getCurrentUser() {
-    return this.users.find(u => u.id === 'user_001')
+    // 优先返回第一个用户（模拟当前登录用户）
+    return this.users.length > 0 ? this.users[0] : null
+  }
+
+  // 创建或更新用户信息
+  createOrUpdateUser(openid: string, userInfo: any) {
+    console.log('🚀 开始创建/更新用户，openid:', openid)
+    console.log('📝 本地存储的用户信息:', userInfo)
+    
+    const existingUser = this.users.find(u => u.openid === openid)
+    
+    if (existingUser) {
+      // 更新现有用户 - 完整同步所有用户信息
+      console.log('📝 更新现有用户:', existingUser.id)
+      
+      // 构建完整的更新数据，确保所有字段都同步
+      const updateData = {
+        nickname: userInfo.nickname || existingUser.nickname,
+        avatar: userInfo.avatar || existingUser.avatar,
+        signature: userInfo.signature || existingUser.signature || '这个人很懒，什么都没有留下',
+        // 保留原有的统计信息
+        followCount: existingUser.followCount || 0,
+        fansCount: existingUser.fansCount || 0,
+        topicCount: existingUser.topicCount || 0,
+        level: existingUser.level || 1,
+        points: existingUser.points || 0,
+        status: existingUser.status || 'active',
+        role: existingUser.role || 'user',
+        settings: existingUser.settings || {
+          notification: true,
+          privacy: 'public'
+        }
+      }
+      
+      console.log('📝 更新数据:', updateData)
+      return this.updateUser(existingUser.id, updateData)
+    } else {
+      // 创建新用户 - 插入到测试数据中，使用本地存储的完整信息
+      const newUser = {
+        id: this.generateId('user'),
+        openid: openid,
+        nickname: userInfo.nickname,
+        avatar: userInfo.avatar,
+        createTime: this.getCurrentTime(),
+        followCount: 0,
+        fansCount: 0, // 新用户粉丝数为0
+        topicCount: 0,
+        level: 1, // 新用户等级为1
+        points: 0, // 新用户积分为0
+        signature: userInfo.signature || '这个人很懒，什么都没有留下', // 使用本地存储的签名
+        status: 'active',
+        role: 'user',
+        settings: {
+          notification: true,
+          privacy: 'public'
+        }
+      }
+      
+      // 插入到用户数组开头（作为当前登录用户）
+      this.users.unshift(newUser)
+      this.emit('userCreated', newUser)
+      
+      console.log('✅ 创建新用户成功，粉丝数:', newUser.fansCount)
+      console.log('📊 当前用户信息:', JSON.stringify(newUser, null, 2))
+      return newUser
+    }
   }
 
   getUserById(userId: string) {
@@ -676,14 +741,65 @@ App<IAppOption>({
     logs.unshift(Date.now())
     wx.setStorageSync('logs', logs)
 
-    // 登录
-    wx.login({
-      success: res => {
-        console.log('登录成功', res.code)
-        console.log('当前用户:', dataService.getCurrentUser())
-      },
-    })
+    // 检查本地是否有登录信息
+    const localUserInfo = wx.getStorageSync('userInfo')
+    
+    if (localUserInfo && localUserInfo.openid) {
+      console.log('🚀 从本地存储恢复用户信息:', localUserInfo)
+      
+      // 使用本地存储的用户信息（确保包含所有字段）
+      const userInfo = {
+        nickname: localUserInfo.nickname || '微信用户' + localUserInfo.openid.slice(-4),
+        avatar: localUserInfo.avatar || 'https://api.dicebear.com/7.x/bottts/png?seed=WeChat&size=100',
+        signature: localUserInfo.signature || '这个人很懒，什么都没有留下',
+        openid: localUserInfo.openid
+      }
+      
+      console.log('📝 完整用户信息:', userInfo)
+      const currentUser = this.globalData.createOrUpdateUser(localUserInfo.openid, userInfo)
+      console.log('✅ 恢复用户成功:', JSON.stringify(currentUser, null, 2))
+    } else {
+      console.log('🔐 本地无用户信息，开始登录流程')
+      
+      // 登录
+      wx.login({
+        success: res => {
+          console.log('登录成功，获取到:', res)
+          
+          // 模拟获取openid（实际开发中需要调用后端接口）
+          // 这里使用code作为openid的模拟，实际应该是后端返回的openid
+          const openid = res.code
+          const openidSuffix = openid.slice(-4) // 获取openid后4位
+          const nickname = '微信用户' + openidSuffix
+          
+          console.log('生成的openid:', openid)
+          console.log('生成昵称:', nickname)
+          
+          // 使用默认头像
+          const defaultAvatar = 'https://api.dicebear.com/7.x/bottts/png?seed=WeChat&size=100'
+          
+          // 创建或更新用户信息
+          const userInfo = {
+            nickname: nickname,
+            avatar: defaultAvatar,
+            openid: openid
+          }
+          
+          // 保存到本地存储
+          wx.setStorageSync('userInfo', userInfo)
+          console.log('💾 用户信息已保存到本地存储')
+          
+          const currentUser = this.globalData.createOrUpdateUser(openid, userInfo)
+          console.log('✅ 创建用户成功:', JSON.stringify(currentUser, null, 2))
+        },
+        fail: err => {
+          console.log('登录失败:', err)
+        }
+      })
+    }
   },
+
+  // 简化的登录逻辑，使用wx.login获取openid作为用户ID
 })
 
 // 导出类型定义供其他文件使用

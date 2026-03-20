@@ -121,6 +121,12 @@ Page({
     const db = app.globalData
     const currentUser = db.getCurrentUser()
     
+    // 获取页面栈信息，检查是否是从分享链接进入
+    const pages = getCurrentPages()
+    this.setData({
+      isFromShare: pages.length <= 1 // 如果页面栈只有1个页面，说明是从分享链接进入
+    })
+    
     // 获取设备信息
     const systemInfo = wx.getSystemInfoSync()
     this.setData({

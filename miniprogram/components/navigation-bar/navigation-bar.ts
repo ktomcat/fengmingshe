@@ -102,11 +102,23 @@ Component({
     },
     back() {
       const data = this.data
-      if (data.delta) {
-        wx.navigateBack({
-          delta: data.delta
+      
+      // 检查页面栈，如果只有当前页面（从分享链接进入），则重定向到首页
+      const pages = getCurrentPages()
+      if (pages.length <= 1) {
+        // 从分享链接进入，重定向到首页
+        wx.reLaunch({
+          url: '/pages/index/index'
         })
+      } else {
+        // 正常情况，返回上一页
+        if (data.delta) {
+          wx.navigateBack({
+            delta: data.delta
+          })
+        }
       }
+      
       this.triggerEvent('back', { delta: data.delta }, {})
     }
   },
