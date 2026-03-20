@@ -101,16 +101,6 @@ Component({
     discussions: [] as any[], // 讨论列表
   },
   methods: {
-    // 底部导航栏切换 - 现在由组件统一处理
-    onTabChange(e: any) {
-      // 保留事件监听，但页面跳转逻辑已移至组件内部
-      const index = e.detail.index
-      console.log('【精选页】底部导航栏切换，选中索引:', index)
-      this.setData({
-        currentTab: index
-      })
-    },
-
     // 底部菜单栏相关方法
     showBottomSheet(e:any) {
       const topic = e.currentTarget.dataset.topic

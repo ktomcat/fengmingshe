@@ -107,40 +107,6 @@ Page({
     })
   },
 
-  // 底部导航栏切换 - 与profile页面完全一致
-  onTabChange(e: any) {
-    const index = e.detail.index
-    console.log('【消息】底部导航栏切换，选中索引:', index)
-    
-    this.setData({
-      currentTab: index
-    })
-    
-    // 根据索引跳转到对应页面
-    const pages = [
-      '/pages/index/index',
-      '/pages/featured/featured',
-      '/pages/chat/chat',
-      '/pages/profile/profile'
-    ]
-    
-    if (index >= 0 && index < pages.length) {
-      const url = pages[index]
-      
-      // 如果不是当前页面，进行跳转
-      if (index !== 2) { // 2是"消息"页面
-        wx.switchTab({
-          url: url,
-          fail: (err) => {
-            console.error('切换tab失败:', err)
-            wx.navigateTo({
-              url: url
-            })
-          }
-        })
-      }
-    }
-  },
 
   // 切换消息分类
   switchCategory(e: any) {

@@ -139,18 +139,18 @@
       <view class="add-block-section">
         <text class="add-block-hint">添加内容板块</text>
         <view class="add-block-buttons">
-          <text class="add-block-btn" bindtap="addTextBlock">
-            <image class="btn-emoji" src="/static/icons/text.png" style="width: 20px; height: 20px;" />
+          <view class="add-block-btn" bindtap="addTextBlock">
+            <image class="btn-emoji" src="/static/icons/text.png" />
             <text>文本</text>
-          </text>
-          <text class="add-block-btn" bindtap="addImageBlock">
-            <image class="btn-emoji" src="/static/icons/image.png" style="width: 20px; height: 20px;" />
+          </view>
+          <view class="add-block-btn" bindtap="addImageBlock">
+            <image class="btn-emoji" src="/static/icons/image.png" />
             <text>图片</text>
-          </text>
-          <text class="add-block-btn" bindtap="addVoteBlock">
-            <image class="btn-emoji" src="/static/icons/vote.png" style="width: 20px; height: 20px;" />
+          </view>
+          <view class="add-block-btn" bindtap="addVoteBlock">
+            <image class="btn-emoji" src="/static/icons/vote.png" />
             <text>观点</text>
-          </text>
+          </view>
         </view>
       </view>
       

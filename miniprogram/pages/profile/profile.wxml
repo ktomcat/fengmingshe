@@ -164,8 +164,6 @@
 
   <!-- 底部导航栏 -->
   <bottom-nav 
-    wx:if="{{true}}"
     current="{{4}}" 
-    bind:change="onTabChange"
   />
 </view>

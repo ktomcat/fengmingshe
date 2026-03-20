@@ -24,6 +24,7 @@ page {
 
 /* 页面内容区域 */
 .page-content {
+  background-color: #ffffff;
   padding-top: 200rpx;
   padding-bottom: 320rpx; /* 为底部操作栏留出足够空间 */
   min-height: calc(100vh - 520rpx);
@@ -469,11 +470,13 @@ page {
   box-shadow: 0 8rpx 16rpx rgba(139, 92, 246, 0.3);
 }
 
-/* 按钮内的emoji样式 */
+/* 按钮内的图标样式 */
 .add-block-btn .btn-emoji {
   margin-right: 8rpx;
-  font-size: 32rpx;
-  filter: drop-shadow(0 2rpx 4rpx rgba(0, 0, 0, 0.1));
+  width: 32rpx;
+  height: 32rpx;
+  // filter: drop-shadow(0 2rpx 4rpx rgba(0, 0, 0, 0.1));
+  display: block;
 }
 
 /* 按钮悬停/点击效果 */
@@ -556,7 +559,8 @@ page {
   }
   
   .add-block-btn .btn-emoji {
-    font-size: 28rpx;
+    width: 28rpx;
+    height: 28rpx;
     margin-right: 4rpx;
   }
   

@@ -317,15 +317,6 @@ Page({
       .exec()
   },
 
-  // 底部导航栏切换
-  onTabChange(e: any) {
-    const index = e.detail.index
-    console.log('【话题页】底部导航栏切换，选中索引:', index)
-    this.setData({
-      currentTab: index
-    })
-  },
-
   // 底部菜单栏相关方法
   showBottomSheet() {
     console.log('【话题页】显示底部菜单栏')
@@ -440,33 +431,26 @@ Page({
       // 使用dataService进行数据持久化
       const success = db.toggleLike(currentUser.id, 'topic', topic.id)
       
-      if (success) {
-        this.setData({
-          topic: Object.assign({}, topic, {
-            userLiked: isLiked,
-            likeCount: isLiked ? (topic.likeCount || 0) + 1 : Math.max(0, (topic.likeCount || 0) - 1)
-          })
+      this.setData({
+        topic: Object.assign({}, topic, {
+          userLiked: isLiked,
+          likeCount: isLiked ? (topic.likeCount || 0) + 1 : Math.max(0, (topic.likeCount || 0) - 1)
         })
-        
-        // 记录操作到测试数据存储
-        recordOperation(
-          OperationType.LIKE_TOPIC,
-          currentUser.id,
-          'topic',
-          topic.id,
-          { isLiked }
-        )
-        
-        wx.showToast({
-          title: isLiked ? '点赞成功' : '取消点赞',
-          icon: 'success'
-        })
-      } else {
-        wx.showToast({
-          title: '操作失败',
-          icon: 'error'
-        })
-      }
+      })
+      
+      // 记录操作到测试数据存储
+      recordOperation(
+        OperationType.LIKE_TOPIC,
+        currentUser.id,
+        'topic',
+        topic.id,
+        { isLiked }
+      )
+      
+      wx.showToast({
+        title: isLiked ? '点赞成功' : '取消点赞',
+        icon: 'success'
+      })
     }
   },
 
@@ -587,36 +571,29 @@ Page({
       // 使用dataService进行数据持久化
       const success = db.toggleLike(currentUser.id, 'comment', comment.id)
       
-      if (success) {
-        const updatedComments = comments.slice()
-        updatedComments[index] = Object.assign({}, currentComment, {
-          userLiked: isLiked,
-          likeCount: isLiked ? (currentComment.likeCount || 0) + 1 : Math.max(0, (currentComment.likeCount || 0) - 1)
-        })
-        
-        this.setData({
-          comments: updatedComments
-        })
-        
-        // 记录操作到测试数据存储
-        recordOperation(
-          OperationType.LIKE_COMMENT,
-          currentUser.id,
-          'comment',
-          comment.id,
-          { isLiked }
-        )
-        
-        wx.showToast({
-          title: isLiked ? '点赞成功' : '取消点赞',
-          icon: 'success'
-        })
-      } else {
-        wx.showToast({
-          title: '操作失败',
-          icon: 'error'
-        })
-      }
+      const updatedComments = comments.slice()
+      updatedComments[index] = Object.assign({}, currentComment, {
+        userLiked: isLiked,
+        likeCount: isLiked ? (currentComment.likeCount || 0) + 1 : Math.max(0, (currentComment.likeCount || 0) - 1)
+      })
+      
+      this.setData({
+        comments: updatedComments
+      })
+      
+      // 记录操作到测试数据存储
+      recordOperation(
+        OperationType.LIKE_COMMENT,
+        currentUser.id,
+        'comment',
+        comment.id,
+        { isLiked }
+      )
+      
+      wx.showToast({
+        title: isLiked ? '点赞成功' : '取消点赞',
+        icon: 'success'
+      })
     }
   },
 
@@ -640,41 +617,33 @@ Page({
         
         // 使用dataService进行数据持久化
         const success = db.toggleLike(currentUser.id, 'comment', reply.id)
+        const updatedComments = comments.slice()
+        const updatedReplies = updatedComments[index].replies.slice()
         
-        if (success) {
-          const updatedComments = comments.slice()
-          const updatedReplies = updatedComments[index].replies.slice()
-          
-          updatedReplies[replyIndex] = Object.assign({}, currentReply, {
-            userLiked: isLiked,
-            likeCount: isLiked ? (currentReply.likeCount || 0) + 1 : Math.max(0, (currentReply.likeCount || 0) - 1)
-          })
-          
-          updatedComments[index].replies = updatedReplies
-          
-          this.setData({
-            comments: updatedComments
-          })
-          
-          // 记录操作到测试数据存储
-          recordOperation(
-            OperationType.LIKE_COMMENT,
-            currentUser.id,
-            'comment',
-            reply.id,
-            { isLiked }
-          )
-          
-          wx.showToast({
-            title: isLiked ? '点赞成功' : '取消点赞',
-            icon: 'success'
-          })
-        } else {
-          wx.showToast({
-            title: '操作失败',
-            icon: 'error'
-          })
-        }
+        updatedReplies[replyIndex] = Object.assign({}, currentReply, {
+          userLiked: isLiked,
+          likeCount: isLiked ? (currentReply.likeCount || 0) + 1 : Math.max(0, (currentReply.likeCount || 0) - 1)
+        })
+        
+        updatedComments[index].replies = updatedReplies
+        
+        this.setData({
+          comments: updatedComments
+        })
+        
+        // 记录操作到测试数据存储
+        recordOperation(
+          OperationType.LIKE_COMMENT,
+          currentUser.id,
+          'comment',
+          reply.id,
+          { isLiked }
+        )
+        
+        wx.showToast({
+          title: isLiked ? '点赞成功' : '取消点赞',
+          icon: 'success'
+        })
       }
     }
   },

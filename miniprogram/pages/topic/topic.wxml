@@ -303,14 +303,7 @@
     </view>
   </view>
 
-  <!-- 底部导航栏 -->
-  <bottom-nav 
-    wx:if="{{true}}"
-    current="{{currentTab}}" 
-    bind:change="onTabChange"
-  />
-
-      <!-- 底部菜单栏遮罩 -->
+ <!-- 底部菜单栏遮罩 -->
   <view class="bottom-sheet-overlay {{showBottomSheet ? 'active' : ''}}" bindtap="closeBottomSheet">
     <view class="bottom-sheet {{showBottomSheet ? 'active' : ''}}" catchtap="">
       <view class="sheet-item" bindtap="onSharePost">

@@ -291,36 +291,4 @@ Page({
       })
     }
   },
-
-  // 底部导航栏切换
-  onTabChange(e: any) {
-    const index = e.detail.index
-    console.log('【搜索页】底部导航栏切换，选中索引:', index)
-    
-    this.setData({
-      currentTab: index
-    })
-    
-    // 根据索引跳转到对应页面
-    const pages = [
-      '/pages/index/index',
-      '/pages/featured/featured',
-      '/pages/chat/chat',
-      '/pages/profile/profile'
-    ]
-    
-    if (index >= 0 && index < pages.length) {
-      const url = pages[index]
-      
-      wx.switchTab({
-        url: url,
-        fail: (err) => {
-          console.error('切换tab失败:', err)
-          wx.navigateTo({
-            url: url
-          })
-        }
-      })
-    }
-  }
 })

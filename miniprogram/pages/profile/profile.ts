@@ -191,7 +191,7 @@ Page({
 
   onLoad() {
     console.log('【个人中心】页面加载')
-    this.initPage()
+    // this.initPage()
   },
 
   onShow() {
@@ -284,41 +284,6 @@ Page({
       return (num / 1000).toFixed(1) + 'k'
     }
     return num.toString()
-  },
-
-  // 底部导航栏切换 - 与话题页完全一致
-  onTabChange(e: any) {
-    const index = e.detail.index
-    console.log('【个人中心】底部导航栏切换，选中索引:', index)
-    
-    this.setData({
-      currentTab: index
-    })
-    
-    // 根据索引跳转到对应页面
-    const pages = [
-      '/pages/index/index',
-      '/pages/featured/featured',
-      '/pages/chat/chat',
-      '/pages/profile/profile'
-    ]
-    
-    if (index >= 0 && index < pages.length) {
-      const url = pages[index]
-      
-      // 如果不是当前页面，进行跳转
-      if (index !== 3) { // 3是"我的"页面
-        wx.switchTab({
-          url: url,
-          fail: (err) => {
-            console.error('切换tab失败:', err)
-            wx.navigateTo({
-              url: url
-            })
-          }
-        })
-      }
-    }
   },
 
   // 切换标签页

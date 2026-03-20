@@ -2,7 +2,7 @@ Component({
   lifetimes: {
     attached() {
       // 组件挂载时自动识别当前页面并设置选中状态
-      this.setCurrentTabByRoute()
+      // this.setCurrentTabByRoute()
     }
   },
 
@@ -37,25 +37,25 @@ Component({
 
   methods: {
     // 根据当前路由自动设置选中状态
-    setCurrentTabByRoute() {
-      const pages = getCurrentPages()
-      if (pages.length === 0) return
+    // setCurrentTabByRoute() {
+    //   const pages = getCurrentPages()
+    //   if (pages.length === 0) return
       
-      const currentPage = pages[pages.length - 1]
-      const currentRoute = currentPage.route
+    //   const currentPage = pages[pages.length - 1]
+    //   const currentRoute = currentPage.route
       
-      // 查找对应的导航项索引
-      const navIndex = this.data.navItems.findIndex(item => {
-        return currentRoute.includes(item.page)
-      })
+    //   // 查找对应的导航项索引
+    //   const navIndex = this.data.navItems.findIndex(item => {
+    //     return currentRoute.includes(item.page)
+    //   })
       
-      if (navIndex !== -1) {
-        console.log('【底部导航】自动识别当前页面:', currentRoute, '选中索引:', navIndex)
-        this.setData({
-          current: navIndex
-        })
-      }
-    },
+    //   if (navIndex !== -1) {
+    //     console.log('【底部导航】自动识别当前页面:', currentRoute, '选中索引:', navIndex)
+    //     this.setData({
+    //       current: navIndex
+    //     })
+    //   }
+    // },
 
     // 切换标签页 - 统一处理页面跳转逻辑
     onTabChange(e: any) {
@@ -75,39 +75,46 @@ Component({
         return
       }
       
-      // // 更新当前选中状态
+      // 立即更新当前选中状态
       // this.setData({
       //   current: index
       // })
       
-      // 根据页面类型进行跳转
-      switch(navItem.page) {
-        case 'index':
+      // 使用switchTab方式切换，避免页面重新加载
+      const url = `/pages/${navItem.page}/${navItem.page}`
+      
+      // 特殊处理发布页面，使用navigateTo
+      if (navItem.page === 'publish') {
+        // 发布页面不更新底部导航选中状态，保持当前状态
+        this.setData({
+          current: this.data.current
+        })
+        
+        wx.navigateTo({
+          url: url
+        })
+      } else {
+        // 其他页面使用switchTab，但需要确保页面栈中只有一个页面
+        const pageStackLength = getCurrentPages().length
+        
+        if (pageStackLength > 1) {
+          // 如果页面栈中有多个页面，先返回首页
           wx.reLaunch({
             url: '/pages/index/index'
           })
-          break
-        case 'featured':
+          
+          // 延迟切换到目标页面
+          setTimeout(() => {
+            wx.reLaunch({
+              url: url
+            })
+          }, 100)
+        } else {
+          // 页面栈中只有一个页面，直接切换
           wx.reLaunch({
-            url: '/pages/featured/featured'
+            url: url
           })
-          break
-        case 'publish':
-          // 发布页面使用navigateTo而不是reLaunch，方便返回
-          wx.navigateTo({
-            url: '/pages/publish/publish'
-          })
-          break
-        case 'chat':
-          wx.reLaunch({
-            url: '/pages/chat/chat'
-          })
-          break
-        case 'profile':
-          wx.reLaunch({
-            url: '/pages/profile/profile'
-          })
-          break
+        }
       }
       
       // 仍然触发切换事件，保持向后兼容

@@ -148,16 +148,6 @@ Component({
       })
     },
 
-    // 底部导航栏切换 - 现在由组件统一处理
-    onTabChange(e: any) {
-      // 保留事件监听，但页面跳转逻辑已移至组件内部
-      const index = e.detail.index
-      console.log('【首页】底部导航栏切换，选中索引:', index)
-      this.setData({
-        currentTab: index
-      })
-    },
-
     // 底部菜单栏相关方法
     showBottomSheet(e:any) {
       const topic = e.currentTarget.dataset.topic
@@ -306,40 +296,34 @@ Component({
         // 使用dataService进行数据持久化
         const success = db.toggleLike(currentUser.id, 'topic', topicId)
         
-        if (success) {
-          // 更新UI数据
-          discussions[index] = {
-            ...currentItem,
-            userLiked: isLiked,
-            likeCount: isLiked ? (currentItem.likeCount || 0) + 1 : Math.max(0, (currentItem.likeCount || 0) - 1)
-          }
-          
-          this.setData({
-            discussions: discussions
-          })
-          
-          // 记录操作到测试数据存储
-          recordOperation(
-            OperationType.LIKE_TOPIC,
-            currentUser.id,
-            'topic',
-            topicId,
-            { isLiked }
-          )
-          
-          // 显示反馈
-          wx.showToast({
-            title: isLiked ? '点赞成功' : '取消点赞',
-            icon: 'success',
-            duration: 1000
-          })
-        } else {
-          wx.showToast({
-            title: '操作失败',
-            icon: 'error',
-            duration: 1000
-          })
+        
+        // 更新UI数据
+        discussions[index] = {
+          ...currentItem,
+          userLiked: isLiked,
+          likeCount: isLiked ? (currentItem.likeCount || 0) + 1 : Math.max(0, (currentItem.likeCount || 0) - 1)
         }
+        
+        this.setData({
+          discussions: discussions
+        })
+        
+        // 记录操作到测试数据存储
+        recordOperation(
+          OperationType.LIKE_TOPIC,
+          currentUser.id,
+          'topic',
+          topicId,
+          { isLiked }
+        )
+        
+        // 显示反馈
+        wx.showToast({
+          title: isLiked ? '点赞成功' : '取消点赞',
+          icon: 'success',
+          duration: 1000
+        })
+        
       }
     },
 
