@@ -348,10 +348,13 @@ Component({
       
       const { title, contentBlocks } = (this.data as any)
       
-      // 构建话题数据
+      // 获取当前用户信息
+      const currentUser = app.globalData.getCurrentUser()
+      
+      // 构建话题数据，使用 app.ts 中的标准格式
       const topicData = {
-        id: Date.now().toString(),
         title: title.trim(),
+        type: 'normal', // 普通帖子类型
         content: (contentBlocks as any[]).map((block: any) => {
           if (block.type === 'text') {
             return {
@@ -376,47 +379,29 @@ Component({
                   text: block.negative.text || '反方：反对观点',
                   count: block.negative.count || 0
                 },
-                totalVotes: block.totalVotes || 0,
-                userVoted: false,
-                userChoice: null
+                totalVotes: block.totalVotes || 0
               }
             }
           }
           return null
         }).filter(Boolean),
-        author: {
-          nickname: app.globalData.userInfo?.nickname || '匿名用户',
-          avatar: app.globalData.userInfo?.avatar || ''
-        },
-        createTime: (() => {
-          const now = new Date();
-          const year = now.getFullYear();
-          const month = String(now.getMonth() + 1).padStart(2, '0');
-          const day = String(now.getDate()).padStart(2, '0');
-          const hours = String(now.getHours()).padStart(2, '0');
-          const minutes = String(now.getMinutes()).padStart(2, '0');
-          return `${year}-${month}-${day} ${hours}:${minutes}`;
-        })(),
-        likeCount: 0,
-        commentCount: 0,
-        share: 0
+        authorId: currentUser ? currentUser.id : 'user_001', // 使用标准用户ID格式
+        tags: [] // 暂时为空，后续可以添加标签功能
       }
       
       console.log('【发布页面】发布话题数据:', topicData)
       
-      // 模拟发布成功
+      // 显示发布中状态
       wx.showLoading({
         title: '发布中...'
       })
       
-      setTimeout(() => {
-        wx.hideLoading()
+      // 使用 app.ts 的持久化方法创建话题
+      try {
+        const newTopic = app.globalData.createTopic(topicData)
+        console.log('【发布页面】话题创建成功:', newTopic)
         
-      // 将新话题添加到全局数据
-      if (!app.globalData.topics) {
-        app.globalData.topics = []
-      }
-      (app.globalData.topics as any[]).unshift(topicData)
+        wx.hideLoading()
         
         wx.showToast({
           title: '发布成功',
@@ -424,14 +409,23 @@ Component({
           duration: 2000
         })
         
-        // 返回首页
+        // 延迟2秒后返回首页，让用户看到成功提示
         setTimeout(() => {
           wx.reLaunch({
             url: '/pages/index/index'
           })
         }, 2000)
         
-      }, 1500)
+      } catch (error) {
+        console.error('【发布页面】话题创建失败:', error)
+        wx.hideLoading()
+        
+        wx.showToast({
+          title: '发布失败，请重试',
+          icon: 'none',
+          duration: 2000
+        })
+      }
     }
   }
 })

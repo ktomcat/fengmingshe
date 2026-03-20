@@ -22,8 +22,8 @@
     <view class="topic-header" wx:if="{{topic}}" id="topic-header">
       <!-- 作者信息 -->
       <view class="author-info">
-        <view class="author-info-left" bindtap="goToUserProfile" data-user-id="{{topic.authorId}}">
-          <image class="avatar" src="{{topic.author.avatar}}" />
+        <view class="author-info-left">
+          <image class="avatar" src="{{topic.author.avatar}}"  bindtap="goToUserProfile" data-user-id="{{topic.authorId}}"/>
           <view class="author-details">
             <text class="author-name">{{topic.author.nickname}}</text>
             <text class="post-time">{{topic.createTime}}</text>

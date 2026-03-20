@@ -58,8 +58,8 @@
     <view class="discussion-post" wx:for="{{discussions}}" wx:key="id">
       <view class="post-content-area" bindtap="goToTopicDetail" data-topic-id="{{item.id}}">
         <view class="post-header">
-          <view class="user-info" bindtap="goToUserProfile" data-user-id="{{item.authorId}}">
-            <image class="avatar" src="{{item.author.avatar}}" />
+          <view class="user-info">
+            <image class="avatar" src="{{item.author.avatar}}"  bindtap="goToUserProfile" data-user-id="{{item.authorId}}"/>
             <view class="user-details">
               <text class="username">{{item.author.nickname}}</text>
               <text class="post-info">{{item.createTime}}</text>
