@@ -1,5 +1,22 @@
 // profile.ts
 Page({
+  // 分享到微信好友
+  onShareAppMessage() {
+    return {
+      title: '蜂鸣 - 我的个人主页',
+      path: '/pages/profile/profile',
+      imageUrl: '/static/share-logo.png'
+    }
+  },
+  
+  // 分享到朋友圈
+  onShareTimeline() {
+    return {
+      title: '蜂鸣 - 我的个人主页',
+      imageUrl: '/static/share-logo.png'
+    }
+  },
+  
   data: {
     currentTab: 3, // 当前底部导航索引（我的页面为3，与话题页保持一致）
     
@@ -31,7 +48,7 @@ Page({
       },
       {
         id: 2,
-        title: "凤鸣社十周年庆典幕后故事分享",
+        title: "蜂鸣社十周年庆典幕后故事分享",
         date: "2023-10-15",
         views: "2.4k",
         likes: "210"
@@ -523,13 +540,5 @@ Page({
         icon: 'success'
       })
     }, 1000)
-  },
-
-  // 分享功能
-  onShareAppMessage() {
-    return {
-      title: '凤鸣社 - 个人中心',
-      path: '/pages/profile/profile'
-    }
   }
 })

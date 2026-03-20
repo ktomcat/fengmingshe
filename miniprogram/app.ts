@@ -1707,10 +1707,10 @@ const initialTopics = [
   },
   {
     id: 'user_post_002',
-    title: '凤鸣社十周年庆典幕后故事分享',
+    title: '蜂鸣社十周年庆典幕后故事分享',
     type: 'normal',
     content: [
-      { type: 'text', content: '上周我们凤鸣社迎来了十周年庆典，作为组织者之一，我想和大家分享一些幕后的故事。' },
+      { type: 'text', content: '上周我们蜂鸣社迎来了十周年庆典，作为组织者之一，我想和大家分享一些幕后的故事。' },
       { type: 'image', content: 'https://picsum.photos/id/102/800/400' },
       { type: 'text', content: '从策划到执行，整个活动历时三个月。最让我感动的是大家的团队协作精神。' },
       { type: 'text', content: '特别是最后的灯光秀环节，我们反复调试了十几次，就是为了给观众带来最好的视觉体验。' },

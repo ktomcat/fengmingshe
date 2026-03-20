@@ -94,7 +94,7 @@
   <!-- 底部导航栏 -->
   <bottom-nav 
     wx:if="{{true}}"
-    current="{{currentTab}}" 
+    current="{{3}}" 
     bind:change="onTabChange"
   />
 </view>

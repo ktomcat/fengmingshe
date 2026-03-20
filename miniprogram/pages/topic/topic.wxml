@@ -45,7 +45,7 @@
           
           <!-- 图片内容 -->
           <view class="content-image-wrapper" wx:if="{{contentItem.type === 'image'}}">
-            <image class="content-image" src="{{contentItem.content}}" mode="aspectFill" />
+            <image class="content-image" src="{{contentItem.content}}" mode="aspectFill" bindtap="onImageTap" data-image-src="{{contentItem.content}}" />
           </view>
           
           <!-- 投票内容 -->
@@ -257,6 +257,52 @@
     </view>
   </view>
 
+  <!-- 图片查看器 - 优化版本 -->
+  <view class="image-viewer-overlay {{showImageViewer ? 'active' : ''}}" 
+        catchtouchmove="preventTouchMove"
+        style="background-color: rgba(0,0,0,{{imageViewerBgOpacity}});">
+    
+    <!-- 图片容器 -->
+    <view class="image-viewer-container" 
+          catchtouchstart="onImageTouchStart"
+          catchtouchmove="onImageTouchMove"
+          catchtouchend="onImageTouchEnd"
+          catchtouchcancel="onImageTouchCancel">
+      
+      <!-- 当前图片 -->
+      <image 
+        class="image-viewer-img"
+        src="{{currentImage}}"
+        mode="aspectFit"
+        style="transform: translate3d({{imageTranslateX}}px, {{imageTranslateY}}px, 0) scale({{imageScale}}); transition: {{isAnimating ? 'transform 0.2s ease' : 'none'}};"
+        data-index="{{currentImageIndex}}"
+      />
+      
+      <!-- 左右切换区域 -->
+      <view class="image-nav-left" bindtap="switchPrevImage" catchtouchstart="preventBubble">
+        <text class="nav-icon" wx:if="{{currentImageIndex > 0}}">‹</text>
+      </view>
+      <view class="image-nav-right" bindtap="switchNextImage" catchtouchstart="preventBubble">
+        <text class="nav-icon" wx:if="{{currentImageIndex < imageList.length - 1}}">›</text>
+      </view>
+      
+      <!-- 图片计数器 -->
+      <view class="image-counter" wx:if="{{imageList.length > 1}}" catchtouchstart="preventBubble">
+        <text class="counter-text">{{currentImageIndex + 1}} / {{imageList.length}}</text>
+      </view>
+      
+      <!-- 关闭按钮 -->
+      <view class="image-close-btn" bindtap="closeImageViewer" catchtouchstart="preventBubble">
+        <text class="close-icon">✕</text>
+      </view>
+      
+      <!-- 保存按钮 -->
+      <view class="image-save-btn" bindtap="saveCurrentImage" catchtouchstart="preventBubble">
+        <text class="save-icon">⬇️</text>
+      </view>
+    </view>
+  </view>
+
   <!-- 底部导航栏 -->
   <bottom-nav 
     wx:if="{{true}}"
@@ -264,7 +310,7 @@
     bind:change="onTabChange"
   />
 
-  <!-- 底部菜单栏遮罩 -->
+      <!-- 底部菜单栏遮罩 -->
   <view class="bottom-sheet-overlay {{showBottomSheet ? 'active' : ''}}" bindtap="closeBottomSheet">
     <view class="bottom-sheet {{showBottomSheet ? 'active' : ''}}" catchtap="">
       <view class="sheet-item" bindtap="onSharePost">

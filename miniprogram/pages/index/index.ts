@@ -3,6 +3,31 @@
 import { recordOperation, OperationType } from '../../utils/testDataStorage'
 
 Component({
+  // 分享配置
+  options: {
+    addGlobalClass: true
+  },
+  
+  // 页面分享功能
+  pageLifetimes: {
+    // 分享到微信好友
+    onShareAppMessage() {
+      return {
+        title: '蜂鸣 - 发现有趣的话题讨论',
+        path: '/pages/index/index',
+        imageUrl: '/static/share-logo.png'
+      }
+    },
+    
+    // 分享到朋友圈
+    onShareTimeline() {
+      return {
+        title: '蜂鸣 - 发现有趣的话题讨论',
+        imageUrl: '/static/share-logo.png'
+      }
+    }
+  },
+  
   lifetimes: {
     attached() {
       // 组件挂载时加载测试数据
@@ -452,39 +477,60 @@ Component({
     },
 
     // 分享帖子（底部菜单栏）
+    // 分享帖子（底部菜单）
     onSharePost() {
-      console.log('【首页】点击分享帖子按钮')
+      console.log('【首页】点击分享帖子（底部菜单）')
       
-      const { selectedTopic } = this.data
-      if (selectedTopic) {
-        // 显示分享弹窗
-        wx.showActionSheet({
-          itemList: ['分享给好友', '分享到朋友圈'],
-          success: (res) => {
-            const tapIndex = res.tapIndex
-            console.log('【首页】分享弹窗选择，索引:', tapIndex)
-            switch(tapIndex) {
-              case 0:
-                wx.showToast({
-                  title: '已分享给好友',
-                  icon: 'success'
-                })
-                break
-              case 1:
-                wx.showToast({
-                  title: '已分享到朋友圈',
-                  icon: 'success'
-                })
-                break
-            }
-          },
-          fail: (err) => {
-            console.error('【首页】分享弹窗失败:', err)
-          }
+      // 关闭底部弹窗
+      this.closeBottomSheet()
+      
+      // 获取话题信息
+      const topic = this.data.selectedTopic
+      if (!topic) {
+        wx.showToast({
+          title: '话题信息不存在',
+          icon: 'error'
         })
+        return
       }
       
-      this.closeBottomSheet()
+      // 启用右上角分享功能
+      wx.showShareMenu({
+        withShareTicket: true,
+        menus: ['shareAppMessage', 'shareTimeline']
+      })
+      
+      // 显示友好的提示
+      wx.showModal({
+        title: '分享提示',
+        content: '请点击右上角的"..."按钮，选择分享给好友或朋友圈',
+        showCancel: false,
+        confirmText: '知道了'
+      })
+    },
+
+    // 分享帖子（帖子列表中的分享按钮）
+    onSharePostInList(e: any) {
+      // 安全地阻止事件冒泡
+      if (e && typeof e.stopPropagation === 'function') {
+        e.stopPropagation()
+      }
+      const topic = e.currentTarget.dataset.topic
+      console.log('【首页】点击分享帖子（列表），帖子信息:', topic)
+      
+      // 启用右上角分享功能
+      wx.showShareMenu({
+        withShareTicket: true,
+        menus: ['shareAppMessage', 'shareTimeline']
+      })
+      
+      // 显示友好的提示
+      wx.showModal({
+        title: '分享提示',
+        content: '请点击右上角的"..."按钮，选择分享给好友或朋友圈',
+        showCancel: false,
+        confirmText: '知道了'
+      })
     },
 
     // 举报内容
@@ -507,47 +553,7 @@ Component({
       this.closeBottomSheet()
     },
 
-    // 分享帖子（帖子列表中的分享按钮）
-    onSharePostInList(e: any) {
-      // 安全地阻止事件冒泡
-      if (e && typeof e.stopPropagation === 'function') {
-        e.stopPropagation()
-      }
-      const topic = e.currentTarget.dataset.topic
-      console.log('【首页】点击分享帖子（列表），帖子信息:', topic)
-      
-      // 显示分享弹窗
-      wx.showActionSheet({
-        itemList: ['分享给好友', '分享到朋友圈', '收藏话题'],
-        success: (res) => {
-          const tapIndex = res.tapIndex
-          console.log('【首页】分享弹窗选择，索引:', tapIndex)
-          switch(tapIndex) {
-            case 0:
-              console.log('【首页】选择分享给好友')
-              wx.showToast({
-                title: '已分享给好友',
-                icon: 'success'
-              })
-              break
-            case 1:
-              console.log('【首页】选择分享到朋友圈')
-              wx.showToast({
-                title: '已分享到朋友圈',
-                icon: 'success'
-              })
-              break
-            case 2:
-              console.log('【首页】选择收藏话题')
-              this.onFavoriteTopic(topic)
-              break
-          }
-        },
-        fail: (err) => {
-          console.error('【首页】分享弹窗失败:', err)
-        }
-      })
-    },
+
 
     // 跳转到用户主页
     goToUserProfile(e: any) {

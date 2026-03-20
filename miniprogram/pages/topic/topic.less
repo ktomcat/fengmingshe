@@ -401,6 +401,209 @@ page {
   display: block;
 }
 
+/* 内容下方分享按钮 */
+.content-share-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 32rpx;
+  background-color: #ffffff;
+  border-bottom: 1rpx solid #f3f4f6;
+}
+
+.share-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16rpx;
+  background-color: #D7423D;
+  color: #ffffff;
+  border: none;
+  border-radius: 40rpx;
+  padding: 20rpx 40rpx;
+  font-size: 28rpx;
+  font-weight: 500;
+  min-width: 200rpx;
+  transition: all 0.2s ease;
+}
+
+.share-button::after {
+  border: none;
+}
+
+.share-button:active {
+  background-color: #C03A35;
+  transform: scale(0.95);
+}
+
+.share-icon {
+  width: 32rpx;
+  height: 32rpx;
+}
+
+.share-text {
+  font-size: 28rpx;
+  font-weight: 500;
+}
+
+/* 图片查看器样式 - 优化版本 */
+.image-viewer-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+  opacity: 0;
+  visibility: hidden;
+  touch-action: none;
+}
+
+.image-viewer-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.image-viewer-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  touch-action: none;
+}
+
+.image-viewer-img {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  will-change: transform;
+  backface-visibility: hidden;
+  transform: translate3d(0, 0, 0) scale(1);
+  pointer-events: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* 导航按钮 */
+.image-nav-left,
+.image-nav-right {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 80rpx;
+  height: 80rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 50%;
+  color: #ffffff;
+  font-size: 60rpx;
+  z-index: 10001;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.image-nav-left {
+  left: 20rpx;
+}
+
+.image-nav-right {
+  right: 20rpx;
+}
+
+.image-nav-left:active,
+.image-nav-right:active {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.nav-icon {
+  line-height: 1;
+  margin-bottom: 8rpx;
+}
+
+/* 图片计数器 */
+.image-counter {
+  position: absolute;
+  top: 80rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.5);
+  color: #ffffff;
+  padding: 10rpx 30rpx;
+  border-radius: 40rpx;
+  font-size: 28rpx;
+  z-index: 10001;
+  backdrop-filter: blur(10px);
+}
+
+.counter-text {
+  color: #ffffff;
+  font-weight: 500;
+}
+
+/* 关闭按钮 */
+.image-close-btn {
+  position: absolute;
+  top: 80rpx;
+  right: 30rpx;
+  width: 60rpx;
+  height: 60rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 50%;
+  color: #ffffff;
+  font-size: 40rpx;
+  z-index: 10001;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.close-icon {
+  line-height: 1;
+  font-weight: 300;
+}
+
+/* 保存按钮 */
+.image-save-btn {
+  position: absolute;
+  bottom: 80rpx;
+  right: 30rpx;
+  width: 80rpx;
+  height: 80rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 50%;
+  color: #ffffff;
+  font-size: 48rpx;
+  z-index: 10001;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.save-icon {
+  line-height: 1;
+  font-size: 48rpx;
+}
+
+.image-close-btn:active,
+.image-save-btn:active {
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
 /* 评论导航占位元素 */
 .comment-nav-placeholder {
   width: 100%;

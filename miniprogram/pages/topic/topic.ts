@@ -4,7 +4,39 @@ import { recordOperation, OperationType } from '../../utils/testDataStorage'
 
 declare const Object: any;
 
+// 图片查看器常量
+const MIN_SCALE = 1.0;
+const MAX_SCALE = 3.0;
+const ANIMATION_DURATION = 200;
+const DOUBLE_TAP_DELAY = 300;
+const TAP_THRESHOLD = 10;
+
 Page({
+  // 分享到微信好友
+  onShareAppMessage() {
+    const topic = this.data.topic
+    const title = topic ? `${topic.title} - 蜂鸣` : '蜂鸣 - 有趣的话题讨论'
+    const content = topic && topic.content ? this.getFirstTextContent(topic.content) : '发现有趣的话题讨论'
+    
+    return {
+      title: title,
+      path: `/pages/topic/topic?id=${topic?.id || ''}`,
+      imageUrl: topic?.image || '/static/share-logo.png',
+      desc: content
+    }
+  },
+  
+  // 分享到朋友圈
+  onShareTimeline() {
+    const topic = this.data.topic
+    const title = topic ? `${topic.title} - 蜂鸣` : '蜂鸣 - 有趣的话题讨论'
+    
+    return {
+      title: title,
+      imageUrl: topic?.image || '/static/share-logo.png'
+    }
+  },
+  
   data: {
     currentTab: 0,
     showBottomSheet: false,
@@ -14,6 +46,40 @@ Page({
     scrollToComments: false,
     topic: null,
     comments: [],
+    
+    // 图片查看器相关数据 - 优化版本
+    showImageViewer: false,
+    currentImage: '',
+    currentImageIndex: 0,
+    imageList: [],
+    imageScale: 1,
+    imageTranslateX: 0,
+    imageTranslateY: 0,
+    isDragging: false,
+    isAnimating: false,
+    touchStartX: 0,
+    touchStartY: 0,
+    lastTouchDistance: 0,
+    touchStartTime: 0,
+    imageViewerBgOpacity: 0,
+    imageWidth: 0,
+    imageHeight: 0,
+    viewportWidth: 0,
+    viewportHeight: 0,
+    isScaling: false,
+    lastTouchX: 0,
+    lastTouchY: 0,
+    startTranslateX: 0,
+    startTranslateY: 0,
+    startScale: 1,
+    lastSingleTouchX: 0,
+    lastSingleTouchY: 0,
+    isPinch: false,
+    lastTapTime: 0,
+    touchMoveThreshold: 5,
+    lastTouchPoints: [],
+    
+    // 回复输入框相关
     replyInput: {
       visible: false,
       targetCommentId: '',
@@ -23,24 +89,29 @@ Page({
       content: '',
       isReplyToComment: false,
     },
+    
+    // 分页相关
     pagination: {
       currentPage: 1,
       pageSize: 10,
       totalComments: 0,
       hasMore: true,
     },
+    
     // 子评论展开状态管理
     expandedComments: [],
     expandedMap: {},
-    // 子评论分页显示
-    repliesPagination: {}, // 格式: {commentId: {currentPage: 1, pageSize: 10, hasMore: true}}
+    repliesPagination: {},
     
     // 吸顶相关数据
     isCommentNavSticky: false,
     navbarHeight: 0,
     commentNavHeight: 0,
-    commentNavOriginalTop: 0, // 评论导航原始距离顶部的距离
-    scrollTop: 0, // 当前滚动位置
+    commentNavOriginalTop: 0,
+    scrollTop: 0,
+    
+    // 当前用户
+    currentUser: null
   },
 
   onLoad(options: any) {
@@ -49,6 +120,13 @@ Page({
     const app = getApp()
     const db = app.globalData
     const currentUser = db.getCurrentUser()
+    
+    // 获取设备信息
+    const systemInfo = wx.getSystemInfoSync()
+    this.setData({
+      viewportWidth: systemInfo.windowWidth,
+      viewportHeight: systemInfo.windowHeight
+    })
     
     const topicId = options.topicId
     const focusInput = options.focusInput === 'true'
@@ -306,15 +384,6 @@ Page({
     })
   },
 
-  onSharePost() {
-    console.log('【话题页】点击分享帖子按钮')
-    this.closeBottomSheet()
-    wx.showToast({
-      title: '分享成功',
-      icon: 'success'
-    })
-  },
-
   onCollection() {
     console.log('【话题页】点击收藏话题按钮')
     
@@ -402,10 +471,30 @@ Page({
   },
 
   onShareTopic() {
-    console.log('【话题页】点击分享话题按钮')
-    wx.showToast({
-      title: '分享成功',
-      icon: 'success'
+    console.log('【话题详情页】点击内容下方分享按钮')
+    
+    // 获取话题信息
+    const topic = this.data.topic
+    if (!topic) {
+      wx.showToast({
+        title: '话题信息不存在',
+        icon: 'error'
+      })
+      return
+    }
+    
+    // 启用右上角分享功能
+    wx.showShareMenu({
+      withShareTicket: true,
+      menus: ['shareAppMessage', 'shareTimeline']
+    })
+    
+    // 显示友好的提示
+    wx.showModal({
+      title: '分享提示',
+      content: '请点击右上角的"..."按钮，选择分享给好友或朋友圈',
+      showCancel: false,
+      confirmText: '知道了'
     })
   },
 
@@ -853,45 +942,45 @@ Page({
     // 用户可以在当前浏览位置直接回复，无需页面滚动
   },
 
-// 滚动到回复输入框
-scrollToReplyInput() {
-  const { isCommentNavSticky, navbarHeight, commentNavHeight } = this.data
-  
-  const query = wx.createSelectorQuery()
-  query.select('.reply-input-section').boundingClientRect()
-  query.selectViewport().scrollOffset()
-  query.exec((res: any) => {
-    if (res && res[0] && res[1]) {
-      const elementTop = res[0].top
-      const scrollTop = res[1].scrollTop
-      
-      // 计算目标滚动位置
-      let targetScrollTop = elementTop + scrollTop
-      
-      // 如果评论导航处于吸顶状态，需要减去导航栏高度和评论导航高度
-      if (isCommentNavSticky) {
-        targetScrollTop = targetScrollTop - navbarHeight - commentNavHeight - 20
-      } else {
-        // 如果不在吸顶状态，减去导航栏高度和一点额外空间
-        targetScrollTop = targetScrollTop - navbarHeight - 20
+  // 滚动到回复输入框
+  scrollToReplyInput() {
+    const { isCommentNavSticky, navbarHeight, commentNavHeight } = this.data
+    
+    const query = wx.createSelectorQuery()
+    query.select('.reply-input-section').boundingClientRect()
+    query.selectViewport().scrollOffset()
+    query.exec((res: any) => {
+      if (res && res[0] && res[1]) {
+        const elementTop = res[0].top
+        const scrollTop = res[1].scrollTop
+        
+        // 计算目标滚动位置
+        let targetScrollTop = elementTop + scrollTop
+        
+        // 如果评论导航处于吸顶状态，需要减去导航栏高度和评论导航高度
+        if (isCommentNavSticky) {
+          targetScrollTop = targetScrollTop - navbarHeight - commentNavHeight - 20
+        } else {
+          // 如果不在吸顶状态，减去导航栏高度和一点额外空间
+          targetScrollTop = targetScrollTop - navbarHeight - 20
+        }
+        
+        console.log('【滚动到回复输入框】计算参数:', {
+          elementTop,
+          scrollTop,
+          targetScrollTop,
+          isCommentNavSticky,
+          navbarHeight,
+          commentNavHeight
+        })
+        
+        wx.pageScrollTo({
+          scrollTop: Math.max(0, targetScrollTop),
+          duration: 300
+        })
       }
-      
-      console.log('【滚动到回复输入框】计算参数:', {
-        elementTop,
-        scrollTop,
-        targetScrollTop,
-        isCommentNavSticky,
-        navbarHeight,
-        commentNavHeight
-      })
-      
-      wx.pageScrollTo({
-        scrollTop: Math.max(0, targetScrollTop),
-        duration: 300
-      })
-    }
-  })
-},
+    })
+  },
   
   // 取消回复
   cancelReply() {
@@ -904,8 +993,6 @@ scrollToReplyInput() {
     })
   },
   
-
-
   // 展开/折叠评论的回复
   toggleReplies(e: any) {
     const commentId = e.currentTarget.dataset.commentId
@@ -1215,70 +1302,69 @@ scrollToReplyInput() {
   },
 
   // 滚动到评论列表
- // 滚动到评论列表
-scrollToCommentsList() {
-  const { isCommentNavSticky, navbarHeight, commentNavHeight } = this.data
-  
-  const query = wx.createSelectorQuery()
-  query.select('.comment-section').boundingClientRect()
-  query.selectViewport().scrollOffset()
-  query.exec((res: any) => {
-    if (res && res[0] && res[1]) {
-      const elementTop = res[0].top
-      const scrollTop = res[1].scrollTop
-      
-      // 计算目标滚动位置
-      let targetScrollTop = elementTop + scrollTop
-      
-      // 如果评论导航处于吸顶状态，需要减去导航栏高度和评论导航高度
-      if (isCommentNavSticky) {
-        targetScrollTop = targetScrollTop - navbarHeight - commentNavHeight
-      } else {
-        // 如果不在吸顶状态，减去导航栏高度和一点额外空间
-        targetScrollTop = targetScrollTop - navbarHeight - 20
-      }
-      
-      console.log('【滚动到评论】计算参数:', {
-        elementTop,
-        scrollTop,
-        targetScrollTop,
-        isCommentNavSticky,
-        navbarHeight,
-        commentNavHeight
-      })
-      
-      wx.pageScrollTo({
-        scrollTop: Math.max(0, targetScrollTop),
-        duration: 300
-      })
-    } else {
-      // 如果找不到.comment-section，尝试使用.comment-nav作为备选
-      const backupQuery = wx.createSelectorQuery()
-      backupQuery.select('.comment-nav').boundingClientRect()
-      backupQuery.selectViewport().scrollOffset()
-      backupQuery.exec((backupRes: any) => {
-        if (backupRes && backupRes[0] && backupRes[1]) {
-          const elementTop = backupRes[0].top
-          const scrollTop = backupRes[1].scrollTop
-          
-          let targetScrollTop = elementTop + scrollTop
-          
-          // 如果评论导航处于吸顶状态，需要减去导航栏高度
-          if (isCommentNavSticky) {
-            targetScrollTop = targetScrollTop - navbarHeight
-          } else {
-            targetScrollTop = targetScrollTop - navbarHeight - 20
-          }
-          
-          wx.pageScrollTo({
-            scrollTop: Math.max(0, targetScrollTop),
-            duration: 300
-          })
+  scrollToCommentsList() {
+    const { isCommentNavSticky, navbarHeight, commentNavHeight } = this.data
+    
+    const query = wx.createSelectorQuery()
+    query.select('.comment-section').boundingClientRect()
+    query.selectViewport().scrollOffset()
+    query.exec((res: any) => {
+      if (res && res[0] && res[1]) {
+        const elementTop = res[0].top
+        const scrollTop = res[1].scrollTop
+        
+        // 计算目标滚动位置
+        let targetScrollTop = elementTop + scrollTop
+        
+        // 如果评论导航处于吸顶状态，需要减去导航栏高度和评论导航高度
+        if (isCommentNavSticky) {
+          targetScrollTop = targetScrollTop - navbarHeight - commentNavHeight
+        } else {
+          // 如果不在吸顶状态，减去导航栏高度和一点额外空间
+          targetScrollTop = targetScrollTop - navbarHeight - 20
         }
-      })
-    }
-  })
-},
+        
+        console.log('【滚动到评论】计算参数:', {
+          elementTop,
+          scrollTop,
+          targetScrollTop,
+          isCommentNavSticky,
+          navbarHeight,
+          commentNavHeight
+        })
+        
+        wx.pageScrollTo({
+          scrollTop: Math.max(0, targetScrollTop),
+          duration: 300
+        })
+      } else {
+        // 如果找不到.comment-section，尝试使用.comment-nav作为备选
+        const backupQuery = wx.createSelectorQuery()
+        backupQuery.select('.comment-nav').boundingClientRect()
+        backupQuery.selectViewport().scrollOffset()
+        backupQuery.exec((backupRes: any) => {
+          if (backupRes && backupRes[0] && backupRes[1]) {
+            const elementTop = backupRes[0].top
+            const scrollTop = backupRes[1].scrollTop
+            
+            let targetScrollTop = elementTop + scrollTop
+            
+            // 如果评论导航处于吸顶状态，需要减去导航栏高度
+            if (isCommentNavSticky) {
+              targetScrollTop = targetScrollTop - navbarHeight
+            } else {
+              targetScrollTop = targetScrollTop - navbarHeight - 20
+            }
+            
+            wx.pageScrollTo({
+              scrollTop: Math.max(0, targetScrollTop),
+              duration: 300
+            })
+          }
+        })
+      }
+    })
+  },
   
   // 格式化时间
   formatTime(date: any): string {
@@ -1317,5 +1403,431 @@ scrollToCommentsList() {
         icon: 'error'
       })
     }
+  },
+
+  // 分享帖子 - 启用右上角分享功能
+  onSharePost() {
+    console.log('【话题详情页】点击分享帖子')
+    
+    // 关闭底部弹窗
+    this.closeBottomSheet()
+    
+    // 获取话题信息
+    const topic = this.data.topic
+    if (!topic) {
+      wx.showToast({
+        title: '话题信息不存在',
+        icon: 'error'
+      })
+      return
+    }
+    
+    // 启用右上角分享功能
+    wx.showShareMenu({
+      withShareTicket: true,
+      menus: ['shareAppMessage', 'shareTimeline']
+    })
+    
+    // 显示友好的提示
+    wx.showModal({
+      title: '分享提示',
+      content: '请点击右上角的"..."按钮，选择分享给好友或朋友圈',
+      showCancel: false,
+      confirmText: '知道了'
+    })
+  },
+
+  // ============= 图片查看器相关方法 =============
+  
+  // 优化后的图片点击事件 - 使用原生预览
+  onImageTap(e: any) {
+    const imageSrc = e.currentTarget.dataset.imageSrc
+    if (!imageSrc) return
+
+    console.log('【话题详情页】点击图片:', imageSrc)
+    
+    // 收集当前话题的所有图片
+    const imageList = this.collectAllImages()
+    
+    // 使用微信原生图片预览API（最流畅的方案）
+    wx.previewImage({
+      current: imageSrc, // 当前显示图片的url
+      urls: imageList, // 需要预览的图片url列表
+      success: () => {
+        console.log('【图片预览】成功打开')
+      },
+      fail: (error) => {
+        console.error('【图片预览】失败:', error)
+        // 降级处理：使用自定义预览
+        this.customPreviewImage(imageSrc, imageList)
+      }
+    })
+  },
+
+  // 收集话题中的所有图片
+  collectAllImages() {
+    const images: string[] = []
+    const { topic } = this.data
+    
+    if (topic && topic.content) {
+      topic.content.forEach((item: any) => {
+        if (item.type === 'image' && item.content) {
+          images.push(item.content)
+        }
+      })
+    }
+    
+    return images
+  },
+
+  // 自定义图片预览（降级方案）
+  customPreviewImage(currentImage: string, imageList: string[]) {
+    const currentIndex = imageList.findIndex(url => url === currentImage)
+    
+    this.setData({
+      showImageViewer: true,
+      currentImage: currentImage,
+      currentImageIndex: currentIndex >= 0 ? currentIndex : 0,
+      imageList: imageList,
+      imageScale: 1,
+      imageTranslateX: 0,
+      imageTranslateY: 0,
+      imageViewerBgOpacity: 0
+    })
+    
+    // 触发进入动画
+    setTimeout(() => {
+      this.setData({
+        imageViewerBgOpacity: 1
+      })
+    }, 10)
+    
+    // 获取图片尺寸
+    this.getImageSize(currentImage)
+    
+    // 禁用页面滚动
+    this.setData({
+      pageScrollable: false
+    })
+  },
+
+  // 获取图片尺寸
+  getImageSize(src: string) {
+    wx.getImageInfo({
+      src: src,
+      success: (res) => {
+        this.setData({
+          imageWidth: res.width,
+          imageHeight: res.height
+        })
+      },
+      fail: () => {
+        // 如果获取失败，使用默认值
+        this.setData({
+          imageWidth: this.data.viewportWidth,
+          imageHeight: this.data.viewportHeight
+        })
+      }
+    })
+  },
+
+  // 切换上一张图片
+  switchPrevImage() {
+    this.switchImage('prev')
+  },
+
+  // 切换下一张图片
+  switchNextImage() {
+    this.switchImage('next')
+  },
+
+  // 切换图片（左右滑动）
+  switchImage(direction: 'prev' | 'next') {
+    const { imageList, currentImageIndex } = this.data
+    
+    if (!imageList || imageList.length === 0) return
+    
+    let newIndex = currentImageIndex
+    if (direction === 'prev' && currentImageIndex > 0) {
+      newIndex = currentImageIndex - 1
+    } else if (direction === 'next' && currentImageIndex < imageList.length - 1) {
+      newIndex = currentImageIndex + 1
+    } else {
+      return
+    }
+    
+    // 重置缩放状态
+    this.setData({
+      isAnimating: true,
+      imageScale: 1,
+      imageTranslateX: 0,
+      imageTranslateY: 0,
+      currentImage: imageList[newIndex],
+      currentImageIndex: newIndex
+    })
+    
+    setTimeout(() => {
+      this.setData({
+        isAnimating: false
+      })
+    }, ANIMATION_DURATION)
+    
+    // 获取新图片尺寸
+    this.getImageSize(imageList[newIndex])
+  },
+
+  // 关闭图片查看器
+  closeImageViewer() {
+    this.setData({
+      isAnimating: true,
+      imageViewerBgOpacity: 0
+    })
+    
+    setTimeout(() => {
+      this.setData({
+        showImageViewer: false,
+        currentImage: '',
+        imageScale: 1,
+        imageTranslateX: 0,
+        imageTranslateY: 0,
+        isAnimating: false,
+        pageScrollable: true
+      })
+    }, ANIMATION_DURATION)
+  },
+
+  // 保存当前图片
+  saveCurrentImage() {
+    const { currentImage } = this.data
+    
+    wx.showLoading({
+      title: '保存中...'
+    })
+    
+    // 下载图片到本地
+    wx.downloadFile({
+      url: currentImage,
+      success: (res) => {
+        // 保存到相册
+        wx.saveImageToPhotosAlbum({
+          filePath: res.tempFilePath,
+          success: () => {
+            wx.hideLoading()
+            wx.showToast({
+              title: '保存成功',
+              icon: 'success'
+            })
+          },
+          fail: (error) => {
+            wx.hideLoading()
+            console.error('【保存图片】失败:', error)
+            wx.showToast({
+              title: '保存失败',
+              icon: 'error'
+            })
+          }
+        })
+      },
+      fail: (error) => {
+        wx.hideLoading()
+        console.error('【下载图片】失败:', error)
+        wx.showToast({
+          title: '下载失败',
+          icon: 'error'
+        })
+      }
+    })
+  },
+
+  // 触摸开始
+  onImageTouchStart(e: any) {
+    if (this.data.isAnimating) return
+    
+    const touches = e.touches
+    const now = Date.now()
+    
+    this.setData({
+      isTouching: true,
+      touchStartTime: now,
+      lastTouchPoints: touches
+    })
+    
+    if (touches.length === 1) {
+      // 单指触摸 - 记录起始位置用于拖动
+      this.setData({
+        lastTouchX: touches[0].clientX,
+        lastTouchY: touches[0].clientY,
+        startTranslateX: this.data.imageTranslateX,
+        startTranslateY: this.data.imageTranslateY,
+        isDragging: false
+      })
+    } else if (touches.length === 2) {
+      // 双指触摸 - 记录起始距离用于缩放
+      const dx = touches[1].clientX - touches[0].clientX
+      const dy = touches[1].clientY - touches[0].clientY
+      const distance = Math.sqrt(dx * dx + dy * dy)
+      
+      this.setData({
+        lastTouchDistance: distance,
+        startScale: this.data.imageScale,
+        startTranslateX: this.data.imageTranslateX,
+        startTranslateY: this.data.imageTranslateY,
+        isPinch: true
+      })
+    }
+  },
+
+  // 触摸移动
+  onImageTouchMove(e: any) {
+    if (!this.data.isTouching || this.data.isAnimating) return
+    
+    const touches = e.touches
+    e.preventDefault() // 阻止默认滚动
+    
+    if (touches.length === 1 && !this.data.isPinch) {
+      // 单指移动 - 拖动图片
+      const currentX = touches[0].clientX
+      const currentY = touches[0].clientY
+      
+      // 计算移动距离
+      const deltaX = currentX - this.data.lastTouchX
+      const deltaY = currentY - this.data.lastTouchY
+      
+      // 检查是否达到移动阈值
+      const moveDistance = Math.sqrt(deltaX * deltaX + deltaY * deltaY)
+      if (moveDistance > this.data.touchMoveThreshold || this.data.isDragging) {
+        // 开始拖动
+        this.setData({
+          isDragging: true,
+          imageTranslateX: this.data.startTranslateX + deltaX,
+          imageTranslateY: this.data.startTranslateY + deltaY,
+          lastTouchX: currentX,
+          lastTouchY: currentY
+        })
+      }
+    } else if (touches.length === 2) {
+      // 双指移动 - 缩放图片
+      const dx = touches[1].clientX - touches[0].clientX
+      const dy = touches[1].clientY - touches[0].clientY
+      const distance = Math.sqrt(dx * dx + dy * dy)
+      
+      if (this.data.lastTouchDistance > 0) {
+        // 计算缩放比例
+        const scaleChange = distance / this.data.lastTouchDistance
+        let newScale = Math.min(MAX_SCALE, Math.max(MIN_SCALE, this.data.startScale * scaleChange))
+        
+        // 计算缩放中心点
+        const centerX = (touches[0].clientX + touches[1].clientX) / 2
+        const centerY = (touches[0].clientY + touches[1].clientY) / 2
+        const viewportWidth = this.data.viewportWidth
+        const viewportHeight = this.data.viewportHeight
+        
+        // 计算基于中心点的位移
+        const scaleRatio = newScale / this.data.imageScale
+        let translateX = centerX - (centerX - this.data.imageTranslateX) * scaleRatio
+        let translateY = centerY - (centerY - this.data.imageTranslateY) * scaleRatio
+        
+        // 边界限制（当缩放大于1时）
+        if (newScale > 1) {
+          const maxTranslateX = (newScale - 1) * viewportWidth / 2
+          const maxTranslateY = (newScale - 1) * viewportHeight / 2
+          translateX = Math.min(maxTranslateX, Math.max(-maxTranslateX, translateX))
+          translateY = Math.min(maxTranslateY, Math.max(-maxTranslateY, translateY))
+        } else {
+          translateX = 0
+          translateY = 0
+        }
+        
+        this.setData({
+          imageScale: newScale,
+          imageTranslateX: translateX,
+          imageTranslateY: translateY,
+          lastTouchDistance: distance,
+          isScaling: true
+        })
+      }
+    }
+  },
+
+  // 触摸结束
+  onImageTouchEnd(e: any) {
+    if (!this.data.isTouching) return
+    
+    const touches = e.changedTouches
+    const now = Date.now()
+    const touchDuration = now - this.data.touchStartTime
+    
+    // 检查是否是双击
+    if (touches.length === 1 && !this.data.isDragging && !this.data.isScaling && touchDuration < 300) {
+      const currentTime = now
+      const lastTapTime = this.data.lastTapTime
+      
+      if (currentTime - lastTapTime < DOUBLE_TAP_DELAY) {
+        // 双击 - 切换缩放
+        this.handleDoubleTap()
+      }
+      
+      this.setData({
+        lastTapTime: currentTime
+      })
+    }
+    
+    // 重置状态
+    this.setData({
+      isTouching: false,
+      isDragging: false,
+      isScaling: false,
+      isPinch: false,
+      lastTouchDistance: 0
+    })
+  },
+
+  // 触摸取消
+  onImageTouchCancel(e: any) {
+    this.setData({
+      isTouching: false,
+      isDragging: false,
+      isScaling: false,
+      isPinch: false,
+      lastTouchDistance: 0
+    })
+  },
+
+  // 处理双击
+  handleDoubleTap() {
+    const { imageScale } = this.data
+    
+    // 切换缩放状态
+    const newScale = imageScale > 1.1 ? 1 : 2
+    
+    this.setData({
+      isAnimating: true,
+      imageScale: newScale,
+      imageTranslateX: 0,
+      imageTranslateY: 0
+    })
+    
+    setTimeout(() => {
+      this.setData({
+        isAnimating: false
+      })
+    }, ANIMATION_DURATION)
+  },
+
+  // 阻止事件冒泡
+  preventBubble() {
+    return false
+  },
+
+  // 阻止触摸移动（用于遮罩层）
+  preventTouchMove() {
+    return false
+  },
+
+  // 获取第一个文本内容（用于分享）
+  getFirstTextContent(content: any[]) {
+    if (!content || !content.length) return ''
+    const textItem = content.find(item => item.type === 'text')
+    return textItem ? textItem.content.substring(0, 50) : ''
   }
 })

@@ -108,10 +108,6 @@
             <image class="icon" src="/static/icons/msg.png" />
             <text class="action-count">{{item.commentCount}}</text>
           </view>
-          <view class="action-btn style-unactive" bindtap="onSharePostInList" data-topic="{{item}}">
-            <image class="icon" src="/static/icons/share.png" />
-            <text class="action-count">分享</text>
-          </view>
         </view>
       </view>
     </view>
@@ -128,10 +124,6 @@
   <!-- 底部菜单栏遮罩 -->
   <view class="bottom-sheet-overlay {{showBottomSheet ? 'active' : ''}}" bindtap="closeBottomSheet">
     <view class="bottom-sheet {{showBottomSheet ? 'active' : ''}}" catchtap="">
-      <view class="sheet-item" bindtap="onSharePost">
-        <text class="sheet-icon">📤</text>
-        <text class="sheet-text">分享帖子</text>
-      </view>
       <view class="sheet-item" bindtap="onCollection">
         <text class="sheet-icon">📦</text>
         <text class="sheet-text">{{selectedTopic && selectedTopic.isFavorited ? '取消收藏' : '收藏话题'}}</text>

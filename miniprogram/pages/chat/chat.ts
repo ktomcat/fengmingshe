@@ -1,5 +1,22 @@
 // chat.ts
 Page({
+  // 分享到微信好友
+  onShareAppMessage() {
+    return {
+      title: '蜂鸣 - 消息中心',
+      path: '/pages/chat/chat',
+      imageUrl: '/static/share-logo.png'
+    }
+  },
+  
+  // 分享到朋友圈
+  onShareTimeline() {
+    return {
+      title: '蜂鸣 - 消息中心',
+      imageUrl: '/static/share-logo.png'
+    }
+  },
+  
   data: {
     currentTab: 3, // 当前底部导航索引（消息页面为3）
     
@@ -251,11 +268,4 @@ Page({
     }
   },
 
-  // 分享功能
-  onShareAppMessage() {
-    return {
-      title: '蜂鸣社 - 消息中心',
-      path: '/pages/chat/chat'
-    }
-  }
 })

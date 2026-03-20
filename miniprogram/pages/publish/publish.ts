@@ -3,6 +3,31 @@
 const app = getApp()
 
 Component({
+  // 分享配置
+  options: {
+    addGlobalClass: true
+  },
+  
+  // 页面分享功能
+  pageLifetimes: {
+    // 分享到微信好友
+    onShareAppMessage() {
+      return {
+        title: '蜂鸣 - 发布精彩话题',
+        path: '/pages/publish/publish',
+        imageUrl: '/static/share-logo.png'
+      }
+    },
+    
+    // 分享到朋友圈
+    onShareTimeline() {
+      return {
+        title: '蜂鸣 - 发布精彩话题',
+        imageUrl: '/static/share-logo.png'
+      }
+    }
+  },
+  
   data: {
     title: '', // 话题标题
     activeTool: 'text', // 当前激活的工具类型

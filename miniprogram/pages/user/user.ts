@@ -1,5 +1,22 @@
 // user.ts
 Page({
+  // 分享到微信好友
+  onShareAppMessage() {
+    return {
+      title: '蜂鸣 - 用户主页',
+      path: '/pages/user/user',
+      imageUrl: '/static/share-logo.png'
+    }
+  },
+  
+  // 分享到朋友圈
+  onShareTimeline() {
+    return {
+      title: '蜂鸣 - 用户主页',
+      imageUrl: '/static/share-logo.png'
+    }
+  },
+  
   data: {
     // 用户信息
     userInfo: {
@@ -314,13 +331,5 @@ Page({
         icon: 'success'
       })
     }, 1000)
-  },
-
-  // 分享功能
-  onShareAppMessage() {
-    return {
-      title: `${this.data.userInfo.name} - 凤鸣社用户主页`,
-      path: `/pages/user/user?userId=${this.data.userInfo.id || 'user_002'}`
-    }
   }
 })

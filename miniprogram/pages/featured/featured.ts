@@ -3,6 +3,31 @@
 import { recordOperation, OperationType } from '../../utils/testDataStorage'
 
 Component({
+  // 分享配置
+  options: {
+    addGlobalClass: true
+  },
+  
+  // 页面分享功能
+  pageLifetimes: {
+    // 分享到微信好友
+    onShareAppMessage() {
+      return {
+        title: '蜂鸣 - 精选话题讨论',
+        path: '/pages/featured/featured',
+        imageUrl: '/static/share-logo.png'
+      }
+    },
+    
+    // 分享到朋友圈
+    onShareTimeline() {
+      return {
+        title: '蜂鸣 - 精选话题讨论',
+        imageUrl: '/static/share-logo.png'
+      }
+    }
+  },
+  
   lifetimes: {
     attached() {
       // 组件挂载时加载测试数据并设置当前选中状态
