@@ -17,12 +17,12 @@
     <text class="nav-text">精选</text>
   </view>
   <view 
-    class="nav-item {{current === 2 ? 'active' : ''}}"
+    class="nav-item publish-item {{current === 2 ? 'active' : ''}}"
     bindtap="onTabChange"
     data-index="2"
   >
-    <text wx:if="{{false}}"  class="nav-icon">💬</text>
-    <text class="nav-text-2">发</text>
+    <image class="publish-icon" src="/static/logo-tmd.png" mode="aspectFit" />
+    <!-- <text class="nav-text">发布</text> -->
   </view>
   <view 
     class="nav-item {{current === 3 ? 'active' : ''}}"

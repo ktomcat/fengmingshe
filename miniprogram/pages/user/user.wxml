@@ -5,7 +5,7 @@
     <navigation-bar 
       title="个人主页" 
       background="#ffffff" 
-      color="#000000" 
+      color="#D7423D" 
       back="{{true}}"
       home-button="{{false}}"
       left-logo="{{false}}"

@@ -8,8 +8,8 @@
   background-color: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(20px);
   border-top: 1rpx solid #f3f4f6;
-  padding: 16rpx ;
-  padding-bottom: 24rpx;
+  padding: 1rpx ;
+  padding-bottom: 10rpx;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -41,13 +41,18 @@
   font-size: 28rpx;
   font-weight: 500;
 }
-.nav-text-2 {
-  font-size: 28rpx;
-  font-weight: 500;
-  border: #9ca3af;
-  border-radius: 40rpx;
-  width: 40rpx;
-  padding: 8rpx 8rpx;
-  border-style: solid;
-  text-align: center;
+.publish-item {
+  position: relative;
+}
+
+.publish-icon {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  background-color: #ffffff;
+}
+
+.publish-item.active .publish-icon {
+  background-color: #D7423D;
+  box-shadow: 0 0 20rpx rgba(215, 66, 61, 0.4);
 }
