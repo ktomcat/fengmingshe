@@ -70,9 +70,9 @@
                 
                 <view class="vote-progress-bar">
                   <view class="progress-track">
-                    <view class="progress-fill positive" style="width: {{contentItem.content.positivePercent || 0}}%"></view>
-                    <view class="progress-fill negative" style="width: {{contentItem.content.negativePercent || 0}}%"></view>
-                    <view class="progress-divider" style="left: {{contentItem.content.positivePercent || 0}}%"></view>
+                    <view class="progress-fill positive" style="width: {{contentItem.content.positivePercent || 0}}%;"></view>
+                    <view class="progress-fill negative" style="width: {{contentItem.content.negativePercent || 0}}%;"></view>
+                    <view class="progress-divider" style="left: {{contentItem.content.positivePercent || 0}}%;"></view>
                   </view>
                 </view>
                 
@@ -314,19 +314,19 @@
   <view class="bottom-sheet-overlay {{showBottomSheet ? 'active' : ''}}" bindtap="closeBottomSheet">
     <view class="bottom-sheet {{showBottomSheet ? 'active' : ''}}" catchtap="">
       <view class="sheet-item" bindtap="onSharePost">
-        <text class="sheet-icon">📤</text>
+        <image class="sheet-icon" src="/static/icons/share.png" style="width: 20px; height: 20px;" />
         <text class="sheet-text">分享帖子</text>
       </view>
       <view class="sheet-item" bindtap="onCollection">
-        <text class="sheet-icon">📦</text>
+        <image class="sheet-icon" src="/static/icons/collection.png" style="width: 20px; height: 20px;" />
         <text class="sheet-text">{{topic && topic.isFavorited ? '取消收藏' : '收藏话题'}}</text>
       </view>
       <view class="sheet-item" bindtap="onReportContent">
-        <text class="sheet-icon">🚩</text>
+        <image class="sheet-icon" src="/static/icons/report.png" style="width: 20px; height: 20px;" />
         <text class="sheet-text">举报内容</text>
       </view>
       <view class="sheet-item" bindtap="onBlockUser">
-        <text class="sheet-icon">🚫</text>
+        <image class="sheet-icon" src="/static/icons/block.png" style="width: 20px; height: 20px;" />
         <text class="sheet-text">拉黑用户</text>
       </view>
       <view class="sheet-cancel" bindtap="closeBottomSheet">

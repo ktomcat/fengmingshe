@@ -20,7 +20,7 @@
     <view class="header">
     <view class="search-container">
       <view class="search-input-wrapper">
-        <text class="search-icon">🔍</text>
+        <image class="search-icon" src="/static/icons/search.png" style="width: 20px; height: 20px;" />
         <input class="search-input" placeholder="搜索话题、精选或用户" bindinput="onSearchInput" value="{{searchText}}" />
         <view class="search-btn {{searchText ? 'show' : ''}}" bindtap="onSearch">
           <text class="search-btn-text">搜索</text>
@@ -125,15 +125,15 @@
   <view class="bottom-sheet-overlay {{showBottomSheet ? 'active' : ''}}" bindtap="closeBottomSheet">
     <view class="bottom-sheet {{showBottomSheet ? 'active' : ''}}" catchtap="">
       <view class="sheet-item" bindtap="onCollection">
-        <text class="sheet-icon">📦</text>
+        <image class="sheet-icon" src="/static/icons/collection.png" style="width: 20px; height: 20px;" />
         <text class="sheet-text">{{selectedTopic && selectedTopic.isFavorited ? '取消收藏' : '收藏话题'}}</text>
       </view>
       <view class="sheet-item" bindtap="onReportContent">
-        <text class="sheet-icon">🚩</text>
+        <image class="sheet-icon" src="/static/icons/report.png" style="width: 20px; height: 20px;" />
         <text class="sheet-text">举报内容</text>
       </view>
       <view class="sheet-item" bindtap="onBlockUser">
-        <text class="sheet-icon">🚫</text>
+        <image class="sheet-icon" src="/static/icons/block.png" style="width: 20px; height: 20px;" />
         <text class="sheet-text">拉黑用户</text>
       </view>
       <view class="sheet-cancel" bindtap="closeBottomSheet">

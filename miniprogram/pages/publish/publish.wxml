@@ -46,9 +46,9 @@
             />
             
             <view class="block-actions">
-              <text class="action-btn" bindtap="moveBlockUp" data-index="{{index}}">⬆️</text>
-              <text class="action-btn" bindtap="moveBlockDown" data-index="{{index}}">⬇️</text>
-              <text class="action-btn delete" bindtap="deleteBlock" data-index="{{index}}">🗑️</text>
+              <image class="action-btn" src="/static/icons/up.png" style="width: 20px; height: 20px;" bindtap="moveBlockUp" data-index="{{index}}" />
+              <image class="action-btn" src="/static/icons/down.png" style="width: 20px; height: 20px;" bindtap="moveBlockDown" data-index="{{index}}" />
+              <image class="action-btn delete" src="/static/icons/delete.png" style="width: 20px; height: 20px;" bindtap="deleteBlock" data-index="{{index}}" />
             </view>
           </view>
 
@@ -57,17 +57,17 @@
             <view class="image-uploader">
               <view class="image-preview" wx:if="{{item.content}}">
                 <image class="preview-image" src="{{item.content}}" mode="aspectFill" />
-                <text class="remove-image" bindtap="removeImage" data-index="{{index}}">✕</text>
+                <image class="remove-image" src="/static/icons/close.png" style="width: 20px; height: 20px;" bindtap="removeImage" data-index="{{index}}" />
               </view>
               <view class="upload-btn" wx:if="{{!item.content}}" bindtap="chooseImage" data-index="{{index}}">
-                <text class="upload-icon">+</text>
+                <image class="upload-icon" src="/static/icons/add.png" style="width: 20px; height: 20px;" />
                 <text class="upload-text">点击上传图片</text>
               </view>
             </view>
             <view class="block-actions">
-              <text class="action-btn" bindtap="moveBlockUp" data-index="{{index}}">⬆️</text>
-              <text class="action-btn" bindtap="moveBlockDown" data-index="{{index}}">⬇️</text>
-              <text class="action-btn delete" bindtap="deleteBlock" data-index="{{index}}">🗑️</text>
+              <image class="action-btn" src="/static/icons/up.png" style="width: 20px; height: 20px;" bindtap="moveBlockUp" data-index="{{index}}" />
+              <image class="action-btn" src="/static/icons/down.png" style="width: 20px; height: 20px;" bindtap="moveBlockDown" data-index="{{index}}" />
+              <image class="action-btn delete" src="/static/icons/delete.png" style="width: 20px; height: 20px;" bindtap="deleteBlock" data-index="{{index}}" />
             </view>
           </view>
 
@@ -108,11 +108,11 @@
                 
                 <view class="vote-actions">
                   <button class="vote-btn positive" bindtap="onVotePositive" data-index="{{index}}">
-                    <text class="btn-icon">👍</text>
+                    <image class="btn-icon" src="/static/icons/like_y.png" style="width: 20px; height: 20px;" />
                     <text class="btn-text">支持观点</text>
                   </button>
                   <button class="vote-btn negative" bindtap="onVoteNegative" data-index="{{index}}">
-                    <text class="btn-icon">👎</text>
+                    <image class="btn-icon" src="/static/icons/unlike_y.png" style="width: 20px; height: 20px;" />
                     <text class="btn-text">反对观点</text>
                   </button>
                 </view>
@@ -124,9 +124,9 @@
             </view>
             
             <view class="block-actions">
-              <text class="action-btn" bindtap="moveBlockUp" data-index="{{index}}">⬆️</text>
-              <text class="action-btn" bindtap="moveBlockDown" data-index="{{index}}">⬇️</text>
-              <text class="action-btn delete" bindtap="deleteBlock" data-index="{{index}}">🗑️</text>
+              <image class="action-btn" src="/static/icons/up.png" style="width: 20px; height: 20px;" bindtap="moveBlockUp" data-index="{{index}}" />
+              <image class="action-btn" src="/static/icons/down.png" style="width: 20px; height: 20px;" bindtap="moveBlockDown" data-index="{{index}}" />
+              <image class="action-btn delete" src="/static/icons/delete.png" style="width: 20px; height: 20px;" bindtap="deleteBlock" data-index="{{index}}" />
             </view>
           </view>
         </view>
@@ -140,15 +140,15 @@
         <text class="add-block-hint">添加内容板块</text>
         <view class="add-block-buttons">
           <text class="add-block-btn" bindtap="addTextBlock">
-            <text class="btn-emoji">📝</text>
+            <image class="btn-emoji" src="/static/icons/text.png" style="width: 20px; height: 20px;" />
             <text>文本</text>
           </text>
           <text class="add-block-btn" bindtap="addImageBlock">
-            <text class="btn-emoji">🖼️</text>
+            <image class="btn-emoji" src="/static/icons/image.png" style="width: 20px; height: 20px;" />
             <text>图片</text>
           </text>
           <text class="add-block-btn" bindtap="addVoteBlock">
-            <text class="btn-emoji">⚖️</text>
+            <image class="btn-emoji" src="/static/icons/vote.png" style="width: 20px; height: 20px;" />
             <text>观点</text>
           </text>
         </view>

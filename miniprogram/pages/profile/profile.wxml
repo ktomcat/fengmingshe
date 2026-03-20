@@ -25,13 +25,13 @@
           <view class="name-edit-container">
             <text class="user-name">{{userInfo.name}}</text>
             <view class="edit-icon" bindtap="onEditProfile">
-              <text class="edit-icon-text">✏️</text>
+              <image class="edit-icon-text" src="/static/icons/edit.png" style="width: 20px; height: 20px;" />
             </view>
           </view>
           <view class="signature-edit-container">
             <text class="user-signature">{{userInfo.signature}}</text>
             <view class="edit-icon" bindtap="onEditSignature">
-              <text class="edit-icon-text">✏️</text>
+              <image class="edit-icon-text" src="/static/icons/edit.png" style="width: 20px; height: 20px;" />
             </view>
           </view>
         </view>
