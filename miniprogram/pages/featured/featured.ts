@@ -38,7 +38,7 @@ Page({
     // 分享参数
     shareTitle: '蜂鸣社 - 精选话题讨论',
     sharePath: '/pages/featured/featured',
-    shareImageUrl: '/static/share-logo.png'
+    shareImageUrl: '/static/logo-tmd.png'
   },
 
   // 页面加载时执行

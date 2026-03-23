@@ -21,7 +21,7 @@ Page({
     return {
       title: title,
       path: `/pages/topic/topic?id=${topic?.id || ''}`,
-      imageUrl: topic?.image || '/static/share-logo.png',
+      imageUrl: topic?.image || '/static/logo-tmd.png',
       desc: content
     }
   },
@@ -33,7 +33,7 @@ Page({
     
     return {
       title: title,
-      imageUrl: topic?.image || '/static/share-logo.png'
+      imageUrl: topic?.image || '/static/logo-tmd.png'
     }
   },
   
